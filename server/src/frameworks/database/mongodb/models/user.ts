@@ -39,7 +39,10 @@ const userSchema = new mongoose.Schema({
       ref: "Restaurant",
     },
   ],
-  createdAt: new Date(),
+  createdAt: {
+    type: Date,
+    default: new Date(),
+  },
 });
 
 export default mongoose.model("User", userSchema);

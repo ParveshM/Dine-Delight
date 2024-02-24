@@ -5,8 +5,10 @@ export interface CreateUserInterface {
 }
 
 export interface UserInterface {
+  id: string;
   name: string;
   email: string;
+  password: string;
   profilePicture?: string;
   wallet: object;
   isVerified: boolean;
