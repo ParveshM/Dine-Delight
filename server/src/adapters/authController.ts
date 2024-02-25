@@ -10,7 +10,6 @@ import {
   deleteOtp,
   login,
 } from "../app/use-cases/auth/userAuth";
-import CustomError from "../utils/customError";
 import { HttpStatus } from "../types/httpStatus";
 
 // Controller will be passing all the necessaary parameers to the repositories
@@ -75,12 +74,26 @@ const authController = (
       next(error);
     }
   };
-
+  /**
+   ** method : POST
+   */
+  // User login with credentials and create access and refresh token for authorization
   const userLogin = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const user = await login(req.body, dbRepositoryUser, authService);
-        res.status(HttpStatus.OK).json({ message: "login success", user });
+        const { getAccessToken, getRefreshToken } = await login(
+          req.body,
+          dbRepositoryUser,
+          authService
+        );
+        // setting access token in the cookie
+        res.cookie("access_token", getAccessToken, {
+          httpOnly: true,
+        });
+        res.cookie("refresh_token", getRefreshToken, {
+          httpOnly: true,
+        });
+        res.status(HttpStatus.OK).json({ message: "login success" });
       } catch (error) {
         next(error);
       }

@@ -10,6 +10,7 @@ export interface UserInterface {
   email: string;
   password: string;
   profilePicture?: string;
+  role: string;
   wallet: object;
   isVerified: boolean;
   isBlocked: boolean;

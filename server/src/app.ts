@@ -6,7 +6,6 @@ import CustomError from "./utils/customError";
 import errorHandlingMidleware from "./frameworks/webServer/middlewares/errorhandler.middleware";
 const app: Application = express();
 import routes from "./frameworks/webServer/routes";
-
 expressConfig(app);
 connectDB();
 routes(app);

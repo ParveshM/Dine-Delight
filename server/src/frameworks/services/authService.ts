@@ -1,23 +1,56 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import configKeys from "../../config";
 // Auth service will provide all the resusable functionlity
 export const authService = () => {
+  // create a hashed password
   const encryptPassword = async (password: string) => {
     const salt = await bcrypt.genSalt(10);
     return await bcrypt.hash(password, salt);
   };
+  // Compare input password against db password
+  const comparePassword = async (inputPassword: string, password: string) => {
+    return await bcrypt.compare(inputPassword, password);
+  };
+  // generate a 6 digit otp
   const generateOTP = () => {
     const otp = Math.floor(100000 + Math.random() * 900000);
     return `${otp}`;
   };
 
-  const comparePassword = async (inputPassword: string, password: string) => {
-    return await bcrypt.compare(inputPassword, password);
+  // Create createAccessToken
+  const createAccessToken = (user: {
+    id: string;
+    name: string;
+    role: string;
+  }) => {
+    const payload = {
+      id: user.id,
+      name: user.name,
+      role: user.role,
+    };
+    return jwt.sign(payload, configKeys.ACCESS_SECRET, { expiresIn: "5m" });
+  };
+
+  const createRefreshToken = (user: {
+    id: string;
+    name: string;
+    role: string;
+  }) => {
+    const payload = {
+      id: user.id,
+      name: user.name,
+      role: user.role,
+    };
+    return jwt.sign(payload, configKeys.RERESH_SECRET, { expiresIn: "2d" });
   };
 
   return {
     encryptPassword,
     generateOTP,
     comparePassword,
+    createAccessToken,
+    createRefreshToken,
   };
 };
 export type AuthService = typeof authService;

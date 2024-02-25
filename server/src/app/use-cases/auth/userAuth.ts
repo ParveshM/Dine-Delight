@@ -110,4 +110,7 @@ export const login = async (
   );
   if (!isPasswordMatched)
     throw new CustomError("Invalid credentials", HttpStatus.BAD_REQUEST);
+  const getAccessToken = authService.createAccessToken(isEmailExist);
+  const getRefreshToken = authService.createRefreshToken({ ...isEmailExist });
+  return { getAccessToken, getRefreshToken };
 };
