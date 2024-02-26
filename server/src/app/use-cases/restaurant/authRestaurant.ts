@@ -56,3 +56,37 @@ export const verifyAccount = async (
     throw new CustomError("Token expired ", HttpStatus.BAD_REQUEST);
   return updateVerification;
 };
+
+export const restaurantLogin = async (
+  email: string,
+  password: string,
+  restaurantRepository: ReturnType<restaurantDbInterface>,
+  authService: ReturnType<AuthServiceInterfaceType>
+) => {
+  const isEmailExist = await restaurantRepository.getRestaurantByemail(email);
+  if (!isEmailExist)
+    throw new CustomError("Invalid credentials", HttpStatus.BAD_REQUEST);
+
+  if (!isEmailExist.isVerified)
+    throw new CustomError("Please verify your email", HttpStatus.BAD_REQUEST);
+
+  const message =
+    "Your account has not been approved by the admin yet. Please wait for approval.";
+
+  if (!isEmailExist.isApproved)
+    throw new CustomError(message, HttpStatus.BAD_REQUEST);
+
+  const isPasswordMatch = await authService.comparePassword(
+    password,
+    isEmailExist.password
+  );
+  if (!isPasswordMatch)
+    throw new CustomError("Invalid credentials", HttpStatus.BAD_REQUEST);
+
+  const { accessToken, refreshToken } = authService.createTokens(
+    isEmailExist.id,
+    isEmailExist.restaurantName,
+    isEmailExist.role
+  );
+  return { accessToken, refreshToken };
+};

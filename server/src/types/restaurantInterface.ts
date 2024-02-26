@@ -7,6 +7,7 @@ export interface CreateRestaurantInterface {
 }
 
 export interface RestaurantInterface {
+  id: string;
   restaurantName: string;
   slug: string;
   email: string;

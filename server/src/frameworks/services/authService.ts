@@ -21,38 +21,26 @@ export const authService = () => {
 
   const getRandomString = () => crypto.randomUUID();
   // Create createAccessToken
-  const createAccessToken = (user: {
-    id: string;
-    name: string;
-    role: string;
-  }) => {
+  const createTokens = (id: string, name: string, role: string) => {
     const payload = {
-      id: user.id,
-      name: user.name,
-      role: user.role,
+      id,
+      name,
+      role,
     };
-    return jwt.sign(payload, configKeys.ACCESS_SECRET, { expiresIn: "5m" });
-  };
+    const accessToken = jwt.sign(payload, configKeys.ACCESS_SECRET, {
+      expiresIn: "5m",
+    });
+    const refreshToken = jwt.sign(payload, configKeys.RERESH_SECRET, {
+      expiresIn: "2d",
+    });
 
-  const createRefreshToken = (user: {
-    id: string;
-    name: string;
-    role: string;
-  }) => {
-    const payload = {
-      id: user.id,
-      name: user.name,
-      role: user.role,
-    };
-    return jwt.sign(payload, configKeys.RERESH_SECRET, { expiresIn: "2d" });
+    return { accessToken, refreshToken };
   };
-
   return {
     encryptPassword,
     generateOTP,
     comparePassword,
-    createAccessToken,
-    createRefreshToken,
+    createTokens,
     getRandomString,
   };
 };
