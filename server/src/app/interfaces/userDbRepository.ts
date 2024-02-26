@@ -14,6 +14,9 @@ export const userDbRepository = (
 
   const getUserbyId = async (id: string) => await repository.getUserbyId(id);
 
+  const updateUserBlock = async (id: string, status: boolean) =>
+    await repository.updateUserBlock(id, status);
+
   const addUser = async (user: userEntityType) =>
     await repository.addUser(user);
 
@@ -29,14 +32,18 @@ export const userDbRepository = (
   const updateVerifiedUser = async (userId: string) =>
     await repository.updateVerifiedUser(userId);
 
+  const getAllUsers = async () => await repository.getAllUsers();
+
   return {
     getUserbyEmail,
     getUserbyId,
+    updateUserBlock,
     addUser,
     addOTP,
     findOtpUser,
     updateVerifiedUser,
     deleteOtpUser,
+    getAllUsers,
   };
 };
 

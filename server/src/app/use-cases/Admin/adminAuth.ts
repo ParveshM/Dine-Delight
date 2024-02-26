@@ -1,6 +1,8 @@
 import configKeys from "../../../config";
 import { HttpStatus } from "../../../types/httpStatus";
 import CustomError from "../../../utils/customError";
+import { restaurantDbInterface } from "../../interfaces/restaurantDbRepository";
+import { UserDbInterface } from "../../interfaces/userDbRepository";
 import { AuthServiceInterfaceType } from "../../services-Interface/authServiceInterface";
 
 export const loginAdmin = async (
@@ -21,3 +23,10 @@ export const loginAdmin = async (
   }
   throw new CustomError("Invalid credentials", HttpStatus.UNAUTHORIZED);
 };
+
+export const getUsers = async (userDbRepository: ReturnType<UserDbInterface>) =>
+  await userDbRepository.getAllUsers();
+
+export const getRestaurants = async (
+  restaurantDbRepository: ReturnType<restaurantDbInterface>
+) => await restaurantDbRepository.getAllRestaurants();

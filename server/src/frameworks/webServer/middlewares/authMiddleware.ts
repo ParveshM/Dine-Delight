@@ -11,7 +11,12 @@ declare global {
     }
   }
 }
-function authenticateUser(req: Request, res: Response, next: NextFunction) {
+// verify the token and validate user
+export default function authenticateUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { access_token } = req.cookies;
   console.log(req.cookies, "tokens stored in cookies");
   if (!access_token) {
@@ -28,4 +33,31 @@ function authenticateUser(req: Request, res: Response, next: NextFunction) {
   });
   next();
 }
-export default authenticateUser;
+
+// Admin authorization to get the access to routes in admin
+export function authenticateAdmin(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { access_token } = req.cookies;
+  if (!access_token)
+    return res.status(HttpStatus.FORBIDDEN).json("You are not authenticated");
+
+  jwt.verify(access_token, configKeys.ACCESS_SECRET, (err: any, user: any) => {
+    if (err) {
+      res
+        .status(HttpStatus.FORBIDDEN)
+        .json({ success: false, message: "Token is not valid" });
+    } else {
+      if (user.role === "admin") {
+        return next();
+      }
+      return res.status(HttpStatus.FORBIDDEN).json({
+        success: false,
+        message: "Your are not allowed to access this resource",
+        user,
+      });
+    }
+  });
+}

@@ -28,11 +28,33 @@ export const restaurantRepositoryMongodb = () => {
       { isVerified: true, verificationToken: null }
     );
 
+  const updateRestaurantApproval = async (id: string) => {
+    return await Restaurant.findByIdAndUpdate(id, {
+      isApproved: true,
+      isListed: true,
+    });
+  };
+
+  const updateRestaurantRejected = async (id: string) => {
+    return await Restaurant.findByIdAndUpdate(id, {
+      isRejected: true,
+    });
+  };
+
+  const updateRestaurantListing = async (id: string, status: boolean) =>
+    await Restaurant.findByIdAndUpdate(id, { isListed: status });
+
+  const getAllRestaurants = async () => await Restaurant.find();
+
   return {
     getRestaurantById,
     getRestaurantByemail,
     addRestaurant,
     verifyRestaurant,
+    getAllRestaurants,
+    updateRestaurantApproval,
+    updateRestaurantRejected,
+    updateRestaurantListing,
   };
 };
 
