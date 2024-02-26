@@ -16,7 +16,7 @@ const errorHandlingMidleware = (
       .json({ errors: err.status, errorMessage: err.message });
   } else {
     res.status(err.statusCode).json({
-      status: err.status,
+      success: false,
       message: err.message,
     });
   }
