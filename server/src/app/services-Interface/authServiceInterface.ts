@@ -10,7 +10,7 @@ export const authServiceInterface = (service: AuthserviceReturn) => {
     service.comparePassword(inputPassword, password);
 
   const generateOTP = () => service.generateOTP();
-
+  const getRandomString = () => service.getRandomString();
   const createAccessToken = (user: {
     id: string;
     name: string;
@@ -27,6 +27,7 @@ export const authServiceInterface = (service: AuthserviceReturn) => {
     encryptpassword,
     comparePassword,
     generateOTP,
+    getRandomString,
     createAccessToken,
     createRefreshToken,
   };
