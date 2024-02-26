@@ -81,16 +81,16 @@ const authController = (
   const userLogin = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { getAccessToken, getRefreshToken } = await login(
+        const { accessToken, refreshToken } = await login(
           req.body,
           dbRepositoryUser,
           authService
         );
         // setting access token in the cookie
-        res.cookie("access_token", getAccessToken, {
+        res.cookie("access_token", accessToken, {
           httpOnly: true,
         });
-        res.cookie("refresh_token", getRefreshToken, {
+        res.cookie("refresh_token", refreshToken, {
           httpOnly: true,
         });
         res.status(HttpStatus.OK).json({ message: "login success" });

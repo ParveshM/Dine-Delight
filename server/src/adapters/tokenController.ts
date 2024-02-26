@@ -31,8 +31,9 @@ const tokenContoller = (
             .status(HttpStatus.UNAUTHORIZED)
             .json({ message: "Refresh token is expired" });
         } else {
-          const newAccessToken = authService.createAccessToken(user);
-          res.cookie("access_token", newAccessToken);
+          const { id, name, role } = user;
+          const { accessToken } = authService.createTokens(id, name, role);
+          res.cookie("access_token", accessToken);
           res
             .status(HttpStatus.OK)
             .json({ success: true, message: "Token refreshed successfully" });

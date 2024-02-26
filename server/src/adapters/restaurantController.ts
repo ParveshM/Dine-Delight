@@ -5,6 +5,7 @@ import { restaurantDbInterface } from "../app/interfaces/restaurantDbRepository"
 import { restaurantRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/restaurantRepositoryMongodb";
 import {
   addNewRestaurant,
+  restaurantLogin,
   verifyAccount,
 } from "../app/use-cases/restaurant/authRestaurant";
 import { HttpStatus } from "../types/httpStatus";
@@ -27,7 +28,6 @@ const restaurantController = (
   const signup = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const restaurantdata = req.body;
-      console.log(req.body);
       const registerRestaurant = await addNewRestaurant(
         restaurantdata,
         dbRepositoryRestaurants,
@@ -43,7 +43,10 @@ const restaurantController = (
       next(error);
     }
   };
-
+  /*
+   * METHOD: GET
+   * Verify newly registerd restaurant
+   */
   const verifyToken = async (
     req: Request,
     res: Response,
@@ -62,7 +65,30 @@ const restaurantController = (
       next(error);
     }
   };
+  /*
+   * METHOD: POST
+   * Login restaurant accound with credentials
+   */
+  const login = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email, password } = req.body;
 
-  return { signup, verifyToken };
+      const { accessToken, refreshToken } = await restaurantLogin(
+        email,
+        password,
+        dbRepositoryRestaurants,
+        authService
+      );
+      res.cookie("access_token", accessToken, { httpOnly: true });
+      res.cookie("refresh_token", refreshToken, { httpOnly: true });
+      return res
+        .status(HttpStatus.OK)
+        .json({ success: true, message: "Login successful" });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  return { signup, verifyToken, login };
 };
 export default restaurantController;

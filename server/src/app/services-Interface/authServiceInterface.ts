@@ -10,26 +10,18 @@ export const authServiceInterface = (service: AuthserviceReturn) => {
     service.comparePassword(inputPassword, password);
 
   const generateOTP = () => service.generateOTP();
-  const getRandomString = () => service.getRandomString();
-  const createAccessToken = (user: {
-    id: string;
-    name: string;
-    role: string;
-  }) => service.createAccessToken(user);
 
-  const createRefreshToken = (user: {
-    id: string;
-    name: string;
-    role: string;
-  }) => service.createRefreshToken(user);
+  const getRandomString = () => service.getRandomString();
+
+  const createTokens = (id: string, name: string, role: string) =>
+    service.createTokens(id, name, role);
 
   return {
     encryptpassword,
     comparePassword,
     generateOTP,
     getRandomString,
-    createAccessToken,
-    createRefreshToken,
+    createTokens,
   };
 };
 export type AuthServiceInterfaceType = typeof authServiceInterface;
