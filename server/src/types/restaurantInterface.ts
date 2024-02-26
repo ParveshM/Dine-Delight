@@ -26,6 +26,7 @@ export interface RestaurantInterface {
   isListed?: boolean;
   isVerified?: boolean;
   isApproved?: boolean;
+  isRejected: boolean;
   primaryImage?: string;
   secondaryImage?: { url: string }[];
 }

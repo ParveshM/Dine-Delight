@@ -65,16 +65,16 @@ export const restaurantLogin = async (
 ) => {
   const isEmailExist = await restaurantRepository.getRestaurantByemail(email);
   if (!isEmailExist)
-    throw new CustomError("Invalid credentials", HttpStatus.BAD_REQUEST);
+    throw new CustomError("Invalid credentials", HttpStatus.UNAUTHORIZED);
 
   if (!isEmailExist.isVerified)
-    throw new CustomError("Please verify your email", HttpStatus.BAD_REQUEST);
+    throw new CustomError("Please verify your email", HttpStatus.UNAUTHORIZED);
 
   const message =
     "Your account has not been approved by the admin yet. Please wait for approval.";
 
   if (!isEmailExist.isApproved)
-    throw new CustomError(message, HttpStatus.BAD_REQUEST);
+    throw new CustomError(message, HttpStatus.UNAUTHORIZED);
 
   const isPasswordMatch = await authService.comparePassword(
     password,

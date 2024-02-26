@@ -12,6 +12,9 @@ export const userRepositoryMongodb = () => {
   //   get userby Id
   const getUserbyId = async (id: string) => await User.findById(id);
 
+  const updateUserBlock = async (id: string, status: boolean) =>
+    await User.findByIdAndUpdate(id, { isBlocked: status });
+
   //   create new user by matching the entity type
   const addUser = async (user: userEntityType) => {
     const newUser: any = new User({
@@ -36,6 +39,8 @@ export const userRepositoryMongodb = () => {
   const updateVerifiedUser = async (userId: string) =>
     await User.findByIdAndUpdate(userId, { isVerified: true });
 
+  const getAllUsers = async () => await User.find();
+
   // exporting the functions
   return {
     getUserbyEmail,
@@ -45,6 +50,8 @@ export const userRepositoryMongodb = () => {
     findOtpUser,
     updateVerifiedUser,
     deleteOtpUser,
+    getAllUsers,
+    updateUserBlock,
   };
 };
 

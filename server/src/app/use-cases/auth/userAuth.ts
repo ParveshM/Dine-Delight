@@ -102,14 +102,14 @@ export const login = async (
     );
 
   if (!isEmailExist)
-    throw new CustomError("Invalid credentials", HttpStatus.BAD_REQUEST);
+    throw new CustomError("Invalid credentials", HttpStatus.UNAUTHORIZED);
 
   const isPasswordMatched = await authService.comparePassword(
     password,
     isEmailExist.password
   );
   if (!isPasswordMatched)
-    throw new CustomError("Invalid credentials", HttpStatus.BAD_REQUEST);
+    throw new CustomError("Invalid credentials", HttpStatus.UNAUTHORIZED);
 
   const { accessToken, refreshToken } = authService.createTokens(
     isEmailExist.id,
