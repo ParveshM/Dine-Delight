@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import configKeys from "../../config";
+import crypto from "crypto";
 // Auth service will provide all the resusable functionlity
 export const authService = () => {
   // create a hashed password
@@ -18,6 +19,7 @@ export const authService = () => {
     return `${otp}`;
   };
 
+  const getRandomString = () => crypto.randomUUID();
   // Create createAccessToken
   const createAccessToken = (user: {
     id: string;
@@ -51,6 +53,7 @@ export const authService = () => {
     comparePassword,
     createAccessToken,
     createRefreshToken,
+    getRandomString,
   };
 };
 export type AuthService = typeof authService;
