@@ -34,6 +34,7 @@ const authController = (
   ) => {
     try {
       const user = req.body;
+      console.log(req.body);
       const newUser = await userRegister(user, dbRepositoryUser, authService);
       res.json({
         message: "User registration successful,please verify email",
