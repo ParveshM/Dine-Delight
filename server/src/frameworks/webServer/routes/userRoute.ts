@@ -19,8 +19,10 @@ const userRoute = () => {
   router.post("/login", controller.userLogin);
   router.post("/verify_otp", controller.verifyOtp);
   router.post("/resend_otp", controller.resendOtp);
+  router.get("/test", authenticateUser, (req, res) => {
+    res.json("message from test router");
+  });
   return router;
 };
-// router.post("/refresh_token", controller.getNewAccessToken);
 
 export default userRoute;

@@ -5,45 +5,60 @@ import showToast from "../utils/toaster";
 import { useNavigate, Link } from "react-router-dom";
 import { validateLogin } from "../utils/validation";
 import { USER_API } from "../constants";
-
-const LoginForm = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+import { logo, vectorLogin } from "../assets";
+import { useAppDispatch } from "../redux/store/Store";
+import { setUser } from "../redux/UserSlice";
+const LoginForm: React.FC = () => {
+  const [isSubmitting, setIsSubmitting] = useState<Boolean>(false);
   const navigate = useNavigate();
-
-  const handleToggle = () => {
-    setShowPassword(!showPassword);
-  };
-
+  const dispatch = useAppDispatch();
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
     validate: validateLogin,
-    onSubmit: (values) => {
+    onSubmit: ({ email, password }) => {
       setIsSubmitting(true);
       axios
-        .post(USER_API + "/login")
-        .then((res) => {
-          const message = res.data.message;
+        .post(USER_API + "/login", { email, password })
+        .then(({ data }) => {
+          console.log(data);
+          const { name, role } = data.user;
+          showToast(data.message, "success");
+          dispatch(setUser({ isAuthenticated: true, name, role }));
+          navigate("/");
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(({ response }) => {
+          console.log(response);
           setIsSubmitting(false);
-          showToast("Whoops! Something went wrong", "error");
+          showToast(response?.data?.message, "error");
         });
     },
   });
 
   return (
-    <section className="">
-      <div className="bg-primaryColor flex flex-col items-center justify-center px-6 py-8 mx-auto min-h-screen lg:py-0 ">
-        <div className="w-full bg-white rounded-2xl shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
-          <div className="p-6 space-y-4  sm:p-8">
+    <section className="flex items-center justify-center min-h-screen">
+      <div className="relative ml-16 mt-10 flex-1 hidden md:block ">
+        <h1 className="font-bold text-3xl text-center font-serif ">
+          Dining Elevated: Reserve Your Culinary Experience Now!
+        </h1>
+        <div className="absolute  w-20 rounded-xl top-14 left-5">
+          <img src={logo} alt="" className="max-w-full h-auto items-center" />
+        </div>
+        <img
+          src={vectorLogin}
+          alt="image of a couple enjoying dinner with dine delight"
+          className="max-w-full h-auto  rounded-lg"
+        />
+      </div>
+      <div className="flex-1  flex flex-col items-center justify-center px-6 py-8 mx-auto md:mx-0 md:ml-8 lg:ml-16 xl:ml-24">
+        <div className="w-full bg-white rounded-2xl shadow-2xl md:max-w-md xl:p-0">
+          <div className="p-6 space-y-4 md:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-headerText md:text-2xl">
-              Welcome Back!
+              Welcom Back!
             </h1>
+
             <form className="space-y-4" onSubmit={formik.handleSubmit}>
               <div>
                 <label
@@ -53,16 +68,16 @@ const LoginForm = () => {
                   Email
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   id="email"
-                  placeholder="johndoe@gmail.com"
-                  className=" border-b-2 border-b-inputBorderColor text-gray-900 outline-none sm:text-sm  focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+                  placeholder="jhondoe@gmail.com"
+                  className=" border-b-2 border-b-slate-200 text-gray-900 outline-none sm:text-sm  focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                   {...formik.getFieldProps("email")}
                 />
+                {formik.errors.email && formik.touched.email && (
+                  <div className="text-red-500">{formik.errors.email}</div>
+                )}
               </div>
-              {formik.touched.email && formik.errors.email ? (
-                <div className="text-red-600">{formik.errors.email}</div>
-              ) : null}
               <div className="relative">
                 <label
                   htmlFor="password"
@@ -71,33 +86,51 @@ const LoginForm = () => {
                   Password
                 </label>
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type="password"
                   id="password"
                   placeholder="••••••••"
-                  className=" border-b-2 border-b-inputBorderColor text-gray-900 outline-none sm:text-sm  focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+                  className=" border-b-2 border-b-slate-200 text-gray-900 outline-none sm:text-sm  focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                   {...formik.getFieldProps("password")}
                 />
-                <div
-                  className="absolute top-1/2 right-2 transform -translate-y-1/2 cursor-pointer "
-                  onClick={handleToggle}
-                ></div>
+                {formik.errors.password && formik.touched.password && (
+                  <div className="text-red-500">{formik.errors.password}</div>
+                )}
+                <div className="absolute top-1/2 right-2 transForm -translate-y-1/2 cursor-pointer"></div>
               </div>
-              {formik.touched.password && formik.errors.password ? (
-                <div className="text-red-600">{formik.errors.password}</div>
-              ) : null}
-
               <button
                 type="submit"
-                className="w-full px-6 py-2 text-white rounded-lg bg-gradient-to-r from-cyan-700 to-cyan-500 hover:from-cyan-600 hover:to-cyan-800 "
-                disabled={isSubmitting}
+                className="w-full px-6 py-2 text-white rounded-lg bg-gradient-to-l from-red-500 to-red-600 hover:bg-gradient-to-r  transition-all duration-500 "
+                disabled={isSubmitting ? true : false}
               >
-                Sign in
+                <span className="font-semibold"> SignIn</span>
+              </button>
+              <div className="flex items-center mt-4">
+                <div className="border-b border-gray-300 flex-1 "></div>
+                <div className="mx-3 text-sm text-gray-500 ">Or</div>
+                <div className="border-b border-gray-300 flex-1"></div>
+              </div>
+              <button className="px-4 py-2 w-full border flex justify-center gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150">
+                <img
+                  className="w-6 h-6"
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  loading="lazy"
+                  alt="google logo"
+                />
+                <span className="font-medium">Login with Google</span>
               </button>
               <p className="text-sm  text-black text-center">
-                Don’t have an account yet?
                 <Link
                   to={"/user/signup"}
-                  className="font-medium text-[#3E7A8E] hover:underline pl-1"
+                  className=" pl-1 hover:underline font-medium "
+                >
+                  Forgot password ?
+                </Link>
+              </p>
+              <p className="text-sm  text-black text-center">
+                Dont have an account ?
+                <Link
+                  to={"/user/signup"}
+                  className=" pl-1 hover:underline font-medium "
                 >
                   Sign up
                 </Link>

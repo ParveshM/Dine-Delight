@@ -9,7 +9,7 @@ import {
 import showToast from "../utils/toaster";
 import { useNavigate } from "react-router-dom";
 
-export const OTPForm: React.FC = () => {
+const OTPForm: React.FC = () => {
   const [seconds, setSeconds] = useState(60);
   const navigate = useNavigate();
   const formik = useFormik({
@@ -117,3 +117,4 @@ export const OTPForm: React.FC = () => {
     </div>
   );
 };
+export default OTPForm;

@@ -82,7 +82,7 @@ const authController = (
   const userLogin = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { accessToken, refreshToken } = await login(
+        const { accessToken, refreshToken, isEmailExist } = await login(
           req.body,
           dbRepositoryUser,
           authService
@@ -90,11 +90,15 @@ const authController = (
         // setting access token in the cookie
         res.cookie("access_token", accessToken, {
           httpOnly: true,
+          sameSite: "none",
+          secure: true,
         });
         res.cookie("refresh_token", refreshToken, {
           httpOnly: true,
         });
-        res.status(HttpStatus.OK).json({ message: "login success" });
+        res
+          .status(HttpStatus.OK)
+          .json({ message: "login success", user: isEmailExist });
       } catch (error) {
         next(error);
       }

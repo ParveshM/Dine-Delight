@@ -28,10 +28,10 @@ export const authService = () => {
       role,
     };
     const accessToken = jwt.sign(payload, configKeys.ACCESS_SECRET, {
-      expiresIn: "5m",
+      expiresIn: "10s",
     });
     const refreshToken = jwt.sign(payload, configKeys.RERESH_SECRET, {
-      expiresIn: "2d",
+      expiresIn: "15s",
     });
 
     return { accessToken, refreshToken };

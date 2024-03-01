@@ -4,3 +4,4 @@ export const BASE_URL = "http://localhost:3000/api/";
 export const USER_API = BASE_URL + "user";
 export const RESTAURANT_API = BASE_URL + "restaurant";
 export const ADMIN_API = BASE_URL + "admin";
+export const TOKEN_API = BASE_URL + "token";

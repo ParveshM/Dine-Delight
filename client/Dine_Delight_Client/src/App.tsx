@@ -1,13 +1,20 @@
-import { useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { RouterProvider } from "react-router-dom";
-import { router } from "./routes/router";
-
+import { BrowserRouter } from "react-router-dom";
+import { MainRouter } from "./routes/router";
+import { Provider } from "react-redux";
+import store, { persistor } from "./redux/store/Store";
+import { PersistGate } from "redux-persist/integration/react";
 const App = () => {
   return (
     <>
-      <RouterProvider router={router} />
-      <Toaster />
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <BrowserRouter>
+            <MainRouter />
+          </BrowserRouter>
+          <Toaster />
+        </PersistGate>
+      </Provider>
     </>
   );
 };

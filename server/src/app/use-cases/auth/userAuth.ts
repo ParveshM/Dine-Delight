@@ -95,14 +95,14 @@ export const login = async (
   const { email, password } = user;
   const isEmailExist = await userDbRepository.getUserbyEmail(email);
 
+  if (!isEmailExist)
+    throw new CustomError("Invalid credentials", HttpStatus.UNAUTHORIZED);
+
   if (!isEmailExist?.isVerified)
     throw new CustomError(
       "Your account is not verified",
       HttpStatus.UNAUTHORIZED
     );
-
-  if (!isEmailExist)
-    throw new CustomError("Invalid credentials", HttpStatus.UNAUTHORIZED);
 
   const isPasswordMatched = await authService.comparePassword(
     password,
@@ -116,5 +116,5 @@ export const login = async (
     isEmailExist.name,
     isEmailExist.role
   );
-  return { accessToken, refreshToken };
+  return { accessToken, refreshToken, isEmailExist };
 };

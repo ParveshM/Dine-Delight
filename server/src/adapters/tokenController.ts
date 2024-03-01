@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { HttpStatus } from "../types/httpStatus";
 import { AuthServiceInterfaceType } from "../app/services-Interface/authServiceInterface";
 import { AuthService } from "../frameworks/services/authService";
@@ -41,6 +41,23 @@ const tokenContoller = (
       }
     );
   };
-  return { getNewAccessToken };
+
+  /*
+   * METHOD:POST,
+   * Return acces token to client
+   */
+
+  const returnAccessToClient = (req: Request, res: Response) => {
+    const { access_token } = req.cookies;
+    return res.status(HttpStatus.OK).json({ success: true, access_token });
+  };
+
+  const clearToken = (req: Request, res: Response) => {
+    res.clearCookie("access_token");
+    res.clearCookie("refresh_token");
+    res.json({ success: false, message: "Logout successfull" });
+  };
+
+  return { getNewAccessToken, returnAccessToClient, clearToken };
 };
 export default tokenContoller;

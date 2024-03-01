@@ -37,10 +37,10 @@ const SignupForm = () => {
   return (
     <section className="flex items-center justify-center min-h-screen">
       <div className=" relative flex-1 hidden md:block ">
-        <h1 className="font-bold text-3xl text-center ">
+        <h1 className="font-bold text-3xl text-center font-serif">
           Reserve your spot, dine with delight!
         </h1>
-        <div className="absolute  w-20 rounded-xl top-10 left-5">
+        <div className="absolute  w-20 rounded-xl top-10 left-8">
           <img src={logo} alt="" className="max-w-full h-auto items-center" />
         </div>
         <img
@@ -111,7 +111,6 @@ const SignupForm = () => {
                 )}
                 <div className="absolute top-1/2 right-2 transForm -translate-y-1/2 cursor-pointer"></div>
               </div>
-
               <div>
                 <label
                   htmlFor="password"
@@ -132,16 +131,19 @@ const SignupForm = () => {
                     </div>
                   )}
               </div>
-
               <button
                 type="submit"
                 className="w-full px-6 py-2 text-white rounded-lg bg-gradient-to-r from-red-500 to-red-600 hover:bg-gradient-to-l  transition-all duration-500 "
               >
                 <span className="font-semibold"> Signup</span>
               </button>
+
               <p className="text-sm  text-black text-center">
                 Already have an account ?
-                <Link to={"/user/login"} className=" pl-1 hover:underline ">
+                <Link
+                  to={"/user/login"}
+                  className=" pl-1 hover:underline font-medium "
+                >
                   Sign in
                 </Link>
               </p>
