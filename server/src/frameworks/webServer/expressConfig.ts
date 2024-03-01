@@ -9,13 +9,15 @@ const expressConfig = (app: Application) => {
   app.use(morgan("dev"));
   app.use(helmet()); // for extra req security
   app.use(cookieParser());
-  const corsOptions = {
-    origin: "*",
+
+  const corsConfig = {
+    origin: true,
     credentials: true,
-    optionsSuccessStatus: 200,
-    methods: ["GET, PUT", "PATCH", "DELETE"],
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS", "HEAD"],
   };
-  app.use(cors(corsOptions));
+
+  app.use(cors(corsConfig));
+  app.options("*", cors(corsConfig));
 };
 
 export default expressConfig;
