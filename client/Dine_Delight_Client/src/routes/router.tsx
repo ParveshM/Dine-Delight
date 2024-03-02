@@ -7,6 +7,8 @@ import VerifyOTP from "../pages/user/VerifyOTP";
 import RestaurantSignup from "../pages/restaurant/restaurantSignup";
 import Dashboard from "../pages/restaurant/dashBoard";
 import AdminPages from "../pages/admin/AdminPages";
+import EmailVerificationPage from "../pages/restaurant/emailVerification";
+import AdminLogin from "../pages/restaurant/AdminLogin";
 const ErrorComponent = () => <h1>ERrrr</h1>;
 
 export const MainRouter = () => {
@@ -22,9 +24,11 @@ export const MainRouter = () => {
       <Route path="restaurant/">
         <Route path="login" element={<RestaurantLogin />} />
         <Route path="signup" element={<RestaurantSignup />} />
+        <Route path="verify_token/:token" element={<EmailVerificationPage />} />
         <Route path="dashboard" element={<Dashboard />} />
       </Route>
       {/* Admin routes  */}
+      <Route path="admin/login" element={<AdminLogin />} />
       <Route path="admin/*" element={<AdminPages />} />
 
       <Route path="*" element={<ErrorComponent />} />

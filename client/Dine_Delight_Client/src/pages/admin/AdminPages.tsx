@@ -4,6 +4,7 @@ import Sidebar from "../../components/Admin/Header/Sidebar";
 import UsersList from "./UserList";
 import RestaurantList from "./RestaurantList";
 import NewRegistration from "./newRegistration";
+
 const AdminPages: React.FC = () => {
   return (
     <>

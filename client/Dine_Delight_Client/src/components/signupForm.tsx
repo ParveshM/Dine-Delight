@@ -6,8 +6,10 @@ import axios from "axios";
 import { USER_API } from "../constants";
 import { useNavigate, Link } from "react-router-dom";
 import { setIteminLocalStorage } from "../utils/Set&GetLs";
+import { useState } from "react";
 const SignupForm = () => {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const formik = useFormik({
     initialValues: {
@@ -18,6 +20,7 @@ const SignupForm = () => {
     },
     validate: validateSignUp,
     onSubmit: ({ name, email, password }) => {
+      setIsSubmitting(true);
       axios
         .post(USER_API + "/signup", { name, email, password })
         .then(({ data }) => {
@@ -30,6 +33,7 @@ const SignupForm = () => {
         })
         .catch(({ response }) => {
           const { message } = response.data;
+          setIsSubmitting(false);
           showToast(message, "error");
         });
     },
@@ -134,6 +138,7 @@ const SignupForm = () => {
               <button
                 type="submit"
                 className="w-full px-6 py-2 text-white rounded-lg bg-gradient-to-r from-red-500 to-red-600 hover:bg-gradient-to-l  transition-all duration-500 "
+                disabled={isSubmitting}
               >
                 <span className="font-semibold"> Signup</span>
               </button>

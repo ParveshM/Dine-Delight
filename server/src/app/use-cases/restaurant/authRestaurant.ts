@@ -18,7 +18,7 @@ export const addNewRestaurant = async (
   restaurantRepository: ReturnType<restaurantDbInterface>,
   authService: ReturnType<AuthServiceInterfaceType>
 ) => {
-  const { restaurantName, email, mobile, password } = restaurantData;
+  const { restaurantName, email, password } = restaurantData;
   const isEmailExist = await restaurantRepository.getRestaurantByemail(email);
   if (isEmailExist)
     throw new CustomError("Email already exists", HttpStatus.BAD_REQUEST);
@@ -28,13 +28,13 @@ export const addNewRestaurant = async (
   const restaurant: RestaurantEntityType = RestaurantEntity(
     restaurantName,
     email,
-    mobile,
     hashedPassword,
     verificationToken
   );
   const createdRestaurant = await restaurantRepository.addRestaurant(
     restaurant
   );
+  console.log(verificationToken, "token");
   //   sent verification mail to restaurant email address
   if (createdRestaurant) {
     const emailSubject = "Seller verification ";
@@ -53,7 +53,7 @@ export const verifyAccount = async (
 ) => {
   const updateVerification = await restaurantRepository.verifyRestaurant(token);
   if (!updateVerification)
-    throw new CustomError("Token expired ", HttpStatus.BAD_REQUEST);
+    throw new CustomError("Invalid token", HttpStatus.BAD_REQUEST);
   return updateVerification;
 };
 
@@ -88,5 +88,5 @@ export const restaurantLogin = async (
     isEmailExist.restaurantName,
     isEmailExist.role
   );
-  return { accessToken, refreshToken };
+  return { accessToken, refreshToken, isEmailExist };
 };

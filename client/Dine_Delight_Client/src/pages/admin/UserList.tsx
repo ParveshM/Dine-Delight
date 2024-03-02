@@ -1,6 +1,8 @@
 import UserData from "../../components/Admin/userData";
-
+import useUsers from "../../hooks/useUsers";
 const UsersList: React.FC = () => {
+  const { users } = useUsers();
+  console.log(users);
   return (
     <>
       <h1 className="mb-2 text-xl font-semibold ">Users</h1>
@@ -26,7 +28,9 @@ const UsersList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            <UserData />
+            {/* {users.map((user) => {
+              reutrn(<UserData {...user} />);
+            })} */}
           </tbody>
         </table>
         <nav

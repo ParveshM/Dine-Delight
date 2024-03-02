@@ -50,9 +50,11 @@ export default (
       );
       res.cookie("access_token", accessToken, { httpOnly: true });
       res.cookie("refresh_token", refreshToken, { httpOnly: true });
-      return res
-        .status(HttpStatus.OK)
-        .json({ success: true, message: "Admin login success" });
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Admin login success",
+        admin: { name: "Admin User", role: "admin" },
+      });
     } catch (error) {
       next(error);
     }
@@ -68,6 +70,7 @@ export default (
   ) => {
     try {
       const users = await getUsers(dbUserRepository);
+      console.log(users, "=====");
       return res.status(HttpStatus.OK).json({ success: true, users });
     } catch (error) {
       next(error);

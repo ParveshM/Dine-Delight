@@ -1,5 +1,7 @@
 import { useState } from "react";
-const UserData = () => {
+import { UserInterface } from "../../types/UserInterface";
+
+const UserData: React.FC = ({ name, email, isBlocked }) => {
   const [isChecked, setIsChecked] = useState<Boolean>(false);
 
   const handleCheckboxChange = () => {
@@ -11,11 +13,11 @@ const UserData = () => {
         scope="row"
         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
       >
-        Apple MacBook Pro 17
+        {name}
       </th>
-      <td className="px-6 py-4">Silver</td>
-      <td className="px-6 py-4">Laptop</td>
-      <td className="px-6 py-4">$2999</td>
+      <td className="px-6 py-4">{email}</td>
+      <td className="px-6 py-4">10</td>
+      <td className="px-6 py-4">{isBlocked}</td>
       <td className="px-6 py-4">
         <label className="flex cursor-pointer select-none items-center">
           <div className="relative">
