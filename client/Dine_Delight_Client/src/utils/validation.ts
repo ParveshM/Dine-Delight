@@ -12,10 +12,11 @@ const validateSignUp = (values: {
   //   Name validate
   if (!name.trim().length) {
     errors.name = "Required*";
-  } else if (name.length > 15) {
-    errors.name = "Must be 15 characters or less.";
+  } else if (name.length > 20) {
+    errors.name = "Must be 20 characters or less.";
   } else if (!nameRegex.test(name)) {
-    errors.name = "First letter must be capital.";
+    errors.name =
+      "First letter must be capital and no leading or trailing spaces.";
   }
   //   email validate
   if (!email.trim().length) {

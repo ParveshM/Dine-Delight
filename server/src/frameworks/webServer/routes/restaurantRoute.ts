@@ -15,7 +15,7 @@ const restaurantRoute = () => {
   );
 
   router.post("/signup", controller.signup);
-  router.get("/verify_token/:token", controller.verifyToken);
+  router.post("/verify_token/:token", controller.verifyToken);
   router.post("/login", controller.login);
 
   return router;

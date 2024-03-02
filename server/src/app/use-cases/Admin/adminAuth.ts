@@ -10,6 +10,7 @@ export const loginAdmin = async (
   password: string,
   authService: ReturnType<AuthServiceInterfaceType>
 ) => {
+  console.log(password, email);
   if (
     email === configKeys.ADMIN_EMAIL &&
     password === configKeys.ADMIN_PASSWORD

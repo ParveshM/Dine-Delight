@@ -15,7 +15,6 @@ export const restaurantRepositoryMongodb = () => {
     const newRestaurant = new Restaurant({
       restaurantName: restaurantData.getRestaurantName(),
       email: restaurantData.getEmail(),
-      mobile: restaurantData.getMobile(),
       password: restaurantData.getPassword(),
       verificationToken: restaurantData.getVerificationToken(),
     });

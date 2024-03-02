@@ -73,7 +73,7 @@ const restaurantController = (
     try {
       const { email, password } = req.body;
 
-      const { accessToken, refreshToken } = await restaurantLogin(
+      const { accessToken, refreshToken, isEmailExist } = await restaurantLogin(
         email,
         password,
         dbRepositoryRestaurants,
@@ -83,7 +83,11 @@ const restaurantController = (
       res.cookie("refresh_token", refreshToken, { httpOnly: true });
       return res
         .status(HttpStatus.OK)
-        .json({ success: true, message: "Login successful" });
+        .json({
+          success: true,
+          message: "Login successful",
+          restaurant: isEmailExist,
+        });
     } catch (error) {
       next(error);
     }
