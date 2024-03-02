@@ -1,4 +1,4 @@
-import { vector, logo } from "../assets";
+import { vector, logo } from "../assets/images";
 import { useFormik } from "formik";
 import { validateSignUp } from "../utils/validation";
 import showToast from "../utils/toaster";

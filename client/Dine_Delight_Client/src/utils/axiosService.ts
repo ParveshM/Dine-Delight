@@ -9,10 +9,10 @@ const getNewRefreshToken = async () => {
   try {
     await axios.post(TOKEN_API + "/refresh_token");
   } catch (error: any) {
-    if (error.status === 401) {
-      logout("Session expired ,please Login");
-    }
-    console.log("Error in refreshing token" + error);
+    // if (error.status === 401) {
+    // }
+    logout("Session expired ,please Login");
+    console.log("Error in refreshing token" + error, error.status);
   }
 };
 

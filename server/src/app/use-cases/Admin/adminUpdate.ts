@@ -37,7 +37,7 @@ export const updateRestaurantRejected = async (
   if (updated) {
     sentMail(
       updated.email,
-      "Restaurant account has been Reject",
+      "Restaurant account has been Rejected",
       restaurantRejectionMail(updated.restaurantName)
     );
   }

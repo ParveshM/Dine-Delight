@@ -5,7 +5,7 @@ import showToast from "../utils/toaster";
 import { useNavigate, Link } from "react-router-dom";
 import { validateLogin } from "../utils/validation";
 import { USER_API } from "../constants";
-import { logo, vectorLogin } from "../assets";
+import { logo, vectorLogin } from "../assets/images";
 import { useAppDispatch } from "../redux/store/Store";
 import { setUser } from "../redux/UserSlice";
 const LoginForm: React.FC = () => {
@@ -39,11 +39,11 @@ const LoginForm: React.FC = () => {
 
   return (
     <section className="flex items-center justify-center min-h-screen">
-      <div className="relative ml-16 mt-10 flex-1 hidden md:block ">
-        <h1 className="font-bold text-3xl text-center font-serif ">
+      <div className="relative ml-16 h-96 mt-10 flex-1 hidden md:block ">
+        <h1 className="font-bold text-3xl text-center font-serif  ">
           Dining Elevated: Reserve Your Culinary Experience Now!
         </h1>
-        <div className="absolute  w-20 rounded-xl top-14 left-5">
+        <div className="absolute w-20 rounded-xl top-14 left-5">
           <img src={logo} alt="" className="max-w-full h-auto items-center" />
         </div>
         <img
@@ -72,6 +72,7 @@ const LoginForm: React.FC = () => {
                   id="email"
                   placeholder="jhondoe@gmail.com"
                   className=" border-b-2 border-b-slate-200 text-gray-900 outline-none sm:text-sm  focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+                  autoFocus
                   {...formik.getFieldProps("email")}
                 />
                 {formik.errors.email && formik.touched.email && (
