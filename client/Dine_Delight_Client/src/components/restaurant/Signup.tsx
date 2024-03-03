@@ -25,7 +25,7 @@ const Signup: React.FC = () => {
         .then(({ data }) => {
           showToast(data.message, "success");
           setTimeout(() => {
-            navigate("/restaurant/login");
+            navigate("/restaurant/auth/login");
           }, 1000);
         })
         .catch(({ response }) => {
@@ -120,7 +120,7 @@ const Signup: React.FC = () => {
           <p className="mt-8">
             Have an account?
             <Link
-              to={"/restaurant/login"}
+              to={"/restaurant/auth/login"}
               className="text-blue-500 hover:text-blue-700 font-semibold"
             >
               Login

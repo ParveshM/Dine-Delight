@@ -20,6 +20,10 @@ const AdminPages: React.FC = () => {
           path="/new_registrations"
           element={<Sidebar children={<NewRegistration />} />}
         />
+        <Route
+          path="/banners"
+          element={<Sidebar children={<div>Banners</div>} />}
+        />
         <Route path="*" element={<div>ADMIN ERROR</div>} />
       </Routes>
     </>

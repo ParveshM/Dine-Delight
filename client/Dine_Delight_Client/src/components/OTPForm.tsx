@@ -3,8 +3,8 @@ import { useFormik } from "formik";
 import axios from "axios";
 import { USER_API } from "../constants";
 import {
-  getIteminLocalStorage,
-  removeIteminLocalStorage,
+  getItemFromLocalStorage,
+  removeItemFromLocalStorage,
 } from "../utils/Set&GetLs";
 import showToast from "../utils/toaster";
 import { useNavigate } from "react-router-dom";
@@ -25,21 +25,21 @@ const OTPForm: React.FC = () => {
       return errors;
     },
     onSubmit: ({ otp }) => {
-      const userId = getIteminLocalStorage("userId");
+      const userId = getItemFromLocalStorage("userId");
       if (userId) {
         axios
           .post(USER_API + "/verify_otp", { otp, userId })
           .then(({ data }) => {
             showToast(data.message, "success");
-            removeIteminLocalStorage("userId");
-            setTimeout(() => navigate("/user/login"), 1000);
+            removeItemFromLocalStorage("userId");
+            setTimeout(() => navigate("/user/auth/login"), 1000);
           })
           .catch(({ response }) => {
             showToast(response.data.message, "error");
           });
       } else {
         showToast("something went wrong", "error");
-        return navigate("/user/login", { replace: true });
+        return navigate("/user/auth/login", { replace: true });
       }
     },
   });
@@ -56,7 +56,7 @@ const OTPForm: React.FC = () => {
 
   const resendCode = () => {
     setSeconds(60);
-    const userId = getIteminLocalStorage("userId");
+    const userId = getItemFromLocalStorage("userId");
     if (userId) {
       axios
         .post(USER_API + "/resend_otp", { userId })
@@ -68,7 +68,7 @@ const OTPForm: React.FC = () => {
         });
     } else {
       showToast("something went wrong", "error");
-      return navigate("/user/login");
+      return navigate("/user/auth/login");
     }
   };
 
