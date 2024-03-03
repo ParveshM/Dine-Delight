@@ -1,8 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { childrenProps } from "../../../types/PropsType";
 import { Utensils, Images, ListPlus } from "lucide-react";
+import logout from "../../../utils/logout";
+import { useAppDispatch } from "../../../redux/store/Store";
+import { clearUser } from "../../../redux/UserSlice";
 
 const Sidebar: React.FC<childrenProps> = ({ children }) => {
+  const dispatch = useAppDispatch();
+  const handleLogout = () => {
+    dispatch(clearUser());
+    logout("Logout success");
+    navigate("/admin/auth/login");
+  };
+  const navigate = useNavigate();
   return (
     <div>
       <aside
@@ -94,7 +104,7 @@ const Sidebar: React.FC<childrenProps> = ({ children }) => {
                 <span className="flex-1 ms-3 whitespace-nowrap">Banners</span>
               </Link>
             </li>
-            <li>
+            <li onClick={handleLogout} className="cursor-pointer">
               <a className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                 <svg
                   className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"

@@ -3,7 +3,6 @@ import { TOKEN_API } from "../constants";
 import showToast from "./toaster";
 import store from "../redux/store/Store";
 import { clearUser } from "../redux/UserSlice";
-
 const logout = (message: string): void => {
   axios.defaults.withCredentials = true;
   axios

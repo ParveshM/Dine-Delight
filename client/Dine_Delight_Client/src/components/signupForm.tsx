@@ -5,7 +5,7 @@ import showToast from "../utils/toaster";
 import axios from "axios";
 import { USER_API } from "../constants";
 import { useNavigate, Link } from "react-router-dom";
-import { setIteminLocalStorage } from "../utils/Set&GetLs";
+import { setItemToLocalStorage } from "../utils/Set&GetLs";
 import { useState } from "react";
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -27,8 +27,8 @@ const SignupForm = () => {
           console.log(data);
           showToast(data.message, "success");
           setTimeout(() => {
-            setIteminLocalStorage("userId", data.newUser._id);
-            navigate("/user/verify_otp");
+            setItemToLocalStorage("userId", data.newUser._id);
+            navigate("/user/auth/verify_otp");
           }, 1000);
         })
         .catch(({ response }) => {
@@ -146,7 +146,7 @@ const SignupForm = () => {
               <p className="text-sm  text-black text-center">
                 Already have an account ?
                 <Link
-                  to={"/user/login"}
+                  to={"/user/auth/login"}
                   className=" pl-1 hover:underline font-medium "
                 >
                   Sign in

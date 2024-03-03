@@ -24,11 +24,10 @@ const LoginForm: React.FC = () => {
       axios
         .post(USER_API + "/login", { email, password })
         .then(({ data }) => {
-          console.log(data);
           const { name, role } = data.user;
           showToast(data.message, "success");
           dispatch(setUser({ isAuthenticated: true, name, role }));
-          navigate("/");
+          navigate("/user/profile");
         })
         .catch(({ response }) => {
           console.log(response);
@@ -131,7 +130,7 @@ const LoginForm: React.FC = () => {
               <p className="text-sm  text-black text-center">
                 Dont have an account ?
                 <Link
-                  to={"/user/signup"}
+                  to={"/user/auth/signup"}
                   className=" pl-1 hover:underline font-medium "
                 >
                   Sign up

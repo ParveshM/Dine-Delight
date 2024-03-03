@@ -18,7 +18,6 @@ export default function authenticateUser(
   next: NextFunction
 ) {
   const { access_token } = req.cookies;
-  console.log(req.cookies, "tokens stored in cookies");
   if (!access_token) {
     return res.status(HttpStatus.FORBIDDEN).json("Your are not authenticated");
   }

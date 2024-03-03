@@ -28,7 +28,7 @@ const Login: React.FC = () => {
           showToast(data.message, "success");
           dispatch(setUser({ isAuthenticated: true, name, role }));
           setTimeout(() => {
-            navigate("/restaurant/login");
+            navigate("/restaurant/dashboard");
           }, 1000);
         })
         .catch(({ response }) => {
@@ -44,7 +44,7 @@ const Login: React.FC = () => {
         <h1 className="absolute top-24 left-8 font-bold text-3xl text-white leading-snug">
           Turn Tables into Profit!
           <br />
-          <Link to={"/restaurant/signup"}>
+          <Link to={"/restaurant/auth/signup"}>
             <span className=" text-red-500  hover:text-red-600 transition duration-200 hover:underline">
               Register now.
             </span>

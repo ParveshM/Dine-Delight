@@ -20,7 +20,7 @@ const userRoute = () => {
   router.post("/verify_otp", controller.verifyOtp);
   router.post("/resend_otp", controller.resendOtp);
   router.get("/test", authenticateUser, (req, res) => {
-    res.json("message from test router");
+    res.status(200).json("message from test router");
   });
   return router;
 };
