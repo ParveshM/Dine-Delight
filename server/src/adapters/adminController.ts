@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { AuthServiceInterfaceType } from "../app/services-Interface/authServiceInterface";
 import { AuthService } from "../frameworks/services/authService";
+import { loginAdmin } from "../app/use-cases/Admin/adminAuth";
 import {
-  getRestaurants,
   getUsers,
-  loginAdmin,
-} from "../app/use-cases/Admin/adminAuth";
+  getNewRegisteredRestaurants,
+  getRestaurants,
+} from "../app/use-cases/Admin/adminRead";
 import { HttpStatus } from "../types/httpStatus";
 import { UserDbInterface } from "../app/interfaces/userDbRepository";
 import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/userRepositoryMongodb";
@@ -77,6 +78,24 @@ export default (
     }
   };
   /*
+   * METHOD:GET
+   * Retrieve the new registered restaurnats
+   */
+  const newRegistrations = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const restaurants = await getNewRegisteredRestaurants(
+        dbResaurantRepository
+      );
+      return res.status(HttpStatus.OK).json({ success: true, restaurants });
+    } catch (error) {
+      next(error);
+    }
+  };
+  /*
    * METHOD:POST
    * Retrieve all the restaurants in the system
    */
@@ -113,18 +132,26 @@ export default (
    * METHOD:PATCH
    * Approve restaurant and inform through email
    */
-  const approveRestaurant = async (
+  const validateRestaurant = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     try {
       const { id } = req.params;
-
-      await updateRestaurantApproval(id, dbResaurantRepository);
-      res
-        .status(HttpStatus.OK)
-        .json({ success: true, message: "Restaurant approved successfully" });
+      const { action } = req.body;
+      // if request body action is apporved , approve the registration
+      if (action === "approved") {
+        await updateRestaurantApproval(id, dbResaurantRepository);
+        return res
+          .status(HttpStatus.OK)
+          .json({ success: true, message: "Restaurant approved successfully" });
+      } else {
+        await updateRestaurantRejected(id, dbResaurantRepository);
+        res
+          .status(HttpStatus.OK)
+          .json({ success: true, message: "Restaurant rejected successfully" });
+      }
     } catch (error) {
       next(error);
     }
@@ -133,21 +160,7 @@ export default (
    * METHOD:PATCH
    * Reject restaurant
    */
-  const rejectRestaurant = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const { id } = req.params;
-      await updateRestaurantRejected(id, dbResaurantRepository);
-      res
-        .status(HttpStatus.OK)
-        .json({ success: true, message: "Restaurant rejected successfully" });
-    } catch (error) {
-      next(error);
-    }
-  };
+
   /*
    * METHOD:PATCH
    * List or unlist restaurants
@@ -172,9 +185,9 @@ export default (
     adminLogin,
     getAllUser,
     getAllRestaurants,
+    newRegistrations,
     userBlock,
-    approveRestaurant,
-    rejectRestaurant,
+    validateRestaurant,
     listRestaurant,
   };
 };

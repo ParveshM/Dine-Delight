@@ -1,6 +1,12 @@
+import { memo } from "react";
 import { ApprovalModalType } from "../../types/PropsType";
 
-const ApprovalModal: React.FC<ApprovalModalType> = ({ isModalOpen }) => {
+const ApprovalModal: React.FC<ApprovalModalType> = ({
+  isModalOpen,
+  sendAction,
+  name,
+  email,
+}) => {
   return (
     <>
       <div
@@ -36,7 +42,7 @@ const ApprovalModal: React.FC<ApprovalModalType> = ({ isModalOpen }) => {
               <span className="sr-only">Close modal</span>
             </button>
           </div>
-          <form className="p-4 md:p-5">
+          <div className="p-4 md:p-5">
             <div className="grid gap-4 mb-4 grid-cols-2">
               <div className="col-span-2">
                 <label
@@ -48,7 +54,7 @@ const ApprovalModal: React.FC<ApprovalModalType> = ({ isModalOpen }) => {
                 <input
                   type="text"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white "
-                  value={"Villagio"}
+                  value={name}
                   readOnly
                 />
               </div>
@@ -62,7 +68,7 @@ const ApprovalModal: React.FC<ApprovalModalType> = ({ isModalOpen }) => {
                 <input
                   type="text"
                   className="bg-gray-50 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  value={"villagio@gmail.com"}
+                  value={email}
                   readOnly
                 />
               </div>
@@ -83,18 +89,24 @@ const ApprovalModal: React.FC<ApprovalModalType> = ({ isModalOpen }) => {
               </div> */}
             </div>
             <div className="flex justify-end gap-2">
-              <button className="text-white  bg-red-600  focus:ring-2 focus:ring-red-300 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
+              <button
+                className="text-white  bg-red-600  focus:ring-2 focus:ring-red-300 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center "
+                onClick={() => sendAction("rejected")}
+              >
                 Reject
               </button>
-              <button className="text-white  bg-green-500 hover:bg-green-600 focus:ring-green-400 focus:ring-2 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
+              <button
+                className="text-white  bg-green-500 hover:bg-green-600 focus:ring-green-400 focus:ring-2 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center "
+                onClick={() => sendAction("approved")}
+              >
                 Approve
               </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </>
   );
 };
 
-export default ApprovalModal;
+export default memo(ApprovalModal);

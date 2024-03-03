@@ -15,4 +15,5 @@ export interface UserInterface {
   isVerified: boolean;
   isBlocked: boolean;
   bookmarks?: Array<string>;
+  createdAt?: Date;
 }

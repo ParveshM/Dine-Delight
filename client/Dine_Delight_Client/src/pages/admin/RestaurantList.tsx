@@ -1,6 +1,17 @@
 import RestaurantData from "../../components/Admin/restaurantData";
+import useRestaurant from "../../hooks/useRestaurant";
 
 const RestaurantList: React.FC = () => {
+  const {
+    restaurants,
+    filteredRestaurants,
+    setRestaurants,
+    setFilteredRestaurants,
+  } = useRestaurant();
+
+  if (!restaurants.length)
+    return <h1 className="mb-2 text-xl font-semibold ">No Restaurants</h1>;
+
   return (
     <>
       <h1 className="mb-2 text-xl font-semibold ">Restaurants</h1>
@@ -12,13 +23,13 @@ const RestaurantList: React.FC = () => {
                 Restaurant name
               </th>
               <th scope="col" className="px-6 py-3">
-                Color
+                email
               </th>
               <th scope="col" className="px-6 py-3">
-                Category
+                Address
               </th>
               <th scope="col" className="px-6 py-3">
-                Price
+                status
               </th>
               <th scope="col" className="px-6 py-3">
                 Action
@@ -26,7 +37,9 @@ const RestaurantList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            <RestaurantData />
+            {filteredRestaurants.map((restaurant) => (
+              <RestaurantData {...restaurant} key={restaurant._id} />
+            ))}
           </tbody>
         </table>
         <nav

@@ -39,7 +39,7 @@ export const userRepositoryMongodb = () => {
   const updateVerifiedUser = async (userId: string) =>
     await User.findByIdAndUpdate(userId, { isVerified: true });
 
-  const getAllUsers = async () => await User.find();
+  const getAllUsers = async () => await User.find({ isVerified: true });
 
   // exporting the functions
   return {

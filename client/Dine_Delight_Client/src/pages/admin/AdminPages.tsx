@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import Header from "../../components/Admin/Header/Header";
-import Sidebar from "../../components/Admin/Header/Sidebar";
+import Header from "../../components/Admin/Header&Sidebar/Header";
+import Sidebar from "../../components/Admin/Header&Sidebar/Sidebar";
 import UsersList from "./UserList";
 import RestaurantList from "./RestaurantList";
 import NewRegistration from "./newRegistration";

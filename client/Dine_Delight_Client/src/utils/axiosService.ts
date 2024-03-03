@@ -35,7 +35,6 @@ axiosJWT.interceptors.request.use(async (config) => {
     console.log("error in decodeToken" + error);
   }
   if (decodedToken.exp * 1000 < currentDate.getTime()) {
-    console.log(" calling the refresh token");
     await getNewRefreshToken();
   }
   return config;

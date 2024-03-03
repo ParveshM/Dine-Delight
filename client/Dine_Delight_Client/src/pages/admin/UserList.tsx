@@ -2,7 +2,6 @@ import UserData from "../../components/Admin/userData";
 import useUsers from "../../hooks/useUsers";
 const UsersList: React.FC = () => {
   const { users } = useUsers();
-  console.log(users);
   return (
     <>
       <h1 className="mb-2 text-xl font-semibold ">Users</h1>
@@ -16,10 +15,11 @@ const UsersList: React.FC = () => {
               <th scope="col" className="px-6 py-3">
                 email
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-4 py-3">
                 Total bookings
               </th>
-              <th scope="col" className="px-6 py-3">
+
+              <th scope="col" className="px-8 py-3">
                 status
               </th>
               <th scope="col" className="px-6 py-3">
@@ -28,9 +28,9 @@ const UsersList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {/* {users.map((user) => {
-              reutrn(<UserData {...user} />);
-            })} */}
+            {users.map((user) => {
+              return <UserData {...user} key={user._id} />;
+            })}
           </tbody>
         </table>
         <nav

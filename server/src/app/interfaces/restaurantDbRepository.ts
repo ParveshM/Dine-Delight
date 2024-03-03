@@ -27,12 +27,16 @@ export const restaurantDbRepository = (
 
   const getAllRestaurants = async () => await repository.getAllRestaurants();
 
+  const getNewRegisteredRestaurants = async () =>
+    await repository.getNewRegistrations();
+
   return {
     getRestaurantById,
     getRestaurantByemail,
     addRestaurant,
     verifyRestaurant,
     getAllRestaurants,
+    getNewRegisteredRestaurants,
     updateRestaurantApproval,
     updateRestaurantRejected,
     updateRestaurantListing,
