@@ -43,14 +43,22 @@ export const restaurantRepositoryMongodb = () => {
   const updateRestaurantListing = async (id: string, status: boolean) =>
     await Restaurant.findByIdAndUpdate(id, { isListed: status });
 
-  const getAllRestaurants = async () => await Restaurant.find();
+  const getAllRestaurants = async () =>
+    await Restaurant.find({ isVerified: true, isApproved: true });
 
+  const getNewRegistrations = async () =>
+    await Restaurant.find({
+      isApproved: false,
+      isVerified: true,
+      isRejected: false,
+    });
   return {
     getRestaurantById,
     getRestaurantByemail,
     addRestaurant,
     verifyRestaurant,
     getAllRestaurants,
+    getNewRegistrations,
     updateRestaurantApproval,
     updateRestaurantRejected,
     updateRestaurantListing,

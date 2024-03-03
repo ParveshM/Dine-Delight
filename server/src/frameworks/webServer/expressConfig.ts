@@ -13,7 +13,6 @@ const expressConfig = (app: Application) => {
   const corsConfig = {
     origin: true,
     credentials: true,
-    methods: ["GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS", "HEAD"],
   };
 
   app.use(cors(corsConfig));

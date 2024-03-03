@@ -1,17 +1,58 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import ApprovalModal from "../../components/Admin/ApprovalModal";
 import NewRegistrationData from "../../components/Admin/newRegistrationData";
+import useNewRegistrations from "../../hooks/useNewRegistration";
+import axiosJWT from "../../utils/axiosService";
+import { ADMIN_API } from "../../constants";
+import { filterNewRegistrations } from "../../utils/filter";
+import showToast from "../../utils/toaster";
+import { RestDetailsType } from "../../types/PropsType";
 
 const NewRegistration = () => {
   const [isModalActive, setIsModalActive] = useState<boolean>(false);
-  // function to memoize the callback
-  const handleModal = (isOpen: boolean) => {
-    setIsModalActive(isOpen);
+  const [restDetails, setResDetails] = useState<RestDetailsType | null>(null);
+  const {
+    newRestaurants,
+    filteredRegistration,
+    setNewRestaurants,
+    setFilteredRegistration,
+  } = useNewRegistrations();
+
+  const handleModal = useCallback(
+    (isOpen: boolean) => {
+      setIsModalActive(isOpen);
+    },
+    [setIsModalActive]
+  );
+
+  const restData = useCallback((data: RestDetailsType) => {
+    setResDetails(data);
+  }, []);
+
+  const handleAction = (action: string) => {
+    axiosJWT
+      .post(ADMIN_API + `/validate_restaurant/${restDetails?.id}`, { action })
+      .then(({ data }) => {
+        const newFilterRegistration = filterNewRegistrations(
+          restDetails?.id,
+          filteredRegistration
+        );
+        setIsModalActive(false);
+        setNewRestaurants(newFilterRegistration);
+        setFilteredRegistration(newFilterRegistration);
+        showToast(data?.message, "success");
+      })
+      .catch((error) => console.log(error));
   };
+
+  if (!newRestaurants.length)
+    return (
+      <h1 className="mb-2 text-xl font-semibold">No registerations yet</h1>
+    );
 
   return (
     <>
-      <h1 className="mb-2 text-xl font-semibold ">New Registration </h1>
+      <h1 className="mb-2 text-xl font-semibold ">New Registrations </h1>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg h-screen ">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -31,7 +72,14 @@ const NewRegistration = () => {
             </tr>
           </thead>
           <tbody>
-            <NewRegistrationData isModalOpen={handleModal} />
+            {filteredRegistration.map((restaurant) => (
+              <NewRegistrationData
+                key={restaurant._id}
+                {...restaurant}
+                isModalOpen={handleModal}
+                sendDetails={restData}
+              />
+            ))}
           </tbody>
         </table>
         <nav
@@ -99,7 +147,14 @@ const NewRegistration = () => {
           </ul>
         </nav>
       </div>
-      {isModalActive && <ApprovalModal isModalOpen={handleModal} />}
+      {isModalActive && (
+        <ApprovalModal
+          isModalOpen={handleModal}
+          sendAction={handleAction}
+          name={restDetails?.name}
+          email={restDetails?.email}
+        />
+      )}
     </>
   );
 };
