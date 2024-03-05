@@ -9,9 +9,10 @@ import {
   verifyOtpUser,
   deleteOtp,
   login,
+  authenticateGoogleSignInUser,
 } from "../app/use-cases/auth/userAuth";
 import { HttpStatus } from "../types/httpStatus";
-
+import { GoogleResponseType } from "../types/googleResponseType";
 // Controller will be passing all the necessaary parameers to the repositories
 
 const authController = (
@@ -34,7 +35,6 @@ const authController = (
   ) => {
     try {
       const user = req.body;
-      console.log(req.body);
       const newUser = await userRegister(user, dbRepositoryUser, authService);
       res.json({
         message: "User registration successful,please verify email",
@@ -105,6 +105,45 @@ const authController = (
     }
   );
 
-  return { registerUser, verifyOtp, resendOtp, userLogin };
+  /**
+   ** method : POST
+   ** Google Signin with user credentials
+   */
+
+  const googleSignIn = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userData: GoogleResponseType = req.body.user;
+      const { accessToken, refreshToken, isEmailExist, createdUser } =
+        await authenticateGoogleSignInUser(
+          userData,
+          dbRepositoryUser,
+          authService
+        );
+      res.cookie("access_token", accessToken, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      });
+      res.cookie("refresh_token", refreshToken, {
+        httpOnly: true,
+      });
+      const user = isEmailExist ? isEmailExist : createdUser;
+      res.status(HttpStatus.OK).json({ message: "login success", user });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  return {
+    registerUser,
+    verifyOtp,
+    resendOtp,
+    userLogin,
+    googleSignIn,
+  };
 };
 export default authController;

@@ -2,15 +2,18 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { TOKEN_API } from "../constants";
 import logout from "./logout";
+
 const axiosJWT = axios.create();
 axiosJWT.defaults.withCredentials = true; // for send back the cookies stored in the browser
 axios.defaults.withCredentials = true;
-const getNewRefreshToken = async () => {
+
+const getNewAccessToken = async () => {
   try {
     await axios.post(TOKEN_API + "/refresh_token");
   } catch (error: any) {
     logout("Session expired ,please Login");
     console.log("Error in refreshing token" + error, error.status);
+    throw new Error("refresh token expired");
   }
 };
 
@@ -35,7 +38,7 @@ axiosJWT.interceptors.request.use(async (config) => {
     console.log("error in decodeToken" + error);
   }
   if (decodedToken.exp * 1000 < currentDate.getTime()) {
-    await getNewRefreshToken();
+    await getNewAccessToken();
   }
   return config;
 });

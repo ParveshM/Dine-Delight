@@ -16,9 +16,10 @@ const userRoute = () => {
     userRepositoryMongodb
   );
   router.post("/signup", controller.registerUser);
-  router.post("/login", controller.userLogin);
   router.post("/verify_otp", controller.verifyOtp);
   router.post("/resend_otp", controller.resendOtp);
+  router.post("/login", controller.userLogin);
+  router.post("/google_signIn", controller.googleSignIn); // google sign in
   router.get("/test", authenticateUser, (req, res) => {
     res.status(200).json("message from test router");
   });

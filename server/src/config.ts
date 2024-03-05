@@ -10,5 +10,7 @@ const configKeys = {
   RERESH_SECRET: process.env.REFRESH_SECRET as string,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD as string,
+  CLIENT_ID: process.env.CLIENT_ID as string,
+  CLIENT_SECRET: process.env.CLIENT_SECRET as string,
 };
 export default configKeys;
