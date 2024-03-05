@@ -55,7 +55,7 @@ const LoginForm: React.FC = () => {
         );
         navigate("/user/profile");
       })
-      .catch((error) => console.log(error));
+      .catch(({ response }) => showToast(response.data.message, "error"));
   };
 
   return (
