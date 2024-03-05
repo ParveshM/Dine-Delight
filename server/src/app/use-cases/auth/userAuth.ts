@@ -1,4 +1,8 @@
-import createUserEntity, { userEntityType } from "../../../entities/userEntity";
+import createUserEntity, {
+  googleSignInUserEntity,
+  googleSignInUserEntityType,
+  userEntityType,
+} from "../../../entities/userEntity";
 import {
   CreateUserInterface,
   UserInterface,
@@ -9,6 +13,7 @@ import CustomError from "../../../utils/customError";
 import { HttpStatus } from "../../../types/httpStatus";
 import sentMail from "../../../utils/sendMail";
 import { otpEmail } from "../../../utils/otpEmail";
+import { GoogleResponseType } from "../../../types/googleResponseType";
 
 // All business logics (actions need to be done using mongodb) will be here
 // pass the database query to application interface
@@ -35,10 +40,8 @@ export const userRegister = async (
 
   // create new user
   const createdUser: UserInterface = await userRepository.addUser(userEntity);
-  console.log(createdUser, "== createdUser");
 
   const OTP = authService.generateOTP(); // generating a 6 digit OTP
-  console.log(OTP, "== OTP");
   const emailSubject = "Account verification";
   sentMail(createdUser.email, emailSubject, otpEmail(OTP, createdUser.name)); // Sending otp to the user email
 
@@ -103,7 +106,8 @@ export const login = async (
       "Your account is not verified",
       HttpStatus.UNAUTHORIZED
     );
-
+  if (!isEmailExist.password)
+    throw new CustomError("Invalid credentials", HttpStatus.UNAUTHORIZED);
   const isPasswordMatched = await authService.comparePassword(
     password,
     isEmailExist.password
@@ -117,4 +121,44 @@ export const login = async (
     isEmailExist.role
   );
   return { accessToken, refreshToken, isEmailExist };
+};
+
+export const authenticateGoogleSignInUser = async (
+  userData: GoogleResponseType,
+  userDbRepository: ReturnType<UserDbInterface>,
+  authService: ReturnType<AuthServiceInterfaceType>
+) => {
+  try {
+    const { name, email, picture, email_verified } = userData;
+
+    const isEmailExist = await userDbRepository.getUserbyEmail(email);
+
+    if (isEmailExist) {
+      const { accessToken, refreshToken } = authService.createTokens(
+        isEmailExist.id,
+        isEmailExist.name,
+        isEmailExist.role
+      );
+      return { accessToken, refreshToken, isEmailExist };
+    } else {
+      const googleSignInUser: googleSignInUserEntityType =
+        googleSignInUserEntity(name, email, picture, email_verified);
+
+      const createdUser: any = await userDbRepository.registerGoogleSignedUser(
+        googleSignInUser
+      );
+
+      const { accessToken, refreshToken } = authService.createTokens(
+        createdUser.id,
+        createdUser.name,
+        createdUser.role
+      );
+      return { accessToken, refreshToken, createdUser };
+    }
+  } catch (error) {
+    throw new CustomError(
+      "Error in signin with google",
+      HttpStatus.BAD_REQUEST
+    );
+  }
 };

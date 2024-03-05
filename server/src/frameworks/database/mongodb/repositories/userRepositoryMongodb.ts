@@ -1,4 +1,7 @@
-import { userEntityType } from "../../../../entities/userEntity";
+import {
+  googleSignInUserEntityType,
+  userEntityType,
+} from "../../../../entities/userEntity";
 import { UserInterface } from "../../../../types/userInterface";
 import User from "../models/user";
 import OTPModel from "../models/OTPmodel";
@@ -26,6 +29,18 @@ export const userRepositoryMongodb = () => {
     return newUser;
   };
 
+  const registerGoogleSignedUser = async (user: googleSignInUserEntityType) => {
+    const newUser = new User({
+      name: user.name(),
+      email: user.email(),
+      profilePicture: user.picture(),
+      isVerified: user.email_verified(),
+    });
+
+    await newUser.save();
+    return newUser;
+  };
+
   const AddOTP = async (OTP: string, userId: string) => {
     await OTPModel.create({ OTP, userId });
   };
@@ -46,6 +61,7 @@ export const userRepositoryMongodb = () => {
     getUserbyEmail,
     getUserbyId,
     addUser,
+    registerGoogleSignedUser,
     AddOTP,
     findOtpUser,
     updateVerifiedUser,

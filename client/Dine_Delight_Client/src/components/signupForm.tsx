@@ -15,8 +15,8 @@ const SignupForm = () => {
     initialValues: {
       name: "",
       email: "",
-      password: "Password@123",
-      confirmPassword: "Password@123",
+      password: "",
+      confirmPassword: "",
     },
     validate: validateSignUp,
     onSubmit: ({ name, email, password }) => {

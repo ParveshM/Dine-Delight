@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import configKeys from "../../config";
 import crypto from "crypto";
+import { GoogleResponseType } from "../../types/googleResponseType";
 // Auth service will provide all the resusable functionlity
 export const authService = () => {
   // create a hashed password
@@ -36,6 +37,7 @@ export const authService = () => {
 
     return { accessToken, refreshToken };
   };
+
   return {
     encryptPassword,
     generateOTP,

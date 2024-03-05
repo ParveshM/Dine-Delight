@@ -1,5 +1,8 @@
 import { UserRepositoryMongodbType } from "../../frameworks/database/mongodb/repositories/userRepositoryMongodb";
-import { userEntityType } from "../../entities/userEntity";
+import {
+  googleSignInUserEntityType,
+  userEntityType,
+} from "../../entities/userEntity";
 
 // Interface for the database repository that we need to use
 /*
@@ -20,6 +23,9 @@ export const userDbRepository = (
   const addUser = async (user: userEntityType) =>
     await repository.addUser(user);
 
+  const registerGoogleSignedUser = async (user: googleSignInUserEntityType) =>
+    await repository.registerGoogleSignedUser(user);
+
   const addOTP = async (otp: string, id: string) =>
     await repository.AddOTP(otp, id);
 
@@ -39,6 +45,7 @@ export const userDbRepository = (
     getUserbyId,
     updateUserBlock,
     addUser,
+    registerGoogleSignedUser,
     addOTP,
     findOtpUser,
     updateVerifiedUser,
