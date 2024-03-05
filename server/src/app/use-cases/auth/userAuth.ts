@@ -12,7 +12,7 @@ import { AuthServiceInterfaceType } from "../../services-Interface/authServiceIn
 import CustomError from "../../../utils/customError";
 import { HttpStatus } from "../../../types/httpStatus";
 import sentMail from "../../../utils/sendMail";
-import { otpEmail } from "../../../utils/otpEmail";
+import { forgotPasswordEmail, otpEmail } from "../../../utils/userEmails";
 import { GoogleResponseType } from "../../../types/googleResponseType";
 
 // All business logics (actions need to be done using mongodb) will be here
@@ -139,6 +139,7 @@ export const authenticateGoogleSignInUser = async (
         isEmailExist.name,
         isEmailExist.role
       );
+
       return { accessToken, refreshToken, isEmailExist };
     } else {
       const googleSignInUser: googleSignInUserEntityType =
@@ -161,4 +162,53 @@ export const authenticateGoogleSignInUser = async (
       HttpStatus.BAD_REQUEST
     );
   }
+};
+
+export const sendResetVerificationCode = async (
+  email: string,
+  userDbRepository: ReturnType<UserDbInterface>,
+  authService: ReturnType<AuthServiceInterfaceType>
+) => {
+  const isEmailExist = await userDbRepository.getUserbyEmail(email);
+
+  if (!isEmailExist)
+    throw new CustomError(`${email} does not exist`, HttpStatus.BAD_REQUEST);
+
+  const verificationCode = authService.getRandomString();
+
+  const isUpdated = await userDbRepository.updateVerificationCode(
+    email,
+    verificationCode
+  );
+  console.log(isUpdated);
+  sentMail(
+    email,
+    "Reset password",
+    forgotPasswordEmail(isEmailExist.name, verificationCode)
+  );
+};
+
+export const verifyTokenAndRestPassword = async (
+  verificationCode: string,
+  password: string,
+  userDbRepository: ReturnType<UserDbInterface>,
+  authService: ReturnType<AuthServiceInterfaceType>
+) => {
+  if (!verificationCode)
+    throw new CustomError(
+      "Please provide a verification code",
+      HttpStatus.BAD_REQUEST
+    );
+  const hashedPassword = await authService.encryptpassword(password);
+  const isPasswordUpdated = await userDbRepository.verifyAndResetPassword(
+    verificationCode,
+    hashedPassword
+  );
+  console.log(isPasswordUpdated);
+
+  if (!isPasswordUpdated)
+    throw new CustomError(
+      "Invalid token or token expired",
+      HttpStatus.BAD_REQUEST
+    );
 };
