@@ -10,12 +10,14 @@ import {
   deleteOtp,
   login,
   authenticateGoogleSignInUser,
+  sendResetVerificationCode,
+  verifyTokenAndRestPassword,
 } from "../app/use-cases/auth/userAuth";
 import { HttpStatus } from "../types/httpStatus";
 import { GoogleResponseType } from "../types/googleResponseType";
 // Controller will be passing all the necessaary parameers to the repositories
 
-const authController = (
+const userController = (
   authServiceInterface: AuthServiceInterfaceType, // parameters from router
   authServiceImpl: AuthService,
   userDbRepository: UserDbInterface,
@@ -138,12 +140,64 @@ const authController = (
     }
   };
 
+  /**
+   ** METHOD:POST
+   ** Send verification code to the forget password requested email address
+   */
+
+  const forgotPassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { email } = req.body;
+      console.log(email);
+      await sendResetVerificationCode(email, dbRepositoryUser, authService);
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Reset password code sent to your email.",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   ** METHOD:POST
+   ** Verify the code ,and reset the password
+   */
+  const resetPassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { password } = req.body;
+      const { token } = req.params;
+      await verifyTokenAndRestPassword(
+        token,
+        password,
+        dbRepositoryUser,
+        authService
+      );
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Reset password success,you can login with your new password",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     registerUser,
     verifyOtp,
     resendOtp,
     userLogin,
     googleSignIn,
+    forgotPassword,
+    resetPassword,
   };
 };
-export default authController;
+export default userController;

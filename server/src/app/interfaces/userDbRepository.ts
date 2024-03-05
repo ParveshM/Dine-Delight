@@ -40,6 +40,20 @@ export const userDbRepository = (
 
   const getAllUsers = async () => await repository.getAllUsers();
 
+  const updateVerificationCode = async (
+    email: string,
+    verificationCode: string
+  ) => await repository.updateVerificationCode(email, verificationCode);
+
+  const findVerificationCode = async (verificationCode: string) =>
+    await repository.findVerificationCode(verificationCode);
+
+  const verifyAndResetPassword = async (
+    verificationCode: string,
+    password: string
+  ) =>
+    await repository.findVerificationCodeAndUpdate(verificationCode, password);
+
   return {
     getUserbyEmail,
     getUserbyId,
@@ -51,6 +65,9 @@ export const userDbRepository = (
     updateVerifiedUser,
     deleteOtpUser,
     getAllUsers,
+    updateVerificationCode,
+    findVerificationCode,
+    verifyAndResetPassword,
   };
 };
 

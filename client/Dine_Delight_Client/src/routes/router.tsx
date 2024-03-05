@@ -14,6 +14,9 @@ import PubliceRoute, {
   AdminPublicRoute,
   SellerPublicRoute,
 } from "./PublicRoutes";
+import ForgotPassword from "../pages/user/forgotPassword";
+import ResetPassword from "../pages/user/resetPassword";
+
 const ErrorComponent = () => <h1>Error</h1>;
 
 export const MainRouter = () => {
@@ -24,6 +27,8 @@ export const MainRouter = () => {
         <Route path="signup" element={<SignUp />} />
         <Route path="verify_otp" element={<VerifyOTP />} />
         <Route path="login" element={<Login />} />
+        <Route path="forgot_password" element={<ForgotPassword />} />
+        <Route path="reset_password/:id" element={<ResetPassword />} />
       </Route>
       {/* User Protected Route  */}
       <Route path="user/" element={<ProtectedRoute />}>

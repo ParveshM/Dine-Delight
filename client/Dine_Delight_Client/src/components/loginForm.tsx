@@ -154,7 +154,7 @@ const LoginForm: React.FC = () => {
 
             <p className="text-sm  text-black text-center">
               <Link
-                to={"/user/signup"}
+                to={"/user/auth/forgot_password"}
                 className=" pl-1 hover:underline font-medium "
               >
                 Forgot password ?
