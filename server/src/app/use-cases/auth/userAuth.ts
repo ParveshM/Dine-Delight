@@ -101,6 +101,12 @@ export const login = async (
   if (!isEmailExist)
     throw new CustomError("Invalid credentials", HttpStatus.UNAUTHORIZED);
 
+  if (isEmailExist?.isBlocked)
+    throw new CustomError(
+      "Your account is blocked by administrator",
+      HttpStatus.FORBIDDEN
+    );
+
   if (!isEmailExist?.isVerified)
     throw new CustomError(
       "Your account is not verified",
@@ -128,39 +134,41 @@ export const authenticateGoogleSignInUser = async (
   userDbRepository: ReturnType<UserDbInterface>,
   authService: ReturnType<AuthServiceInterfaceType>
 ) => {
-  try {
-    const { name, email, picture, email_verified } = userData;
+  const { name, email, picture, email_verified } = userData;
 
-    const isEmailExist = await userDbRepository.getUserbyEmail(email);
-
-    if (isEmailExist) {
-      const { accessToken, refreshToken } = authService.createTokens(
-        isEmailExist.id,
-        isEmailExist.name,
-        isEmailExist.role
-      );
-
-      return { accessToken, refreshToken, isEmailExist };
-    } else {
-      const googleSignInUser: googleSignInUserEntityType =
-        googleSignInUserEntity(name, email, picture, email_verified);
-
-      const createdUser: any = await userDbRepository.registerGoogleSignedUser(
-        googleSignInUser
-      );
-
-      const { accessToken, refreshToken } = authService.createTokens(
-        createdUser.id,
-        createdUser.name,
-        createdUser.role
-      );
-      return { accessToken, refreshToken, createdUser };
-    }
-  } catch (error) {
+  const isEmailExist = await userDbRepository.getUserbyEmail(email);
+  if (isEmailExist?.isBlocked)
     throw new CustomError(
-      "Error in signin with google",
-      HttpStatus.BAD_REQUEST
+      "Your account is blocked by administrator",
+      HttpStatus.FORBIDDEN
     );
+
+  if (isEmailExist) {
+    const { accessToken, refreshToken } = authService.createTokens(
+      isEmailExist.id,
+      isEmailExist.name,
+      isEmailExist.role
+    );
+
+    return { accessToken, refreshToken, isEmailExist };
+  } else {
+    const googleSignInUser: googleSignInUserEntityType = googleSignInUserEntity(
+      name,
+      email,
+      picture,
+      email_verified
+    );
+
+    const createdUser: any = await userDbRepository.registerGoogleSignedUser(
+      googleSignInUser
+    );
+
+    const { accessToken, refreshToken } = authService.createTokens(
+      createdUser.id,
+      createdUser.name,
+      createdUser.role
+    );
+    return { accessToken, refreshToken, createdUser };
   }
 };
 
@@ -212,3 +220,8 @@ export const verifyTokenAndRestPassword = async (
       HttpStatus.BAD_REQUEST
     );
 };
+
+export const getUserById = async (
+  id: string,
+  userRepository: ReturnType<UserDbInterface>
+) => await userRepository.getUserbyId(id);

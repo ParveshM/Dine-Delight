@@ -90,3 +90,8 @@ export const restaurantLogin = async (
   );
   return { accessToken, refreshToken, isEmailExist };
 };
+
+export const getRestaurantById = async (
+  id: string,
+  restaurantRepository: ReturnType<restaurantDbInterface>
+) => await restaurantRepository.getRestaurantById(id);

@@ -1,7 +1,8 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { JwtPayload, jwtDecode } from "jwt-decode";
 import { TOKEN_API } from "../constants";
 import logout from "./logout";
+import { Payload } from "../types/PropsType";
 
 const axiosJWT = axios.create();
 axiosJWT.defaults.withCredentials = true; // for send back the cookies stored in the browser
@@ -18,14 +19,24 @@ const getNewAccessToken = async () => {
 };
 
 const getAccessToken = async () => {
-  let token;
-  await axios
-    .post(TOKEN_API + "/get_accessToken")
-    .then(({ data }) => {
-      token = data?.access_token;
-    })
-    .catch((error) => console.log(error));
-  return token;
+  try {
+    let token;
+    let user;
+    const { data } = await axios.post(TOKEN_API + "/get_accessToken");
+    token = data?.access_token;
+    user = data?.user;
+
+    const decodedToken: Payload = await jwtDecode(token);
+    const { role } = decodedToken;
+    if (role === "seller" || role === "user") {
+      if (user.isBlocked)
+        logout("Your account has been blocked by administrator", "error");
+    }
+
+    return token;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 axiosJWT.interceptors.request.use(async (config) => {

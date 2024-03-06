@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Profile from "../pages/user/Profile";
 import Login from "../pages/user/Login";
 import SignUp from "../pages/user/signup";
@@ -6,22 +6,32 @@ import RestaurantLogin from "../pages/restaurant/restaurantLogin";
 import VerifyOTP from "../pages/user/VerifyOTP";
 import RestaurantSignup from "../pages/restaurant/restaurantSignup";
 import Dashboard from "../pages/restaurant/dashBoard";
-import AdminPages from "../pages/admin/AdminPages";
 import EmailVerificationPage from "../pages/restaurant/emailVerification";
-import AdminLogin from "../pages/restaurant/AdminLogin";
-import ProtectedRoute, { SellerProtectedRoute } from "./ProtectedRoutes";
+import AdminLogin from "../pages/admin/AdminLogin";
+import ProtectedRoute, {
+  AdminProtectedRoute,
+  SellerProtectedRoute,
+} from "./ProtectedRoutes";
 import PubliceRoute, {
   AdminPublicRoute,
   SellerPublicRoute,
 } from "./PublicRoutes";
 import ForgotPassword from "../pages/user/forgotPassword";
 import ResetPassword from "../pages/user/resetPassword";
+import AdminPage from "../pages/admin/AdminPage";
+import UsersList from "../pages/admin/UserList";
+import RestaurantList from "../pages/admin/RestaurantList";
+import NewRegistration from "../pages/admin/newRegistration";
+import AdminDashboard from "../pages/admin/AdminDashboard";
 
-const ErrorComponent = () => <h1>Error</h1>;
+const ErrorComponent = () => {
+  return <h1>Error</h1>;
+};
 
 export const MainRouter = () => {
   return (
     <Routes>
+      {/******************* User routes *****************/}
       <Route path="/" element={<div>Home page</div>} />
       <Route path="user/auth/" element={<PubliceRoute />}>
         <Route path="signup" element={<SignUp />} />
@@ -35,7 +45,7 @@ export const MainRouter = () => {
         <Route path="profile" element={<Profile />} />
       </Route>
 
-      {/* Restaurant routes */}
+      {/******************* Restaurant routes *****************/}
       <Route path="restaurant/auth/" element={<SellerPublicRoute />}>
         <Route path="login" element={<RestaurantLogin />} />
         <Route path="signup" element={<RestaurantSignup />} />
@@ -46,12 +56,29 @@ export const MainRouter = () => {
         <Route path="dashboard" element={<Dashboard />} />
       </Route>
 
-      {/* Admin routes  */}
+      {/******************* Admin routes *****************/}
       <Route path="/admin/auth/" element={<AdminPublicRoute />}>
         <Route path="login" element={<AdminLogin />} />
       </Route>
+
       {/* admin protected Route  */}
-      <Route path="admin/*" element={<AdminPages />} />
+      <Route path="/admin" element={<AdminProtectedRoute />}>
+        <Route index element={<Navigate to="dashboard" />} />
+        <Route
+          path="dashboard"
+          element={<AdminPage children={<AdminDashboard />} />}
+        />
+        <Route path="users" element={<AdminPage children={<UsersList />} />} />
+        <Route
+          path="restaurant_list"
+          element={<AdminPage children={<RestaurantList />} />} //passing  component as props
+        />
+        <Route
+          path="new_registrations"
+          element={<AdminPage children={<NewRegistration />} />}
+        />
+      </Route>
+      <Route path="banners" element={<div>Banners</div>} />
 
       <Route path="*" element={<ErrorComponent />} />
     </Routes>
