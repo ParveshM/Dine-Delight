@@ -65,12 +65,12 @@ const tokenContoller = (
   const returnAccessToClient = async (req: Request, res: Response) => {
     const { access_token } = req.cookies;
     const token: JwtPayload = jwt.decode(access_token) as JwtPayload;
-    if (token.role === "user") {
+    if (token?.role === "user") {
       const user = await getUserById(token.id, dbRepositoryUser);
       return res
         .status(HttpStatus.OK)
         .json({ success: true, access_token, user });
-    } else if (token.role === "seller") {
+    } else if (token?.role === "seller") {
       const restaurant = await getRestaurantById(
         token.id,
         dbRepositoryRestaurant

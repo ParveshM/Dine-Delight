@@ -15,7 +15,7 @@ const Login: React.FC = () => {
   const formik = useFormik({
     initialValues: {
       email: "",
-      password: "",
+      password: "Admin@123",
     },
     validate: validateLogin,
     onSubmit: ({ email, password }) => {
@@ -26,10 +26,9 @@ const Login: React.FC = () => {
           const { name, role } = data.admin;
           showToast(data.message, "success");
           dispatch(setUser({ isAuthenticated: true, name, role }));
-          navigate("/admin");
+          navigate("/admin/dashboard");
         })
         .catch(({ response }) => {
-          console.log(response);
           setIsSubmitting(false);
           showToast(response?.data?.message, "error");
         });
@@ -42,7 +41,7 @@ const Login: React.FC = () => {
         <div className="w-full bg-white rounded-2xl shadow-2xl md:max-w-md xl:p-0">
           <div className="p-6 space-y-4 md:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-headerText md:text-2xl">
-              Welcom Back Admin!
+              Welcome Back Admin!
             </h1>
 
             <form className="space-y-4" onSubmit={formik.handleSubmit}>

@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import axios from "axios";
 import showToast from "../utils/toaster";
-import { useNavigate, Link, Navigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { validateLogin } from "../utils/validation";
 import { USER_API } from "../constants";
 import { logo, vectorLogin } from "../assets/images";
