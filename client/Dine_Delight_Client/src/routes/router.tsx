@@ -23,10 +23,8 @@ import UsersList from "../pages/admin/UserList";
 import RestaurantList from "../pages/admin/RestaurantList";
 import NewRegistration from "../pages/admin/newRegistration";
 import AdminDashboard from "../pages/admin/AdminDashboard";
-
-const ErrorComponent = () => {
-  return <h1>Error</h1>;
-};
+import NotFoundPage from "../components/Error404";
+import ViewRestaurant from "../pages/restaurant/ViewRestaurant";
 
 export const MainRouter = () => {
   return (
@@ -42,6 +40,7 @@ export const MainRouter = () => {
       </Route>
       {/* User Protected Route  */}
       <Route path="user/" element={<ProtectedRoute />}>
+        <Route index element={<Navigate to="profile" />} />
         <Route path="profile" element={<Profile />} />
       </Route>
 
@@ -53,7 +52,27 @@ export const MainRouter = () => {
       </Route>
       {/* Restaurant private routes  */}
       <Route path="/restaurant/" element={<SellerProtectedRoute />}>
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route index element={<Navigate to="dashboard" />} />
+        <Route
+          path="dashboard"
+          element={<Dashboard children={<div>Dashboard</div>} />}
+        />
+        <Route
+          path="reservations"
+          element={<Dashboard children={<div>Reservations</div>} />}
+        />
+        <Route
+          path="menu"
+          element={<Dashboard children={<div>Food menu</div>} />}
+        />
+        <Route
+          path="view"
+          element={<Dashboard children={<ViewRestaurant />} />}
+        />
+        <Route
+          path="table"
+          element={<Dashboard children={<div>Tables</div>} />}
+        />
       </Route>
 
       {/******************* Admin routes *****************/}
@@ -80,7 +99,7 @@ export const MainRouter = () => {
       </Route>
       <Route path="banners" element={<div>Banners</div>} />
 
-      <Route path="*" element={<ErrorComponent />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };

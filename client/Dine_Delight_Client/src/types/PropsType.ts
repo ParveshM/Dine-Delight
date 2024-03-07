@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 import { newRestaurantInterface } from "./RestaurantInterface";
 
 export type childrenProps = {
@@ -29,4 +29,17 @@ export interface Payload {
   role: string;
   iat: number;
   exp: number;
+}
+export interface SidebarProps {
+  showSidebar: boolean;
+  handleLogout: () => void;
+}
+
+export interface SidebarItemInterface {
+  to: string | "#";
+  Icon: React.ElementType;
+  text: string;
+  isActive: boolean;
+  handleClick: () => void;
+  handleLogout?: () => void;
 }
