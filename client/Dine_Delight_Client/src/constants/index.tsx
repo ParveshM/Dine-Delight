@@ -5,6 +5,10 @@ export const USER_API = BASE_URL + "user";
 export const RESTAURANT_API = BASE_URL + "restaurant";
 export const ADMIN_API = BASE_URL + "admin";
 export const TOKEN_API = BASE_URL + "token";
+export const CLOUDINARY_UPLOAD_API =
+  "https://api.cloudinary.com/v1_1/dcoveyjze/upload";
+export const cloudinaryUploadPreset = "restaurant";
+
 import { LayoutDashboard, LogOut, Utensils } from "lucide-react";
 import { MdOutlineTableBar } from "react-icons/md";
 import { SlCalender } from "react-icons/sl";

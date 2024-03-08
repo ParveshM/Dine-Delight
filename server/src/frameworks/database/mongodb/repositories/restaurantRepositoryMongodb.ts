@@ -52,6 +52,12 @@ export const restaurantRepositoryMongodb = () => {
       isVerified: true,
       isRejected: false,
     });
+
+  const updateRestaurant = async (
+    id: string,
+    updateData: RestaurantInterface
+  ) => await Restaurant.findByIdAndUpdate(id, updateData);
+
   return {
     getRestaurantById,
     getRestaurantByemail,
@@ -62,6 +68,7 @@ export const restaurantRepositoryMongodb = () => {
     updateRestaurantApproval,
     updateRestaurantRejected,
     updateRestaurantListing,
+    updateRestaurant,
   };
 };
 

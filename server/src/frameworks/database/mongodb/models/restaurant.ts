@@ -26,15 +26,9 @@ const restaurantSchema = new mongoose.Schema(
       enum: ["seller"],
       default: "seller",
     },
-    address: {
-      type: String,
-    },
-    description: {
-      type: String,
-    },
-    tableRatePerPerson: {
-      type: Number,
-    },
+    address: String,
+    description: String,
+    tableRatePerPerson: Number,
     location: {
       type: {
         type: String,

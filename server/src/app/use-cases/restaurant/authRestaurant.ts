@@ -2,10 +2,7 @@ import RestaurantEntity, {
   RestaurantEntityType,
 } from "../../../entities/restaurantEntity";
 import { HttpStatus } from "../../../types/httpStatus";
-import {
-  CreateRestaurantInterface,
-  RestaurantInterface,
-} from "../../../types/restaurantInterface";
+import { CreateRestaurantInterface } from "../../../types/restaurantInterface";
 import CustomError from "../../../utils/customError";
 import sentMail from "../../../utils/sendMail";
 import { restaurantDbInterface } from "../../interfaces/restaurantDbRepository";

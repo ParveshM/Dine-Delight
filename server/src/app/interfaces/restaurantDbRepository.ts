@@ -1,5 +1,6 @@
 import { RestaurantEntityType } from "../../entities/restaurantEntity";
 import { restaurantRepositoryMongodbType } from "../../frameworks/database/mongodb/repositories/restaurantRepositoryMongodb";
+import { RestaurantInterface } from "../../types/restaurantInterface";
 
 export const restaurantDbRepository = (
   repository: ReturnType<restaurantRepositoryMongodbType>
@@ -30,6 +31,11 @@ export const restaurantDbRepository = (
   const getNewRegisteredRestaurants = async () =>
     await repository.getNewRegistrations();
 
+  const updateRestaurant = async (
+    id: string,
+    updateData: RestaurantInterface
+  ) => await repository.updateRestaurant(id, updateData);
+
   return {
     getRestaurantById,
     getRestaurantByemail,
@@ -40,6 +46,7 @@ export const restaurantDbRepository = (
     updateRestaurantApproval,
     updateRestaurantRejected,
     updateRestaurantListing,
+    updateRestaurant,
   };
 };
 
