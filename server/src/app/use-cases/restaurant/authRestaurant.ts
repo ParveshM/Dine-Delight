@@ -79,7 +79,6 @@ export const restaurantLogin = async (
   );
   if (!isPasswordMatch)
     throw new CustomError("Invalid credentials", HttpStatus.BAD_REQUEST);
-
   const { accessToken, refreshToken } = authService.createTokens(
     isEmailExist.id,
     isEmailExist.restaurantName,

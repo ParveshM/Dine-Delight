@@ -18,6 +18,12 @@ const restaurantRoute = () => {
   router.post("/signup", controller.signup);
   router.post("/verify_token/:token", controller.verifyToken);
   router.post("/login", controller.login);
+  router.get(
+    "/get_details",
+    authenticateSeller,
+    controller.get_restaurantDetails
+  );
+
   router.put(
     "/update_details",
     authenticateSeller,

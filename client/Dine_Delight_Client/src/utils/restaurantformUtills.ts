@@ -1,44 +1,81 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import uploadImagesToCloudinary from "./uploadImages";
-import axios from "axios";
 import { RESTAURANT_API } from "../constants";
 import axiosJWT from "./axiosService";
+import showToast from "./toaster";
+import {
+  ValidateRestaurantType,
+  validateRestaurantDetails,
+} from "./validation";
 
-interface InitalState {
+export interface FormInitalState {
   restaurantName: string;
   email: string;
   address: string;
   phone: string;
   description: string;
   location?: string;
-  tableRate: number;
+  openingTime: string;
+  closingTime: string;
+  tableRatePerPerson: number;
   primaryImage: string;
-  secondaryImages: any;
+  secondaryImages: string[];
 }
 
 const formUtils = () => {
-  const [formData, setFormData] = useState<InitalState>({
+  const [formData, setFormData] = useState<FormInitalState>({
     restaurantName: "",
-    email: "seafoodrestaurant@gmail.com",
+    email: "",
     address: "",
     phone: "",
     description: "",
-    tableRate: 400,
+    openingTime: "",
+    closingTime: "",
+    tableRatePerPerson: 200,
     primaryImage: "",
     secondaryImages: [],
   });
 
+  const [errors, setErrors] = useState<ValidateRestaurantType | null>(null);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [featuredImage, setFeaturedImage] = useState<File[]>([]);
   const [featuredImgPreview, setFeaturedImgPreview] = useState<string | null>(
     null
   );
+  const [isFeauredUploading, setIsFeauredUploading] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  //   useEffect(() => {
-  //     const fetchedRestaurantData = { /* Your fetched data */ };
-  //     setFormData(fetchedRestaurantData);
-  //   }, []);
+  useEffect(() => {
+    axiosJWT
+      .get(RESTAURANT_API + "/get_details")
+      .then(({ data }) => {
+        const {
+          restaurantName,
+          email,
+          phone,
+          address,
+          description,
+          primaryImage,
+          secondaryImages,
+          openingTime,
+          closingTime,
+        } = data.restaurant;
+        setFormData((prevState) => ({
+          ...prevState,
+          restaurantName,
+          email,
+          phone,
+          address,
+          description,
+          primaryImage,
+          secondaryImages,
+          openingTime: openingTime || "09:00",
+          closingTime: closingTime || "21:00",
+        }));
+      })
+      .catch((error) => console.error(error));
+  }, []);
 
   const handleFeaturedImg = (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -59,29 +96,48 @@ const formUtils = () => {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const newInputData = { ...formData, [name]: value };
+    setFormData(newInputData);
+    const newErrors = validateRestaurantDetails(newInputData);
+    const isValidForm = Object.keys(newErrors).length === 0;
+
+    if (!isValidForm) setErrors(newErrors);
+    else setErrors({});
   };
 
   const uploadImages = async (image: string = "coverImage") => {
     if (image === "featuredImage") {
+      setIsFeauredUploading(true);
       const urls: any = await uploadImagesToCloudinary(featuredImage);
       setFormData({ ...formData, ["primaryImage"]: urls[0] });
-      setFeaturedImgPreview(urls[0]);
+      setFeaturedImgPreview(null);
+      setIsFeauredUploading(false);
     } else {
-      const urls = await uploadImagesToCloudinary(imageFiles);
-      setFormData({ ...formData, ["secondaryImages"]: urls });
+      setIsUploading(true);
+      const urls: any = await uploadImagesToCloudinary(imageFiles);
+      setFormData((prevState) => ({
+        ...prevState,
+        secondaryImages: [...prevState.secondaryImages, ...urls],
+      }));
+      setImagePreviews([]);
+      setIsUploading(false);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
-    axiosJWT
-      .put(RESTAURANT_API + "/update_details", formData)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => console.log(error));
+    const newErrors = validateRestaurantDetails(formData);
+    const isValidForm = Object.keys(newErrors).length === 0;
+    if (isValidForm) {
+      axiosJWT
+        .put(RESTAURANT_API + "/update_details", formData)
+        .then(({ data }) => {
+          showToast(data.message);
+        })
+        .catch((error) => console.log(error));
+    } else {
+      setErrors(newErrors);
+    }
   };
 
   return {
@@ -93,6 +149,9 @@ const formUtils = () => {
     handleInputChange,
     uploadImages,
     handleSubmit,
+    errors,
+    isFeauredUploading,
+    isUploading,
   };
 };
 export default formUtils;

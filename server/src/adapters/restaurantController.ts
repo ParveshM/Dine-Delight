@@ -9,7 +9,10 @@ import {
   verifyAccount,
 } from "../app/use-cases/restaurant/authRestaurant";
 import { HttpStatus } from "../types/httpStatus";
-import { updateRestaurantInfo } from "../app/use-cases/restaurant/updateRestaurant";
+import {
+  getRestaurantDetails,
+  updateRestaurantInfo,
+} from "../app/use-cases/restaurant/updateRestaurant";
 
 const restaurantController = (
   authServiceInterface: AuthServiceInterfaceType,
@@ -109,7 +112,33 @@ const restaurantController = (
       next(error);
     }
   };
+  /*
+   * METHOD: GET
+   * GET restaurant  details
+   */
+  const get_restaurantDetails = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const id = req.seller;
+      const restaurant = await getRestaurantDetails(
+        id,
+        dbRepositoryRestaurants
+      );
+      return res.status(HttpStatus.OK).json({ success: true, restaurant });
+    } catch (error) {
+      next(error);
+    }
+  };
 
-  return { signup, verifyToken, login, updateRestaurantDetails };
+  return {
+    signup,
+    verifyToken,
+    login,
+    updateRestaurantDetails,
+    get_restaurantDetails,
+  };
 };
 export default restaurantController;
