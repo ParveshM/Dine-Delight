@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { HttpStatus } from "../../../types/httpStatus";
 import configKeys from "../../../config";
 
@@ -8,6 +8,7 @@ declare global {
   namespace Express {
     interface Request {
       user?: any;
+      seller?: any;
     }
   }
 }
@@ -31,6 +32,38 @@ export default function authenticateUser(
     }
   });
   next();
+}
+
+export async function authenticateSeller(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { access_token } = req.cookies;
+    if (!access_token) {
+      return res
+        .status(HttpStatus.FORBIDDEN)
+        .json("Your are not authenticated");
+    }
+    const user = jwt.verify(
+      access_token,
+      configKeys.ACCESS_SECRET
+    ) as JwtPayload;
+    if (user.role === "seller") {
+      req.seller = user.id;
+      return next();
+    }
+    return res.status(HttpStatus.FORBIDDEN).json({
+      success: false,
+      message: "Your are not allowed to access this resource",
+      user,
+    });
+  } catch (error) {
+    res
+      .status(HttpStatus.FORBIDDEN)
+      .json({ success: false, message: "Token is not valid" });
+  }
 }
 
 // Admin authorization to get the access to routes in admin

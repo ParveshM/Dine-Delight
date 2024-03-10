@@ -9,6 +9,10 @@ import {
   verifyAccount,
 } from "../app/use-cases/restaurant/authRestaurant";
 import { HttpStatus } from "../types/httpStatus";
+import {
+  getRestaurantDetails,
+  updateRestaurantInfo,
+} from "../app/use-cases/restaurant/updateRestaurant";
 
 const restaurantController = (
   authServiceInterface: AuthServiceInterfaceType,
@@ -67,7 +71,7 @@ const restaurantController = (
   };
   /*
    * METHOD: POST
-   * Login restaurant accound with credentials
+   * Login restaurant account with credentials
    */
   const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -81,18 +85,60 @@ const restaurantController = (
       );
       res.cookie("access_token", accessToken, { httpOnly: true });
       res.cookie("refresh_token", refreshToken, { httpOnly: true });
-      return res
-        .status(HttpStatus.OK)
-        .json({
-          success: true,
-          message: "Login successful",
-          restaurant: isEmailExist,
-        });
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Login successful",
+        restaurant: isEmailExist,
+      });
     } catch (error) {
       next(error);
     }
   };
 
-  return { signup, verifyToken, login };
+  /*
+   * METHOD: PUT
+   * Update restaurant account details
+   */
+  const updateRestaurantDetails = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const id = req.seller;
+      await updateRestaurantInfo(id, req.body, dbRepositoryRestaurants);
+      res.json({ success: true, message: "Restaurants updated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+  /*
+   * METHOD: GET
+   * GET restaurant  details
+   */
+  const get_restaurantDetails = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const id = req.seller;
+      const restaurant = await getRestaurantDetails(
+        id,
+        dbRepositoryRestaurants
+      );
+      return res.status(HttpStatus.OK).json({ success: true, restaurant });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  return {
+    signup,
+    verifyToken,
+    login,
+    updateRestaurantDetails,
+    get_restaurantDetails,
+  };
 };
 export default restaurantController;

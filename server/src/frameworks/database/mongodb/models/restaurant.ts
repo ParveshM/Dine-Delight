@@ -14,7 +14,7 @@ const restaurantSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    mobile: {
+    phone: {
       type: String,
     },
     password: {
@@ -26,15 +26,9 @@ const restaurantSchema = new mongoose.Schema(
       enum: ["seller"],
       default: "seller",
     },
-    address: {
-      type: String,
-    },
-    description: {
-      type: String,
-    },
-    tableRatePerPerson: {
-      type: Number,
-    },
+    address: String,
+    description: String,
+    tableRatePerPerson: Number,
     location: {
       type: {
         type: String,
@@ -46,8 +40,8 @@ const restaurantSchema = new mongoose.Schema(
         default: [0, 0],
       },
     },
-    openingTime: Date,
-    closingTime: Date,
+    openingTime: String,
+    closingTime: String,
     isListed: {
       type: Boolean,
       default: false,
@@ -65,11 +59,13 @@ const restaurantSchema = new mongoose.Schema(
       default: false,
     },
     primaryImage: String,
-    secondaryImage: [
+
+    secondaryImages: [
       {
-        url: { type: String },
+        type: String,
       },
     ],
+
     verificationToken: String,
   },
   { timestamps: true }

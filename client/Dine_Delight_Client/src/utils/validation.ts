@@ -1,4 +1,11 @@
-import { nameRegex, emailRegex } from "../constants";
+import {
+  nameRegex,
+  emailRegex,
+  addressRegex,
+  phoneRegex,
+  descriptionRegex,
+} from "../constants";
+import { FormInitalState } from "./restaurantformUtills";
 type SignupValidation = Partial<{
   name: string;
   email: string;
@@ -107,4 +114,105 @@ const validateResetPassword = ({
   return errors;
 };
 
-export { validateSignUp, validateLogin, validateResetPassword };
+export type ValidateRestaurantType = Partial<{
+  restaurantName: string;
+  address: string;
+  description: string;
+  phone: string;
+  tableRatePerPerson: string;
+  openingTime: string;
+  closingTime: string;
+  searchLocation: string;
+}>;
+
+const validateRestaurantDetails = (formData: FormInitalState) => {
+  let errors: ValidateRestaurantType = {};
+  const {
+    restaurantName,
+    address,
+    description,
+    phone,
+    tableRatePerPerson,
+    openingTime,
+    closingTime,
+    searchLocation,
+  } = formData;
+
+  // Validate restaurant name
+  if (!restaurantName.trim().length) {
+    errors.restaurantName = "Restaurant name is required.";
+  } else if (!nameRegex.test(restaurantName)) {
+    errors.restaurantName =
+      "First letter must be capital and no leading or trailing spaces.";
+  } else if (restaurantName.trim().length > 25) {
+    errors.restaurantName =
+      "Restaurant name is must be less than 25 charcters.";
+  }
+
+  // Validate address
+  if (!address.trim()) {
+    errors.address = "Address is required.";
+  } else if (!addressRegex.test(address)) {
+    errors.address =
+      "Please enter a valid address.First letter must be upper case.";
+  }
+
+  if (!description.trim().length) {
+    errors.description = "Description is required.";
+  } else if (description.trim().length > 200) {
+    errors.description = "Description must be less than 200 characters.";
+  } else if (!descriptionRegex.test(description)) {
+    errors.description =
+      "Please enter a valid description.First letter must be uppercase";
+  }
+
+  // Validate table rate
+  if (!tableRatePerPerson) {
+    errors.tableRatePerPerson = "Table Rate is required.";
+  } else if (isNaN(tableRatePerPerson) || tableRatePerPerson <= 0) {
+    errors.tableRatePerPerson = "Please enter a valid table rate.";
+  }
+
+  if (!phone.trim().length) {
+    errors.phone = "Phone number is required.";
+  } else if (!phoneRegex.test(phone)) {
+    errors.phone = "Please enter a valid phone number.";
+  }
+  const validateTimeRange = (
+    openingTime: string,
+    closingTime: string
+  ): boolean => {
+    const formatTime = (time: string) => {
+      const [hours, minutes] = time.split(":").map(Number);
+      const date = new Date();
+      date.setHours(hours, minutes);
+      return date;
+    };
+
+    const openingTimeDate = formatTime(openingTime);
+    const closingTimeDate = formatTime(closingTime);
+
+    if (openingTimeDate >= closingTimeDate) {
+      return false;
+    }
+
+    return true;
+  };
+
+  if (!validateTimeRange(openingTime, closingTime)) {
+    errors.openingTime = "Opening time must be before closing time";
+  }
+
+  if (!searchLocation.trim()) {
+    errors.searchLocation = "Location is required.";
+  }
+
+  return errors;
+};
+
+export {
+  validateSignUp,
+  validateLogin,
+  validateResetPassword,
+  validateRestaurantDetails,
+};
