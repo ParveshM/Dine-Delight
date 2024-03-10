@@ -4,7 +4,6 @@ import {
   addressRegex,
   phoneRegex,
   descriptionRegex,
-  timeRegex,
 } from "../constants";
 import { FormInitalState } from "./restaurantformUtills";
 type SignupValidation = Partial<{
@@ -123,6 +122,7 @@ export type ValidateRestaurantType = Partial<{
   tableRatePerPerson: string;
   openingTime: string;
   closingTime: string;
+  searchLocation: string;
 }>;
 
 const validateRestaurantDetails = (formData: FormInitalState) => {
@@ -135,6 +135,7 @@ const validateRestaurantDetails = (formData: FormInitalState) => {
     tableRatePerPerson,
     openingTime,
     closingTime,
+    searchLocation,
   } = formData;
 
   // Validate restaurant name
@@ -202,10 +203,9 @@ const validateRestaurantDetails = (formData: FormInitalState) => {
     errors.openingTime = "Opening time must be before closing time";
   }
 
-  // Validate location (optional)
-  // if (!location.trim()) {
-  //   errors.location = "Location is required.";
-  // }
+  if (!searchLocation.trim()) {
+    errors.searchLocation = "Location is required.";
+  }
 
   return errors;
 };

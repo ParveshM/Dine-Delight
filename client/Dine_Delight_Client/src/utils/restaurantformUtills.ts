@@ -7,6 +7,7 @@ import {
   ValidateRestaurantType,
   validateRestaurantDetails,
 } from "./validation";
+import { getAddressByReversedGeocode } from "../Api/reverseGeocode";
 
 export interface FormInitalState {
   restaurantName: string;
@@ -14,12 +15,16 @@ export interface FormInitalState {
   address: string;
   phone: string;
   description: string;
-  location?: string;
+  searchLocation: string;
   openingTime: string;
   closingTime: string;
   tableRatePerPerson: number;
   primaryImage: string;
   secondaryImages: string[];
+  location: {
+    type: "Point";
+    coordinates: (string | number)[];
+  };
 }
 
 const formUtils = () => {
@@ -29,11 +34,16 @@ const formUtils = () => {
     address: "",
     phone: "",
     description: "",
+    searchLocation: "",
     openingTime: "",
     closingTime: "",
     tableRatePerPerson: 200,
     primaryImage: "",
     secondaryImages: [],
+    location: {
+      type: "Point",
+      coordinates: ["", ""],
+    },
   });
 
   const [errors, setErrors] = useState<ValidateRestaurantType | null>(null);
@@ -49,7 +59,19 @@ const formUtils = () => {
   useEffect(() => {
     axiosJWT
       .get(RESTAURANT_API + "/get_details")
-      .then(({ data }) => {
+      .then(async ({ data }) => {
+        const {
+          location: { coordinates },
+        } = data.restaurant;
+        /** return the result of geocodeAddress to the next 
+        one in the promise chain by awaiting to fulfill the request **/
+        const code = await getAddressByReversedGeocode(
+          coordinates[0],
+          coordinates[1]
+        );
+        return { restaurant: data.restaurant, code };
+      })
+      .then(({ restaurant, code }) => {
         const {
           restaurantName,
           email,
@@ -60,7 +82,9 @@ const formUtils = () => {
           secondaryImages,
           openingTime,
           closingTime,
-        } = data.restaurant;
+          location: { coordinates },
+        } = restaurant;
+
         setFormData((prevState) => ({
           ...prevState,
           restaurantName,
@@ -72,9 +96,14 @@ const formUtils = () => {
           secondaryImages,
           openingTime: openingTime || "09:00",
           closingTime: closingTime || "21:00",
+          searchLocation: code,
+          location: {
+            type: "Point",
+            coordinates,
+          },
         }));
       })
-      .catch((error) => console.error(error));
+      .catch((error) => console.log(error));
   }, []);
 
   const handleFeaturedImg = (e: ChangeEvent<HTMLInputElement>) => {
@@ -140,8 +169,16 @@ const formUtils = () => {
     }
   };
 
+  const updateCoordinates = (latitude: number, longitude: number) => {
+    setFormData((curr) => ({
+      ...curr,
+      location: { type: "Point", coordinates: [longitude, latitude] },
+    }));
+  };
+
   return {
     formData,
+    setFormData,
     imagePreviews,
     featuredImgPreview,
     handleFeaturedImg,
@@ -149,9 +186,10 @@ const formUtils = () => {
     handleInputChange,
     uploadImages,
     handleSubmit,
-    errors,
     isFeauredUploading,
     isUploading,
+    updateCoordinates,
+    errors,
   };
 };
 export default formUtils;

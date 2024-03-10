@@ -1,9 +1,11 @@
 import { ImSpinner9 } from "react-icons/im";
 import formUtils from "../../utils/restaurantformUtills";
-
+import AutoCompleteInput from "../../components/restaurant/AutoCompleteInput";
+import CustomMap from "./Map";
 const ViewRestaurant = () => {
   const {
     formData,
+    setFormData,
     imagePreviews,
     featuredImgPreview,
     errors,
@@ -14,6 +16,7 @@ const ViewRestaurant = () => {
     handleInputChange,
     uploadImages,
     handleSubmit,
+    updateCoordinates,
   } = formUtils();
 
   return (
@@ -134,23 +137,25 @@ const ViewRestaurant = () => {
                     >
                       Location
                     </label>
-                    <div className="mt-1 flex rounded-md shadow-sm">
-                      <input
-                        className="w-full py-3 px-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        type="text"
-                        name="location"
-                        onChange={handleInputChange}
-                        // value={formData.location ? formData.location : ""}
-                        value={""}
+                    <div className="mt-1">
+                      <AutoCompleteInput
+                        handleManualInputChange={handleInputChange}
+                        setFormData={setFormData}
+                        searchLocation={formData.searchLocation}
                       />
+                      {errors?.searchLocation && (
+                        <p className="text-red-500">{errors?.searchLocation}</p>
+                      )}
                     </div>
                   </div>
-                  <div className="col-span-6 sm:col-span-3 ">
-                    <div className=" w-full p-10 rounded-xl bg-red-100 mt-5">
-                      Google map
-                    </div>
+                  <div className="col-span-6 sm:col-span-3  ">
+                    <CustomMap
+                      longitude={formData.location.coordinates[0]}
+                      latitude={formData.location.coordinates[1]}
+                      updateCoordinates={updateCoordinates}
+                    />
                   </div>
-                  <div className="col-span-6 sm:col-span-2">
+                  <div className="col-span-6 sm:col-span-2 mt-(-10)">
                     <label
                       htmlFor="Table rate"
                       className="block text-sm font-medium text-gray-700"

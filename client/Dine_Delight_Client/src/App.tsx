@@ -10,13 +10,12 @@ const App = () => {
     <>
       <Provider store={store}>
         <PersistGate persistor={persistor}>
-          <GoogleOAuthProvider clientId="626182367661-ema6lqhd60ubf3unmq6epapvqon85np0.apps.googleusercontent.com">
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
             <BrowserRouter>
               <MainRouter />
             </BrowserRouter>
             <Toaster />
           </GoogleOAuthProvider>
-          ;
         </PersistGate>
       </Provider>
     </>
