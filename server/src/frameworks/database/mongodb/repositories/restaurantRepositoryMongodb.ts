@@ -3,7 +3,10 @@ import { RestaurantInterface } from "../../../../types/restaurantInterface";
 import Restaurant from "../models/restaurant";
 
 export const restaurantRepositoryMongodb = () => {
-  const getRestaurantById = async (id: string) => await Restaurant.findById(id);
+  const getRestaurantById = async (id: string) =>
+    await Restaurant.findById(id).select(
+      "-password -isVerified -isApproved -isRejected -verificationToken"
+    );
 
   const getRestaurantByemail = async (email: string) => {
     const restaurant: RestaurantInterface | null = await Restaurant.findOne({

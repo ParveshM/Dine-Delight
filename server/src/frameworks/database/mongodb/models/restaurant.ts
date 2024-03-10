@@ -65,7 +65,6 @@ const restaurantSchema = new mongoose.Schema(
         type: String,
       },
     ],
-
     verificationToken: String,
   },
   { timestamps: true }
@@ -75,7 +74,19 @@ restaurantSchema.pre("save", function (next) {
   if (!this.isModified("restaurantName")) {
     return next();
   }
+
   this.slug = slugify(this.restaurantName, { lower: true });
+  next();
+});
+
+restaurantSchema.pre("findOneAndUpdate", async function (next) {
+  const conditions = this.getQuery();
+  const document = await this.model.findOne(conditions);
+  if (document) {
+    console.log(document);
+    document.slug = slugify(document.restaurantName, { lower: true });
+    await document.save();
+  }
   next();
 });
 
