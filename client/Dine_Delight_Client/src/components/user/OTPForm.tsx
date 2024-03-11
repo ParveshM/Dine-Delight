@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
-import { USER_API } from "../constants";
+import { USER_API } from "../../constants";
 import {
   getItemFromLocalStorage,
   removeItemFromLocalStorage,
-} from "../utils/Set&GetLs";
-import showToast from "../utils/toaster";
+} from "../../utils/Set&GetLs";
+import showToast from "../../utils/toaster";
 import { useNavigate } from "react-router-dom";
 
 const OTPForm: React.FC = () => {

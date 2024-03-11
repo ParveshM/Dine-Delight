@@ -25,12 +25,13 @@ import NewRegistration from "../pages/admin/newRegistration";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import NotFoundPage from "../components/Error404";
 import ViewRestaurant from "../pages/restaurant/ViewRestaurant";
+import Home from "../pages/Home";
 
 export const MainRouter = () => {
   return (
     <Routes>
       {/******************* User routes *****************/}
-      <Route path="/" element={<div>Home page</div>} />
+      <Route path="/" element={<Home />} />
       <Route path="user/auth/" element={<PubliceRoute />}>
         <Route path="signup" element={<SignUp />} />
         <Route path="verify_otp" element={<VerifyOTP />} />

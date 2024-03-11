@@ -50,3 +50,10 @@ export const sidebarItem = [
     text: "Signout",
   },
 ];
+
+export const NavbarItem = [
+  { to: "/", label: "Home" },
+  { to: "/about", label: "about" },
+  { to: "/contactUs", label: "contact Us" },
+  { to: "/user/profile", label: "Account" },
+];
