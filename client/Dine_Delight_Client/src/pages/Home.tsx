@@ -1,41 +1,38 @@
-import { dineinVector } from "../assets/images";
+import { useEffect, useState } from "react";
+import Banner from "../components/user/Banner";
+import CardsList from "../components/user/Cards/CardsList";
 import Navbar from "../components/user/Header/Navbar";
+import SearchBar from "../components/user/SearchBar";
+import { RestaurantInterface } from "../types/RestaurantInterface";
+import axios from "axios";
+import { USER_API } from "../constants";
 const Home: React.FC = () => {
+  const [restaurant, setRestaurant] = useState<RestaurantInterface[]>();
+
+  useEffect(() => {
+    axios
+      .get(USER_API + "/get_restaurants")
+      .then(({ data }) => setRestaurant(data.restaurants))
+      .catch((error) => console.error(error));
+  }, []);
+
   return (
     <>
       <Navbar />
       <Banner />
-      <div>Home</div>
+      <SearchBar />
+      <section className="bg-gray-50 dark:bg-gray-900 py-10 px-12">
+        <div className="grid grid-flow-row gap-4 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+          {restaurant?.map((res) => (
+            <CardsList {...res} key={res._id} />
+          ))}
+          {restaurant?.map((res) => (
+            <CardsList {...res} key={res._id} />
+          ))}
+        </div>
+      </section>
     </>
   );
 };
 
 export default Home;
-
-const Banner: React.FC = () => {
-  return (
-    <section className="home py-10 mt-20  bg-gray-100 h-svh">
-      <div className="container flex flex-col md:flex-row items-center justify-center mx-auto px-4 md:px-12">
-        <div className="lg:w-1/2">
-          <h1 className="max-w-xl text-4xl md:text-5xl text-gray-800 font-bold lg:max-w-md mb-6 md:mb-8 leading-tight">
-            Welcome to Our Restaurant
-          </h1>
-          <p className="max-w-xl text-lg text-gray-600 font-medium mb-8 leading-relaxed md:text-xl lg:max-w-md">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ut
-            magna quis nulla volutpat pharetra. Proin quis tristique lorem.
-          </p>
-          <button className="inline-block px-6 py-3 text-lg font-medium text-white bg-gradient-to-r from-pink-500 to-orange-400 rounded-md transition duration-300 ease-in-out hover:from-pink-600 hover:to-orange-500 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
-            Reserve Now
-          </button>
-        </div>
-        <div className="lg:w-1/2 mt-8 md:mt-0 md:ml-8">
-          <img
-            className="w-full md:w-auto rounded-lg"
-            src={dineinVector}
-            alt="Banner image"
-          />
-        </div>
-      </div>
-    </section>
-  );
-};

@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { logo } from "../../../assets/images";
 import { Tooltip } from "flowbite-react";
-import { useState } from "react";
 import NavItem from "./NavItem";
 import { NavbarItem } from "../../../constants";
+import { useAppSelector } from "../../../redux/store/Store";
 const Navbar = () => {
+  const userName = useAppSelector((state) => state.UserSlice.name);
   return (
-    <nav className="fixed top-0 left-0 right-0  bg-white border-gray-200 dark:bg-gray-900 shadow-md rounded-md ">
+    <nav className="fixed top-0 left-0 right-0 z-[999] bg-white border-gray-200 dark:bg-gray-900 shadow-md rounded-md ">
       <div className=" max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
           to="/"
@@ -34,9 +35,9 @@ const Navbar = () => {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M1 1h15M1 7h15M1 13h15"
               />
             </svg>
@@ -50,6 +51,11 @@ const Navbar = () => {
             {NavbarItem.map((item, index) => {
               return <NavItem to={item.to} label={item.label} key={index} />;
             })}
+            {userName ? (
+              <NavItem to="/user/profile" label={userName} />
+            ) : (
+              <NavItem to="user/auth/login" label="Login" />
+            )}
           </ul>
         </div>
       </div>

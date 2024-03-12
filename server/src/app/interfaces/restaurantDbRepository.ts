@@ -36,6 +36,8 @@ export const restaurantDbRepository = (
     updateData: RestaurantInterface
   ) => await repository.updateRestaurant(id, updateData);
 
+  const getListedRestaurants = async () =>
+    await repository.getListedRestaurants();
   return {
     getRestaurantById,
     getRestaurantByemail,
@@ -47,6 +49,7 @@ export const restaurantDbRepository = (
     updateRestaurantRejected,
     updateRestaurantListing,
     updateRestaurant,
+    getListedRestaurants,
   };
 };
 

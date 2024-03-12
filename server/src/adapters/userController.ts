@@ -12,18 +12,26 @@ import {
   authenticateGoogleSignInUser,
   sendResetVerificationCode,
   verifyTokenAndRestPassword,
-} from "../app/use-cases/auth/userAuth";
+} from "../app/use-cases/user/auth/userAuth";
 import { HttpStatus } from "../types/httpStatus";
 import { GoogleResponseType } from "../types/googleResponseType";
+import { restaurantRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/restaurantRepositoryMongodb";
+import { restaurantDbInterface } from "../app/interfaces/restaurantDbRepository";
+import { getAllListedRestaurants } from "../app/use-cases/user/read/getRestaurants";
 // Controller will be passing all the necessaary parameers to the repositories
 
 const userController = (
   authServiceInterface: AuthServiceInterfaceType, // parameters from router
   authServiceImpl: AuthService,
   userDbRepository: UserDbInterface,
-  userRepositoryImpl: UserRepositoryMongodbType
+  userRepositoryImpl: UserRepositoryMongodbType,
+  restaurantDbRepository: restaurantDbInterface,
+  restaurantDbRepositoryImpl: restaurantRepositoryMongodbType
 ) => {
   const dbRepositoryUser = userDbRepository(userRepositoryImpl());
+  const restaurantRepository = restaurantDbRepository(
+    restaurantDbRepositoryImpl()
+  );
   const authService = authServiceInterface(authServiceImpl());
 
   /**
@@ -190,6 +198,18 @@ const userController = (
     }
   };
 
+  const getRestaurants = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const restaurants = await getAllListedRestaurants(restaurantRepository);
+      res.status(200).json({ success: true, restaurants });
+    } catch (error) {
+      next(error);
+    }
+  };
   return {
     registerUser,
     verifyOtp,
@@ -198,6 +218,7 @@ const userController = (
     googleSignIn,
     forgotPassword,
     resetPassword,
+    getRestaurants,
   };
 };
 export default userController;

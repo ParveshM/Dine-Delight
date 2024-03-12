@@ -2,18 +2,18 @@ import createUserEntity, {
   googleSignInUserEntity,
   googleSignInUserEntityType,
   userEntityType,
-} from "../../../entities/userEntity";
+} from "../../../../entities/userEntity";
 import {
   CreateUserInterface,
   UserInterface,
-} from "../../../types/userInterface";
-import { UserDbInterface } from "../../interfaces/userDbRepository";
-import { AuthServiceInterfaceType } from "../../services-Interface/authServiceInterface";
-import CustomError from "../../../utils/customError";
-import { HttpStatus } from "../../../types/httpStatus";
-import sentMail from "../../../utils/sendMail";
-import { forgotPasswordEmail, otpEmail } from "../../../utils/userEmails";
-import { GoogleResponseType } from "../../../types/googleResponseType";
+} from "../../../../types/userInterface";
+import { UserDbInterface } from "../../../interfaces/userDbRepository";
+import { AuthServiceInterfaceType } from "../../../services-Interface/authServiceInterface";
+import CustomError from "../../../../utils/customError";
+import { HttpStatus } from "../../../../types/httpStatus";
+import sentMail from "../../../../utils/sendMail";
+import { forgotPasswordEmail, otpEmail } from "../../../../utils/userEmails";
+import { GoogleResponseType } from "../../../../types/googleResponseType";
 
 // All business logics (actions need to be done using mongodb) will be here
 // pass the database query to application interface
