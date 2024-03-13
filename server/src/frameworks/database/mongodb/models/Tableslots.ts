@@ -1,18 +1,20 @@
 import mongoose from "mongoose";
 
-const reserveTableSlotSchema = new mongoose.Schema({
+const TableSlotSchema = new mongoose.Schema({
   tableId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Table",
   },
-  slot: {
+  slotDate: {
     type: Date,
     required: true,
   },
+  startTime: String,
+  endTime: String,
   isAvailable: {
     type: Boolean,
     default: true,
   },
 });
 
-export default mongoose.model("ReserveTableSlot", reserveTableSlotSchema);
+export default mongoose.model("TableSlot", TableSlotSchema);

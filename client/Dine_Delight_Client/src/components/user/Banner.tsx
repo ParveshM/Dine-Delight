@@ -2,7 +2,7 @@ import { dineinVector } from "../../assets/images";
 
 const Banner: React.FC = () => {
   return (
-    <section className="home py-6 mt-20  bg-gray-50 mb-[-40px] ">
+    <section className="home py-6 mt-20  bg-gray-50  ">
       <div className="container flex flex-col md:flex-row items-center justify-center mx-auto px-4 md:px-12">
         <div className="lg:w-1/2">
           <h1 className="max-w-xl text-4xl md:text-5xl text-gray-800 font-bold lg:max-w-md mb-6 md:mb-8 leading-tight">

@@ -1,11 +1,11 @@
 export default function tableEntity(
-  tableNumber: number,
+  tableNumber: string,
   restaurantId: string,
   capacity: number,
   location: string
 ) {
   return {
-    getTableNumber: (): number => tableNumber,
+    getTableNumber: (): string => tableNumber,
     getRestaurantId: (): string => restaurantId,
     getCapacity: (): number => capacity,
     getLocation: (): string => location,

@@ -5,14 +5,32 @@ import { authService } from "../../services/authService";
 import { restaurantDbRepository } from "../../../app/interfaces/restaurantDbRepository";
 import { restaurantRepositoryMongodb } from "../../database/mongodb/repositories/restaurantRepositoryMongodb";
 import { authenticateSeller } from "../middlewares/authMiddleware";
+import tableController from "../../../adapters/tableController";
+import { tableRepositoryMongodb } from "../../database/mongodb/repositories/tableRepositoryMongoDb";
+import { tableDbRepository } from "../../../app/interfaces/tableDbRepository";
+import { TableSlotDbRepository } from "../../../app/interfaces/reserveTabledbRepository";
+import { TableSlotRepositoryMongodb } from "../../database/mongodb/repositories/TableSlotRepositoryMongodb";
+import { timeSlotDbRepository } from "../../../app/interfaces/timeSlotDbRepository";
+import { timeSlotRepositoryMongodb } from "../../database/mongodb/repositories/timeSlotsRepositoryMongodb";
 
 const restaurantRoute = () => {
   const router = express.Router();
+
+  // Restaurant controller
   const controller = restaurantController(
     authServiceInterface,
     authService,
     restaurantDbRepository,
     restaurantRepositoryMongodb
+  );
+  // Table management and controller
+  const _tableController = tableController(
+    tableDbRepository,
+    tableRepositoryMongodb,
+    TableSlotDbRepository,
+    TableSlotRepositoryMongodb,
+    timeSlotDbRepository,
+    timeSlotRepositoryMongodb
   );
 
   router.post("/signup", controller.signup);
@@ -23,11 +41,24 @@ const restaurantRoute = () => {
     authenticateSeller,
     controller.get_restaurantDetails
   );
-
   router.put(
     "/update_details",
     authenticateSeller,
     controller.updateRestaurantDetails
+  );
+
+  /**** Table routes ******/
+  router.post("/add_table", authenticateSeller, _tableController.addTable);
+  router.post(
+    "/allot_tableSlot",
+    authenticateSeller,
+    _tableController.allotTableSlots
+  );
+
+  router.post(
+    "/add_timeslot",
+    authenticateSeller,
+    _tableController.addTimeSlots
   );
 
   return router;

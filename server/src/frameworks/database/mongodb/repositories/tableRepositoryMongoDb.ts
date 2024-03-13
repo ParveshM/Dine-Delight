@@ -12,6 +12,9 @@ export const tableRepositoryMongodb = () => {
 
   const getTablebyId = async (tableId: string) => await Table.findById(tableId);
 
+  const getTablebyNumber = async (tableNumber: string, restaurantId: string) =>
+    await Table.findOne({ tableNumber, restaurantId });
+
   const getAllTables = async (restaurantId: string) =>
     await Table.find({ restaurantId });
 
@@ -19,6 +22,7 @@ export const tableRepositoryMongodb = () => {
     addTable,
     getTablebyId,
     getAllTables,
+    getTablebyNumber,
   };
 };
 
