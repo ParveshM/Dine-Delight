@@ -4,8 +4,6 @@ export interface RestaurantInterface {
   slug: string;
   email: string;
   mobile: string;
-  password: string;
-  role: "seller";
   address?: string;
   description?: string;
   tableRatePerPerson?: number;
@@ -13,12 +11,9 @@ export interface RestaurantInterface {
     type: string;
     coordinates: [number, number];
   };
-  openingTime?: Date;
-  closingTime?: Date;
+  openingTime?: string;
+  closingTime?: string;
   isListed: boolean;
-  isVerified?: boolean;
-  isApproved?: boolean;
-  isRejected: boolean;
   primaryImage?: string;
   secondaryImage?: { url: string }[];
 }

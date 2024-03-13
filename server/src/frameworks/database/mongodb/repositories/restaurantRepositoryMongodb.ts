@@ -49,6 +49,11 @@ export const restaurantRepositoryMongodb = () => {
   const getAllRestaurants = async () =>
     await Restaurant.find({ isVerified: true, isApproved: true });
 
+  const getListedRestaurants = async () =>
+    await Restaurant.find({ isListed: true }).select(
+      "-password -isApproved -isRejected -isVerified -verificationToken -role"
+    );
+
   const getNewRegistrations = async () =>
     await Restaurant.find({
       isApproved: false,
@@ -72,6 +77,7 @@ export const restaurantRepositoryMongodb = () => {
     updateRestaurantRejected,
     updateRestaurantListing,
     updateRestaurant,
+    getListedRestaurants,
   };
 };
 

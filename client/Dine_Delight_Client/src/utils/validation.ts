@@ -137,6 +137,7 @@ const validateRestaurantDetails = (formData: FormInitalState) => {
     closingTime,
     searchLocation,
   } = formData;
+  console.log(formData);
 
   // Validate restaurant name
   if (!restaurantName.trim().length) {

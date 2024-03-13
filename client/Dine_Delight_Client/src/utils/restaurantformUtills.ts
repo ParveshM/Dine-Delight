@@ -39,7 +39,7 @@ const formUtils = () => {
     closingTime: "",
     tableRatePerPerson: 200,
     primaryImage: "",
-    secondaryImages: [],
+    secondaryImages: [""],
     location: {
       type: "Point",
       coordinates: ["", ""],
@@ -89,17 +89,18 @@ const formUtils = () => {
           ...prevState,
           restaurantName,
           email,
-          phone,
-          address,
-          description,
-          primaryImage,
-          secondaryImages,
-          openingTime: openingTime || "09:00",
-          closingTime: closingTime || "21:00",
-          searchLocation: code,
+          phone: phone ?? prevState.phone,
+          address: address ?? prevState.address,
+          description: description ?? prevState.description,
+          primaryImage: primaryImage ?? prevState.primaryImage,
+          secondaryImages: secondaryImages ?? prevState.secondaryImages,
+          openingTime: openingTime ?? "09:00",
+          closingTime: closingTime ?? "21:00",
+          searchLocation: code ?? prevState.searchLocation,
           location: {
             type: "Point",
-            coordinates,
+            coordinates: coordinates ??
+              prevState.location?.coordinates ?? ["", ""], // Default coordinates if not available
           },
         }));
       })

@@ -1,11 +1,11 @@
-import { vector, logo } from "../assets/images";
+import { vector, logo } from "../../assets/images";
 import { useFormik } from "formik";
-import { validateSignUp } from "../utils/validation";
-import showToast from "../utils/toaster";
+import { validateSignUp } from "../../utils/validation";
+import showToast from "../../utils/toaster";
 import axios from "axios";
-import { USER_API } from "../constants";
+import { USER_API } from "../../constants";
 import { useNavigate, Link } from "react-router-dom";
-import { setItemToLocalStorage } from "../utils/Set&GetLs";
+import { setItemToLocalStorage } from "../../utils/Set&GetLs";
 import { useState } from "react";
 const SignupForm = () => {
   const navigate = useNavigate();

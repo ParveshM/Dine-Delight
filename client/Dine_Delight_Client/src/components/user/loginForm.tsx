@@ -1,13 +1,13 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import axios from "axios";
-import showToast from "../utils/toaster";
+import showToast from "../../utils/toaster";
 import { useNavigate, Link } from "react-router-dom";
-import { validateLogin } from "../utils/validation";
-import { USER_API } from "../constants";
-import { logo, vectorLogin } from "../assets/images";
-import { useAppDispatch } from "../redux/store/Store";
-import { setUser } from "../redux/UserSlice";
+import { validateLogin } from "../../utils/validation";
+import { USER_API } from "../../constants";
+import { logo, vectorLogin } from "../../assets/images";
+import { useAppDispatch } from "../../redux/store/Store";
+import { setUser } from "../../redux/UserSlice";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 

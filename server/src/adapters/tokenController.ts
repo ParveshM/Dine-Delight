@@ -8,7 +8,7 @@ import { UserDbInterface } from "../app/interfaces/userDbRepository";
 import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/userRepositoryMongodb";
 import { restaurantDbInterface } from "../app/interfaces/restaurantDbRepository";
 import { restaurantRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/restaurantRepositoryMongodb";
-import { getUserById } from "../app/use-cases/auth/userAuth";
+import { getUserById } from "../app/use-cases/user/auth/userAuth";
 import { getRestaurantById } from "../app/use-cases/restaurant/authRestaurant";
 
 const tokenContoller = (

@@ -1,16 +1,11 @@
-export const convertTimeFormat = (timeString: string): string => {
-  const [timePart, ampmPart] = timeString.split(" ");
-  let [hours, minutes] = timePart.split(":").map(Number);
-  hours = parseInt(hours.toString(), 10);
+export const convertTimeFormat = (
+  timeString: string | undefined
+): string | null => {
+  if (!timeString) return null;
+  let [hour, min] = timeString.split(":").map((str) => parseInt(str, 10));
+  const paddedHour = hour.toString().padStart(2, "0");
+  const paddedMin = min.toString().padStart(2, "0");
 
-  if (ampmPart.toUpperCase() === "PM" && hours < 12) {
-    hours += 12;
-  }
-  if (ampmPart.toUpperCase() === "AM" && hours === 12) {
-    hours = 0;
-  }
-  const formattedHours = hours.toString().padStart(2, "0");
-  const formattedMinutes = minutes.toString().padStart(2, "0");
-
-  return `${formattedHours}:${formattedMinutes}`;
+  if (hour < 12) return `${paddedHour}:${paddedMin} AM`;
+  return `${hour % 12 || 12}:${paddedMin} PM`;
 };
