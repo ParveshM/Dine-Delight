@@ -24,3 +24,9 @@ export interface newRestaurantInterface {
   email: string;
   createdAt: string;
 }
+
+export interface TimeSlotInterface {
+  startTime: string;
+  endTime: string;
+  _id: string;
+}

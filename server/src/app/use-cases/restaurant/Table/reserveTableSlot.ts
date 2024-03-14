@@ -20,5 +20,5 @@ export const addTableslotAndTime = async (
   const { tableId, slotDate, startTime, endTime } = reserveTableData;
 
   const newTablSlot = reserveSlotEntity(tableId, slotDate, startTime, endTime);
-  await tableSlotRepository.addNewTableSlot(newTablSlot);
+  return await tableSlotRepository.addNewTableSlot(newTablSlot);
 };

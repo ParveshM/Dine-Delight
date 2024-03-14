@@ -1,7 +1,7 @@
 import { ImSpinner9 } from "react-icons/im";
 import formUtils from "../../utils/restaurantformUtills";
 import AutoCompleteInput from "../../components/restaurant/AutoCompleteInput";
-import CustomMap from "./Map";
+import CustomMap from "../../components/restaurant/Map";
 const ViewRestaurant = () => {
   const {
     formData,

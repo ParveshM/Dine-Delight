@@ -8,7 +8,11 @@ import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/r
 import { addTableslotAndTime } from "../app/use-cases/restaurant/Table/reserveTableSlot";
 import { TimeSlotDbInterface } from "../app/interfaces/timeSlotDbRepository";
 import { TimeSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/timeSlotsRepositoryMongodb";
-import { addTimeSlot } from "../app/use-cases/restaurant/Table/timeSlot";
+import {
+  addTimeSlot,
+  deleteTimeSlot,
+  getTimeSlotsByRestaurantId,
+} from "../app/use-cases/restaurant/Table/timeSlot";
 
 const tableController = (
   tableDbRepository: TableDbInterface,
@@ -24,6 +28,11 @@ const tableController = (
   );
   const dbTimeSlotRepository = timeSlotDbRepository(timeSlotDbRepositoryImpl());
 
+  /*
+   * * METHOD :POST
+   * Add new table to database
+   */
+
   const addTable = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const restaurantId = req.seller;
@@ -36,6 +45,11 @@ const tableController = (
     }
   };
 
+  /*
+   * * METHOD :POST
+   * Allot slots for tables
+   */
+
   const allotTableSlots = async (
     req: Request,
     res: Response,
@@ -43,30 +57,88 @@ const tableController = (
   ) => {
     try {
       await addTableslotAndTime(req.body, dbReserveTableRepository);
-      return res
-        .status(HttpStatus.OK)
-        .json({ success: true, message: "Time slot addedd successfully" });
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Time slot addedd successfully",
+      });
     } catch (error) {
       next(error);
     }
   };
-
+  /*
+   * * METHOD :POST
+   * Add new time slots
+   */
   const addTimeSlots = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     try {
-      await addTimeSlot(req.body, req.seller, dbTimeSlotRepository);
-      res
-        .status(HttpStatus.OK)
-        .json({ success: true, message: "Time slots added successfully" });
+      const newTimeSlot = await addTimeSlot(
+        req.body,
+        req.seller,
+        dbTimeSlotRepository
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Time slots added successfully",
+        newTimeSlot,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  /*
+   * * METHOD :GET
+   * return all time slot to the restaurant
+   */
+  const getTimeSlots = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const restaurantId = req.seller;
+      const timeSlots = await getTimeSlotsByRestaurantId(
+        restaurantId,
+        dbTimeSlotRepository
+      );
+      res.status(HttpStatus.OK).json({ success: true, timeSlots });
     } catch (error) {
       next(error);
     }
   };
 
-  return { addTable, allotTableSlots, addTimeSlots };
+  /*
+   * * METHOD :DELETE
+   * Remove time slot from database
+   */
+
+  const removeTimeSlot = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { timeSlotId } = req.params;
+      console.log(timeSlotId);
+      await deleteTimeSlot(timeSlotId, dbTimeSlotRepository);
+      res
+        .status(HttpStatus.OK)
+        .json({ success: true, message: "Slot deleted successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  return {
+    addTable,
+    allotTableSlots,
+    addTimeSlots,
+    getTimeSlots,
+    removeTimeSlot,
+  };
 };
 
 export default tableController;

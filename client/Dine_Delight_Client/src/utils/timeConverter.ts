@@ -1,7 +1,5 @@
-export const convertTimeFormat = (
-  timeString: string | undefined
-): string | null => {
-  if (!timeString) return null;
+export const convertTimeFormat = (timeString: string | undefined): string => {
+  if (!timeString) return "";
   let [hour, min] = timeString.split(":").map((str) => parseInt(str, 10));
   const paddedHour = hour.toString().padStart(2, "0");
   const paddedMin = min.toString().padStart(2, "0");

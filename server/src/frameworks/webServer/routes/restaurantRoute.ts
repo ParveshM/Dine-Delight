@@ -54,11 +54,19 @@ const restaurantRoute = () => {
     authenticateSeller,
     _tableController.allotTableSlots
   );
-
   router.post(
     "/add_timeslot",
     authenticateSeller,
     _tableController.addTimeSlots
+  );
+  router.get(
+    "/get_timeSlots",
+    authenticateSeller,
+    _tableController.getTimeSlots
+  );
+  router.delete(
+    "/delete_timeSlot/:timeSlotId",
+    _tableController.removeTimeSlot
   );
 
   return router;

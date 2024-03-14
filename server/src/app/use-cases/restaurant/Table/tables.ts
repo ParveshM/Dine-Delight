@@ -27,6 +27,5 @@ export const addNewTable = async (
     capacity,
     location
   );
-  const newTable = await tableDbRepository.addTable(createNewTable);
-  console.log(newTable);
+  await tableDbRepository.addTable(createNewTable);
 };

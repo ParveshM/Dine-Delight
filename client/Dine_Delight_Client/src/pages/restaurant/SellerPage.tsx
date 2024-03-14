@@ -7,7 +7,7 @@ import { useState } from "react";
 import SellerSideBar from "../../components/restaurant/sellerSidebar";
 import { childrenProps } from "../../types/PropsType";
 
-const Dashboard: React.FC<childrenProps> = ({ children }) => {
+const SellerPage: React.FC<childrenProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -65,4 +65,4 @@ const Dashboard: React.FC<childrenProps> = ({ children }) => {
     </>
   );
 };
-export default Dashboard;
+export default SellerPage;
