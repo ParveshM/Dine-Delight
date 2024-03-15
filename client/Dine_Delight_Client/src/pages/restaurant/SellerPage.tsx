@@ -44,9 +44,9 @@ const SellerPage: React.FC<childrenProps> = ({ children }) => {
                   ></path>
                 </svg>
               </button>
-              <Link to="/admin/dashboard" className="flex ms-2 md:me-24">
+              <Link to="/restaurant/dashboard" className="flex ms-2 md:me-24">
                 <img src={logo} className="h-12 me-3" alt="Dine Delight Logo" />
-                <span className="self-center text-xl font-semibold font-serif sm:text-2xl whitespace-nowrap dark:text-white">
+                <span className="self-center text-xl font-semibold font-serif sm:text-2xl whitespace-nowrap dark:text-white invisible sm:visible">
                   {name}
                 </span>
               </Link>
@@ -59,7 +59,7 @@ const SellerPage: React.FC<childrenProps> = ({ children }) => {
         <div
           className={`p-5  mt-16 ${showSidebar ? "ml-20" : "ml-2"} md:ml-20`}
         >
-          {children}
+          {children} {/** children nodes are rendered here dynamically*/}
         </div>
       </div>
     </>

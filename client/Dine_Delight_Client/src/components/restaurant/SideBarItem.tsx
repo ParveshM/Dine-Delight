@@ -6,8 +6,8 @@ const SidebarItem: FC<SidebarItemInterface> = ({
   to,
   Icon,
   text,
-  handleClick,
   isActive,
+  handleClick,
   handleLogout,
 }) => {
   const [isHovered, setIshovered] = useState<boolean>(false);
@@ -24,7 +24,7 @@ const SidebarItem: FC<SidebarItemInterface> = ({
       >
         <Icon className="w-6 h-6" color="#F49B33" onClick={handleLogout} />
         <div
-          className={`
+          className={` 
           absolute left-full rounded-md px-2 py-1 ml-6
           bg-orange-100 text-orange-800 text-sm ${
             !isHovered

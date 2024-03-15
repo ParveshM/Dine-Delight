@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import axiosJWT from "../../utils/axiosService";
-import { RESTAURANT_API } from "../../constants";
-import { TimeSlotInterface } from "../../types/RestaurantInterface";
-import SlotItem from "../../components/restaurant/timeSlotList";
-import { validateTimeRange } from "../../utils/validation";
-import showToast from "../../utils/toaster";
-import { convertTimeFormat } from "../../utils/timeConverter";
+import axiosJWT from "../../../utils/axiosService";
+import { RESTAURANT_API } from "../../../constants";
+import { TimeSlotInterface } from "../../../types/RestaurantInterface";
+import SlotItem from "../../../components/restaurant/timeSlotList";
+import { validateTimeRange } from "../../../utils/validation";
+import showToast from "../../../utils/toaster";
+import { convert24HourTime } from "../../../utils/timeConverter";
 
 const TimeSlots = () => {
   const [slots, setSlots] = useState<TimeSlotInterface[]>([]);
@@ -41,8 +41,8 @@ const TimeSlots = () => {
     e.preventDefault();
     const isValidTime = validateTimeRange(time.startTime, time.endTime);
     if (isValidTime) {
-      const startTime = convertTimeFormat(time.startTime);
-      const endTime = convertTimeFormat(time.endTime);
+      const startTime = convert24HourTime(time.startTime);
+      const endTime = convert24HourTime(time.endTime);
       axiosJWT
         .post(RESTAURANT_API + "/add_timeSlot", { startTime, endTime })
         .then(({ data }) => {
@@ -96,7 +96,7 @@ const TimeSlots = () => {
               />
               <button
                 type="submit"
-                className="px-3 py-1 bg-blue-500 text-white rounded-md ml-2"
+                className="p-2 px-4 bg-blue-500 text-white rounded-md ml-2"
               >
                 Add
               </button>

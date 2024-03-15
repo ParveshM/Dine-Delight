@@ -13,8 +13,8 @@ const SlotItem: React.FC<TimeSlotItemProps> = ({
   handleDeleteSlot,
 }) => {
   return (
-    <div className="p-2 border border-gray-200 rounded-md flex justify-between mb-2">
-      <p className="font-semibold">
+    <div className="p-2 border  border-gray-200 rounded-md flex justify-between mb-2">
+      <p className="font-semibold sm:ml-10">
         {startTime} - {endTime}
       </p>
       <div className="space-x-2">

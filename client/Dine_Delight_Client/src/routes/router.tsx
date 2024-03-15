@@ -26,8 +26,9 @@ import AdminDashboard from "../pages/admin/AdminDashboard";
 import NotFoundPage from "../components/Error404";
 import ViewRestaurant from "../pages/restaurant/restaurantDetails";
 import Home from "../pages/Home";
-import Tables from "../pages/restaurant/Tables";
-import TimeSlots from "../pages/restaurant/timeSlots";
+import Tables from "../pages/restaurant/Tables/Tables";
+import TimeSlots from "../pages/restaurant/Tables/timeSlots";
+import ViewTable from "../pages/restaurant/Tables/viewTableSlots";
 
 export const MainRouter = () => {
   return (
@@ -65,6 +66,10 @@ export const MainRouter = () => {
           element={<SellerPage children={<div>Reservations</div>} />}
         />
         <Route path="table" element={<SellerPage children={<Tables />} />} />
+        <Route
+          path="view_table/:id"
+          element={<SellerPage children={<ViewTable />} />}
+        />
         <Route
           path="time_slots"
           element={<SellerPage children={<TimeSlots />} />}

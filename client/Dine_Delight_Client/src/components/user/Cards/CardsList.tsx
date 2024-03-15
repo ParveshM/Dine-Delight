@@ -2,7 +2,10 @@ import { BiSolidNavigation } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa6";
 import { defaultImage } from "../../../constants";
-import { convertTimeFormat } from "../../../utils/timeConverter";
+import {
+  convert24HourTime,
+  convertTimeFormat,
+} from "../../../utils/timeConverter";
 import { Rating } from "flowbite-react";
 
 type restaurantCardProps = {
@@ -54,7 +57,7 @@ const CardsList: React.FC<restaurantCardProps> = ({
             </p>
           </Rating>
           <p className="p-4 text-sm font-semibold">
-            {convertTimeFormat(openingTime)} - {convertTimeFormat(closingTime)}
+            {convert24HourTime(openingTime)} - {convert24HourTime(closingTime)}
           </p>
         </div>
       </figure>

@@ -7,3 +7,11 @@ export const convertTimeFormat = (timeString: string | undefined): string => {
   if (hour < 12) return `${paddedHour}:${paddedMin} AM`;
   return `${hour % 12 || 12}:${paddedMin} PM`;
 };
+
+export const convert24HourTime = (timeString: string | undefined): string => {
+  if (!timeString) return "";
+  return new Date("1970-01-01T" + timeString + "Z").toLocaleTimeString(
+    "en-US",
+    { timeZone: "UTC", hour12: true, hour: "numeric", minute: "numeric" }
+  );
+};

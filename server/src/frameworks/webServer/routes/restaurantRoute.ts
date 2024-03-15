@@ -8,7 +8,7 @@ import { authenticateSeller } from "../middlewares/authMiddleware";
 import tableController from "../../../adapters/tableController";
 import { tableRepositoryMongodb } from "../../database/mongodb/repositories/tableRepositoryMongoDb";
 import { tableDbRepository } from "../../../app/interfaces/tableDbRepository";
-import { TableSlotDbRepository } from "../../../app/interfaces/reserveTabledbRepository";
+import { TableSlotDbRepository } from "../../../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodb } from "../../database/mongodb/repositories/TableSlotRepositoryMongodb";
 import { timeSlotDbRepository } from "../../../app/interfaces/timeSlotDbRepository";
 import { timeSlotRepositoryMongodb } from "../../database/mongodb/repositories/timeSlotsRepositoryMongodb";
@@ -54,6 +54,19 @@ const restaurantRoute = () => {
     authenticateSeller,
     _tableController.allotTableSlots
   );
+
+  router.get(
+    "/get_allTables",
+    authenticateSeller,
+    _tableController.getAllTable
+  );
+  router.get(
+    "/get_allTableSlots/:tableID",
+    authenticateSeller,
+    _tableController.getAllTableSlots
+  );
+
+  /**** Time slot routes ****/
   router.post(
     "/add_timeslot",
     authenticateSeller,
@@ -68,6 +81,7 @@ const restaurantRoute = () => {
     "/delete_timeSlot/:timeSlotId",
     _tableController.removeTimeSlot
   );
+  /*********************************/
 
   return router;
 };

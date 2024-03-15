@@ -10,7 +10,7 @@ const App = () => {
     <>
       <Provider store={store}>
         <PersistGate persistor={persistor}>
-          <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
             <BrowserRouter>
               <MainRouter />
             </BrowserRouter>

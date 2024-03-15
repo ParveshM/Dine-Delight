@@ -1,11 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import { TableDbInterface } from "../app/interfaces/tableDbRepository";
 import { TableRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/tableRepositoryMongoDb";
-import { addNewTable } from "../app/use-cases/restaurant/Table/tables";
+import {
+  addNewTable,
+  getTableList,
+} from "../app/use-cases/restaurant/Table/tables";
 import { HttpStatus } from "../types/httpStatus";
-import { TableSlotDbInterface } from "../app/interfaces/reserveTabledbRepository";
+import { TableSlotDbInterface } from "../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
-import { addTableslotAndTime } from "../app/use-cases/restaurant/Table/reserveTableSlot";
+import {
+  addTableslotAndTime,
+  getTableSlots,
+} from "../app/use-cases/restaurant/Table/tableSlots";
 import { TimeSlotDbInterface } from "../app/interfaces/timeSlotDbRepository";
 import { TimeSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/timeSlotsRepositoryMongodb";
 import {
@@ -13,6 +19,7 @@ import {
   deleteTimeSlot,
   getTimeSlotsByRestaurantId,
 } from "../app/use-cases/restaurant/Table/timeSlot";
+import asyncHandler from "express-async-handler";
 
 const tableController = (
   tableDbRepository: TableDbInterface,
@@ -23,7 +30,7 @@ const tableController = (
   timeSlotDbRepositoryImpl: TimeSlotRepositoryMongodbType
 ) => {
   const dbTableRepository = tableDbRepository(tableDbRepositoryImpl());
-  const dbReserveTableRepository = reserveTableDbRepository(
+  const dbTableSlotsRepository = reserveTableDbRepository(
     reserveTableDbRepositoryImpl()
   );
   const dbTimeSlotRepository = timeSlotDbRepository(timeSlotDbRepositoryImpl());
@@ -32,14 +39,19 @@ const tableController = (
    * * METHOD :POST
    * Add new table to database
    */
-
   const addTable = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const restaurantId = req.seller;
-      await addNewTable(req.body, restaurantId, dbTableRepository);
-      return res
-        .status(HttpStatus.OK)
-        .json({ success: true, message: "Table created successfully" });
+      const newTable = await addNewTable(
+        req.body,
+        restaurantId,
+        dbTableRepository
+      );
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Table created successfully",
+        newTable,
+      });
     } catch (error) {
       next(error);
     }
@@ -56,7 +68,7 @@ const tableController = (
     next: NextFunction
   ) => {
     try {
-      await addTableslotAndTime(req.body, dbReserveTableRepository);
+      await addTableslotAndTime(req.body, dbTableSlotsRepository);
       return res.status(HttpStatus.OK).json({
         success: true,
         message: "Time slot addedd successfully",
@@ -65,6 +77,55 @@ const tableController = (
       next(error);
     }
   };
+
+  /*
+   * * METHOD :GET
+   * Get all the tables for the restaurant
+   */
+  const getAllTable = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const restaurantID = req.seller;
+        const tables = await getTableList(restaurantID, dbTableRepository);
+        res.status(HttpStatus.OK).json({
+          success: true,
+          message: "Tables fetched successfully",
+          tables,
+        });
+      } catch (error) {
+        throw new Error("Error in fetching tables");
+      }
+    }
+  );
+
+  /*
+   * * METHOD :GET
+   * Get all the table Slots by tableID
+   * @param tableID
+   */
+
+  const getAllTableSlots = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const { tableID } = req.params;
+        const tableSlot = await getTableSlots(tableID, dbTableSlotsRepository);
+        if (tableSlot)
+          res.status(HttpStatus.OK).json({
+            success: true,
+            message: "TableSlots fetched successfully",
+            tableSlot,
+          });
+        else
+          res.status(HttpStatus.FOUND).json({
+            success: false,
+            message: "Something happened while fetching table slots",
+          });
+      } catch (error) {
+        throw new Error("Error in fetching table");
+      }
+    }
+  );
+
   /*
    * * METHOD :POST
    * Add new time slots
@@ -135,9 +196,11 @@ const tableController = (
   return {
     addTable,
     allotTableSlots,
+    getAllTable,
     addTimeSlots,
     getTimeSlots,
     removeTimeSlot,
+    getAllTableSlots,
   };
 };
 

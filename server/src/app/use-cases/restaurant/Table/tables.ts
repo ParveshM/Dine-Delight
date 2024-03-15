@@ -27,5 +27,10 @@ export const addNewTable = async (
     capacity,
     location
   );
-  await tableDbRepository.addTable(createNewTable);
+  return await tableDbRepository.addTable(createNewTable);
 };
+
+export const getTableList = async (
+  restaurantID: string,
+  tableDbRepository: ReturnType<TableDbInterface>
+) => await tableDbRepository.getAllTables(restaurantID);
