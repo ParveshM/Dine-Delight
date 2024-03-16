@@ -1,12 +1,16 @@
-import { useFormik } from "formik";
 import { CalendarCheck } from "lucide-react";
 import { ImSpinner } from "react-icons/im";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import {
   TimeSlotInterface,
   TableSlotInterface,
 } from "../../../types/RestaurantInterface";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import axiosJWT from "../../../utils/axiosService";
+import { RESTAURANT_API } from "../../../constants";
+import showToast from "../../../utils/toaster";
+import { formatDate } from "../../../utils/formatDate";
+import Button from "../Button";
 
 interface AddTableSlotModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
@@ -19,20 +23,60 @@ const AddTableSlotModal: React.FC<AddTableSlotModalProps> = ({
   timeSlots,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<{ selectTime?: string } | null>(null);
+  const navigate = useNavigate();
   const { id } = useParams();
 
-  const formik = useFormik({
-    initialValues: {
-      tableId: id ?? "",
-      slotDate: "",
-      startTime: "",
-      endTime: "",
-      selectTime: "",
-    },
-    onSubmit: (data) => {
-      console.log(data);
-    },
+  const [formData, setFormData] = useState({
+    tableId: id ?? "",
+    slotDate: "",
+    selectTime: "",
+    startTime: "",
+    endTime: "",
   });
+  const handleChange = (
+    e: ChangeEvent<HTMLSelectElement | HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const selectTime = form.get("selectTime")?.toString() ?? "";
+    if (!selectTime.length) {
+      setError({ selectTime: "Please select a time" });
+    } else {
+      setError(null);
+      setIsSubmitting(true);
+    }
+
+    const [startTime, endTime] = selectTime.split("-");
+    form.append("startTime", startTime);
+    form.append("endTime", endTime);
+    form.append("tableId", formData.tableId);
+
+    let data: Record<string, string> = {};
+    for (let [key, value] of form.entries()) {
+      if (typeof value === "string") {
+        data[key] = value;
+      }
+    }
+    axiosJWT
+      .post(RESTAURANT_API + "/allot_tableSlot", data)
+      .then(({ data }) => {
+        addNewSlot(data.newSlot);
+        showToast(data.message);
+        setIsModalOpen(false);
+      })
+      .catch(({ response }) => {
+        showToast(response.data.message, "error");
+        setIsSubmitting(false);
+      });
+  }
 
   return (
     <div
@@ -68,7 +112,7 @@ const AddTableSlotModal: React.FC<AddTableSlotModalProps> = ({
             <span className="sr-only">Close modal</span>
           </button>
         </div>
-        <form className="p-4 md:p-5" onSubmit={formik.handleSubmit}>
+        <form className="p-4 md:p-5" onSubmit={handleSubmit}>
           <div className="grid gap-4 mb-4 grid-cols-4">
             <div className="col-span-2">
               <label
@@ -79,35 +123,48 @@ const AddTableSlotModal: React.FC<AddTableSlotModalProps> = ({
               </label>
               <input
                 type="date"
+                name="slotDate"
+                value={formData.slotDate}
+                min={formatDate(new Date())}
+                onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white "
-                {...formik.getFieldProps("slotDate")}
+                required
               />
-              {/* {formik.errors.tableNumber && formik.touched.tableNumber && (
-                <div className="text-red-500">{formik.errors.tableNumber}</div>
-              )} */}
             </div>
             <div className="col-span-2 ">
               <label
-                htmlFor="Table size"
+                htmlFor="
+                slot time"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 Slot Time
               </label>
-              <select
-                name="SelectTime"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={formik.handleChange}
-              >
-                {timeSlots.map((time) => (
-                  <option
-                    selected
-                    value={`${time.startTime} - ${time.endTime}`}
-                    key={time._id}
+              {!timeSlots.length ? (
+                <Button
+                  label="Add time Slot"
+                  handleButtonclick={() => navigate("/restaurant/time_slots")}
+                />
+              ) : (
+                <>
+                  <select
+                    name="selectTime"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    onChange={handleChange}
                   >
-                    {time.startTime} - {time.endTime}
-                  </option>
-                ))}
-              </select>
+                    {timeSlots.map((time) => (
+                      <option
+                        value={`${time.startTime} - ${time.endTime}`}
+                        key={time._id}
+                      >
+                        {time.startTime} - {time.endTime}
+                      </option>
+                    ))}
+                  </select>
+                  {error?.selectTime && (
+                    <p className="text-red-500">{error?.selectTime}</p>
+                  )}
+                </>
+              )}
             </div>
           </div>
 

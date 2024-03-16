@@ -55,6 +55,12 @@ const restaurantRoute = () => {
     _tableController.allotTableSlots
   );
 
+  router.delete(
+    "/delete_tableSlot/:tableID",
+    authenticateSeller,
+    _tableController.deleteTableSlot
+  );
+
   router.get(
     "/get_allTables",
     authenticateSeller,

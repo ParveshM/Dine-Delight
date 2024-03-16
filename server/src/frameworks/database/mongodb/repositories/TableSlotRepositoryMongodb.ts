@@ -20,10 +20,14 @@ export const TableSlotRepositoryMongodb = () => {
     endTime: string
   ) => await TableSlot.findOne({ tableId, slotDate, startTime, endTime });
 
+  const removeTableSlotById = async (tableId: string) =>
+    await TableSlot.findByIdAndDelete(tableId);
+
   return {
     addNewTableSlot,
     getTableSlotbyId,
     isSlotAvailable,
+    removeTableSlotById,
   };
 };
 

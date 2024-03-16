@@ -49,8 +49,16 @@ export default (
         password,
         authService
       );
-      res.cookie("access_token", accessToken, { httpOnly: true });
-      res.cookie("refresh_token", refreshToken, { httpOnly: true });
+      res.cookie("access_token", accessToken, {
+        httpOnly: true,
+        secure: true,
+        expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+      });
+      res.cookie("refresh_token", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+      });
       return res.status(HttpStatus.OK).json({
         success: true,
         message: "Admin login success",

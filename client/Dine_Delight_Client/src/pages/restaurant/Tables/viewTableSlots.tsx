@@ -5,6 +5,9 @@ import useTableSlots from "../../../hooks/useTableSlots";
 import { useState } from "react";
 import AddTableSlotModal from "../../../components/restaurant/Table/AddTableSlotModal";
 import { TableSlotInterface } from "../../../types/RestaurantInterface";
+import axiosJWT from "../../../utils/axiosService";
+import { RESTAURANT_API } from "../../../constants";
+import showToast from "../../../utils/toaster";
 
 const ViewTable = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -12,6 +15,17 @@ const ViewTable = () => {
 
   const handleAddedSlot = (newSlotData: TableSlotInterface) =>
     setTableSlot((curr) => [...curr, newSlotData]);
+
+  const handleDeleteSlot = (id: string) => {
+    axiosJWT
+      .delete(RESTAURANT_API + `/delete_tableSlot/${id}`)
+      .then(({ data }) => {
+        showToast(data.message);
+        const filteredSlots = tableSlot.filter((slot) => slot._id !== id);
+        setTableSlot(filteredSlots);
+      })
+      .catch(() => showToast("Oops! Something went wrong while deleting slot"));
+  };
   return (
     <>
       {tableSlot.length ? (
@@ -62,16 +76,25 @@ const ViewTable = () => {
               </thead>
               <tbody>
                 {tableSlot.map((item, index) => (
-                  <TableSlotsData {...item} sl_no={index + 1} key={item._id} />
+                  <TableSlotsData
+                    {...item}
+                    sl_no={index + 1}
+                    key={item._id}
+                    handleDeleteSlot={handleDeleteSlot}
+                  />
                 ))}
               </tbody>
             </table>
           </div>
         </>
       ) : (
-        <>
+        <div className="flex gap-2 ">
           <h1 className="text-xl font-semibold ">No Slot available </h1>
-        </>
+          <Button
+            label="Add Slots"
+            handleButtonclick={() => setIsModalOpen(true)}
+          />
+        </div>
       )}
       {isModalOpen && (
         <AddTableSlotModal

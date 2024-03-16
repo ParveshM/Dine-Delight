@@ -27,3 +27,8 @@ export const getTableSlots = async (
   tableID: string,
   tableSlotRepository: ReturnType<TableSlotDbInterface>
 ) => await tableSlotRepository.getTablSlotebyId(tableID);
+
+export const removeTableSlot = async (
+  tableID: string,
+  tableSlotRepository: ReturnType<TableSlotDbInterface>
+) => await tableSlotRepository.removeTablSlotebyId(tableID);

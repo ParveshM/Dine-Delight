@@ -11,6 +11,7 @@ import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/r
 import {
   addTableslotAndTime,
   getTableSlots,
+  removeTableSlot,
 } from "../app/use-cases/restaurant/Table/tableSlots";
 import { TimeSlotDbInterface } from "../app/interfaces/timeSlotDbRepository";
 import { TimeSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/timeSlotsRepositoryMongodb";
@@ -68,10 +69,38 @@ const tableController = (
     next: NextFunction
   ) => {
     try {
-      await addTableslotAndTime(req.body, dbTableSlotsRepository);
+      const newSlot = await addTableslotAndTime(
+        req.body,
+        dbTableSlotsRepository
+      );
+      if (newSlot) {
+        return res.status(HttpStatus.OK).json({
+          success: true,
+          message: "Time slot addedd successfully",
+          newSlot,
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /*
+   * * METHOD :DELETE
+   * Delete Table slot by id
+   */
+  const deleteTableSlot = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { tableID } = req.params;
+
+      await removeTableSlot(tableID, dbTableSlotsRepository);
       return res.status(HttpStatus.OK).json({
         success: true,
-        message: "Time slot addedd successfully",
+        message: "slot removed successfully",
       });
     } catch (error) {
       next(error);
@@ -183,7 +212,6 @@ const tableController = (
   ) => {
     try {
       const { timeSlotId } = req.params;
-      console.log(timeSlotId);
       await deleteTimeSlot(timeSlotId, dbTimeSlotRepository);
       res
         .status(HttpStatus.OK)
@@ -201,6 +229,7 @@ const tableController = (
     getTimeSlots,
     removeTimeSlot,
     getAllTableSlots,
+    deleteTableSlot,
   };
 };
 

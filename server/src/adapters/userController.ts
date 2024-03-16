@@ -100,11 +100,13 @@ const userController = (
         // setting access token in the cookie
         res.cookie("access_token", accessToken, {
           httpOnly: true,
-          sameSite: "none",
           secure: true,
+          expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
         });
         res.cookie("refresh_token", refreshToken, {
           httpOnly: true,
+          secure: true,
+          expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
         });
         res
           .status(HttpStatus.OK)
@@ -135,11 +137,13 @@ const userController = (
         );
       res.cookie("access_token", accessToken, {
         httpOnly: true,
-        sameSite: "none",
         secure: true,
+        expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
       });
       res.cookie("refresh_token", refreshToken, {
         httpOnly: true,
+        secure: true,
+        expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
       });
       const user = isEmailExist ? isEmailExist : createdUser;
       res.status(HttpStatus.OK).json({ message: "login success", user });
