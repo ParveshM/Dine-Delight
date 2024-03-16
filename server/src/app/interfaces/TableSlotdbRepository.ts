@@ -8,8 +8,8 @@ export const TableSlotDbRepository = (
   const addNewTableSlot = async (reserveTableData: ReserveSlotEntityType) =>
     await repository.addNewTableSlot(reserveTableData);
 
-  const getReservedTablebyId = async (tableId: string) =>
-    await repository.getReservedTablebyId(tableId);
+  const getTablSlotebyId = async (tableId: string) =>
+    await repository.getTableSlotbyId(tableId);
 
   const isSlotAvailable = async ({
     tableId,
@@ -19,10 +19,14 @@ export const TableSlotDbRepository = (
   }: allotTableSlotInterface) =>
     await repository.isSlotAvailable(tableId, slotDate, startTime, endTime);
 
+  const removeTablSlotebyId = async (tableID: string) =>
+    await repository.removeTableSlotById(tableID);
+
   return {
     addNewTableSlot,
-    getReservedTablebyId,
+    getTablSlotebyId,
     isSlotAvailable,
+    removeTablSlotebyId,
   };
 };
 

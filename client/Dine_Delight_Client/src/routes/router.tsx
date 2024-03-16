@@ -5,7 +5,7 @@ import SignUp from "../pages/user/signup";
 import RestaurantLogin from "../pages/restaurant/restaurantLogin";
 import VerifyOTP from "../pages/user/VerifyOTP";
 import RestaurantSignup from "../pages/restaurant/restaurantSignup";
-import Dashboard from "../pages/restaurant/dashBoard";
+import SellerPage from "../pages/restaurant/SellerPage";
 import EmailVerificationPage from "../pages/restaurant/emailVerification";
 import AdminLogin from "../pages/admin/AdminLogin";
 import ProtectedRoute, {
@@ -24,8 +24,11 @@ import RestaurantList from "../pages/admin/RestaurantList";
 import NewRegistration from "../pages/admin/newRegistration";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import NotFoundPage from "../components/Error404";
-import ViewRestaurant from "../pages/restaurant/ViewRestaurant";
+import ViewRestaurant from "../pages/restaurant/restaurantDetails";
 import Home from "../pages/Home";
+import Tables from "../pages/restaurant/Tables/Tables";
+import TimeSlots from "../pages/restaurant/Tables/timeSlots";
+import ViewTable from "../pages/restaurant/Tables/viewTableSlots";
 
 export const MainRouter = () => {
   return (
@@ -56,23 +59,28 @@ export const MainRouter = () => {
         <Route index element={<Navigate to="dashboard" />} />
         <Route
           path="dashboard"
-          element={<Dashboard children={<div>Dashboard</div>} />}
+          element={<SellerPage children={<div>Dashboard</div>} />}
         />
         <Route
           path="reservations"
-          element={<Dashboard children={<div>Reservations</div>} />}
+          element={<SellerPage children={<div>Reservations</div>} />}
+        />
+        <Route path="table" element={<SellerPage children={<Tables />} />} />
+        <Route
+          path="view_table/:id"
+          element={<SellerPage children={<ViewTable />} />}
+        />
+        <Route
+          path="time_slots"
+          element={<SellerPage children={<TimeSlots />} />}
         />
         <Route
           path="menu"
-          element={<Dashboard children={<div>Food menu</div>} />}
+          element={<SellerPage children={<div>Food menu</div>} />}
         />
         <Route
           path="view"
-          element={<Dashboard children={<ViewRestaurant />} />}
-        />
-        <Route
-          path="table"
-          element={<Dashboard children={<div>Tables</div>} />}
+          element={<SellerPage children={<ViewRestaurant />} />}
         />
       </Route>
 

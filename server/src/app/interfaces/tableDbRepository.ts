@@ -13,6 +13,9 @@ export const tableDbRepository = (
   const getTablebyNumber = async (tableNumber: string, restaurantId: string) =>
     await repository.getTablebyNumber(tableNumber, restaurantId);
 
-  return { addTable, getTablebyId, getTablebyNumber };
+  const getAllTables = async (restaurantID: string) =>
+    await repository.getAllTables(restaurantID);
+
+  return { addTable, getTablebyId, getTablebyNumber, getAllTables };
 };
 export type TableDbInterface = typeof tableDbRepository;

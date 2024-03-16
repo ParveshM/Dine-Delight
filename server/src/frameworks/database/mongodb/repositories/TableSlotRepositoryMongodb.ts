@@ -10,8 +10,8 @@ export const TableSlotRepositoryMongodb = () => {
       endTime: slotData.getEndTime(),
     });
 
-  const getReservedTablebyId = async (tableId: string) =>
-    await TableSlot.findById(tableId);
+  const getTableSlotbyId = async (tableId: string) =>
+    await TableSlot.find({ tableId });
 
   const isSlotAvailable = async (
     tableId: string,
@@ -20,10 +20,14 @@ export const TableSlotRepositoryMongodb = () => {
     endTime: string
   ) => await TableSlot.findOne({ tableId, slotDate, startTime, endTime });
 
+  const removeTableSlotById = async (tableId: string) =>
+    await TableSlot.findByIdAndDelete(tableId);
+
   return {
     addNewTableSlot,
-    getReservedTablebyId,
+    getTableSlotbyId,
     isSlotAvailable,
+    removeTableSlotById,
   };
 };
 

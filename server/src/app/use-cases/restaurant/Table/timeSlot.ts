@@ -20,5 +20,15 @@ export const addTimeSlot = async (
     throw new CustomError("Time slot already exists ", HttpStatus.BAD_REQUEST);
 
   const newSlot = TimeSlotEntity(restaurantId, startTime, endTime);
-  await dbTimeSlotRepository.addTimeSlot(newSlot);
+  return await dbTimeSlotRepository.addTimeSlot(newSlot);
 };
+
+export const getTimeSlotsByRestaurantId = async (
+  restaurantId: string,
+  dbTimeSlotRepository: ReturnType<TimeSlotDbInterface>
+) => await dbTimeSlotRepository.getAllTimeSlots(restaurantId);
+
+export const deleteTimeSlot = async (
+  timeSlotId: string,
+  dbTimeSlotRepository: ReturnType<TimeSlotDbInterface>
+) => await dbTimeSlotRepository.removeTimeSlotbyId(timeSlotId);

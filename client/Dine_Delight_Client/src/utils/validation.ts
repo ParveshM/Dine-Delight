@@ -179,26 +179,6 @@ const validateRestaurantDetails = (formData: FormInitalState) => {
   } else if (!phoneRegex.test(phone)) {
     errors.phone = "Please enter a valid phone number.";
   }
-  const validateTimeRange = (
-    openingTime: string,
-    closingTime: string
-  ): boolean => {
-    const formatTime = (time: string) => {
-      const [hours, minutes] = time.split(":").map(Number);
-      const date = new Date();
-      date.setHours(hours, minutes);
-      return date;
-    };
-
-    const openingTimeDate = formatTime(openingTime);
-    const closingTimeDate = formatTime(closingTime);
-
-    if (openingTimeDate >= closingTimeDate) {
-      return false;
-    }
-
-    return true;
-  };
 
   if (!validateTimeRange(openingTime, closingTime)) {
     errors.openingTime = "Opening time must be before closing time";
@@ -217,3 +197,23 @@ export {
   validateResetPassword,
   validateRestaurantDetails,
 };
+export function validateTimeRange(
+  openingTime: string,
+  closingTime: string
+): boolean {
+  const formatTime = (time: string) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes);
+    return date;
+  };
+
+  const openingTimeDate = formatTime(openingTime);
+  const closingTimeDate = formatTime(closingTime);
+
+  if (openingTimeDate >= closingTimeDate) {
+    return false;
+  }
+
+  return true;
+}

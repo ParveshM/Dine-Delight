@@ -13,7 +13,7 @@ export const CLOUDINARY_UPLOAD_API =
   "https://api.cloudinary.com/v1_1/dcoveyjze/upload";
 export const cloudinaryUploadPreset = "restaurant";
 
-import { LayoutDashboard, LogOut, Utensils } from "lucide-react";
+import { Hourglass, LayoutDashboard, LogOut, Utensils } from "lucide-react";
 import { MdOutlineTableBar } from "react-icons/md";
 import { SlCalender } from "react-icons/sl";
 import { MdOutlineRestaurantMenu } from "react-icons/md";
@@ -33,6 +33,11 @@ export const sidebarItem = [
     to: "/restaurant/table",
     Icon: MdOutlineTableBar,
     text: "Tables",
+  },
+  {
+    to: "/restaurant/time_slots",
+    Icon: Hourglass,
+    text: "TimeSlots",
   },
   {
     to: "/restaurant/menu",

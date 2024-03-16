@@ -16,10 +16,14 @@ export const timeSlotDbRepository = (
   const getAllTimeSlots = async (restaurantId: string) =>
     await repository.getAllTimeSlots(restaurantId);
 
+  const removeTimeSlotbyId = async (timeSlotId: string) =>
+    await repository.removeTimeSlotbyId(timeSlotId);
+
   return {
     addTimeSlot,
     isTimeSlotExist,
     getAllTimeSlots,
+    removeTimeSlotbyId,
   };
 };
 export type TimeSlotDbInterface = typeof timeSlotDbRepository;

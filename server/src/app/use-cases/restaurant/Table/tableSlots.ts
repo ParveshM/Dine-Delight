@@ -2,7 +2,7 @@ import reserveSlotEntity from "../../../../entities/reserveSlotEntity";
 import { HttpStatus } from "../../../../types/httpStatus";
 import { allotTableSlotInterface } from "../../../../types/tableInterface";
 import CustomError from "../../../../utils/customError";
-import { TableSlotDbInterface } from "../../../interfaces/reserveTabledbRepository";
+import { TableSlotDbInterface } from "../../../interfaces/TableSlotdbRepository";
 
 export const addTableslotAndTime = async (
   reserveTableData: allotTableSlotInterface,
@@ -20,5 +20,15 @@ export const addTableslotAndTime = async (
   const { tableId, slotDate, startTime, endTime } = reserveTableData;
 
   const newTablSlot = reserveSlotEntity(tableId, slotDate, startTime, endTime);
-  await tableSlotRepository.addNewTableSlot(newTablSlot);
+  return await tableSlotRepository.addNewTableSlot(newTablSlot);
 };
+
+export const getTableSlots = async (
+  tableID: string,
+  tableSlotRepository: ReturnType<TableSlotDbInterface>
+) => await tableSlotRepository.getTablSlotebyId(tableID);
+
+export const removeTableSlot = async (
+  tableID: string,
+  tableSlotRepository: ReturnType<TableSlotDbInterface>
+) => await tableSlotRepository.removeTablSlotebyId(tableID);
