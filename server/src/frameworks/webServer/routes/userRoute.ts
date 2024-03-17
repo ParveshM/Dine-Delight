@@ -28,6 +28,10 @@ const userRoute = () => {
   router.post("/forgot_password", controller.forgotPassword);
   router.post("/reset_password/:token", controller.resetPassword);
   router.get("/get_restaurants", controller.getRestaurants);
+  router.get(
+    "/get_singleRestaurant/:restaurantID",
+    controller.getSingleRestaurant
+  );
 
   /********************************/
   router.get("/test", authenticateUser, (req, res) => {

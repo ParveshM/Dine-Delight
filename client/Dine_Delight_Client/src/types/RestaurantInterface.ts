@@ -15,7 +15,7 @@ export interface RestaurantInterface {
   closingTime?: string;
   isListed: boolean;
   primaryImage?: string;
-  secondaryImage?: { url: string }[];
+  secondaryImages?: string[];
 }
 
 export interface newRestaurantInterface {

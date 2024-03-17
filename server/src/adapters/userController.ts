@@ -17,7 +17,10 @@ import { HttpStatus } from "../types/httpStatus";
 import { GoogleResponseType } from "../types/googleResponseType";
 import { restaurantRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/restaurantRepositoryMongodb";
 import { restaurantDbInterface } from "../app/interfaces/restaurantDbRepository";
-import { getAllListedRestaurants } from "../app/use-cases/user/read/getRestaurants";
+import {
+  getAllListedRestaurants,
+  getSingleRestaurantById,
+} from "../app/use-cases/user/read/getRestaurants";
 // Controller will be passing all the necessaary parameers to the repositories
 
 const userController = (
@@ -214,6 +217,28 @@ const userController = (
       next(error);
     }
   };
+
+  const getSingleRestaurant = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { restaurantID } = req.params;
+      const restaurant = await getSingleRestaurantById(
+        restaurantID,
+        restaurantRepository
+      );
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Restaurant details fetched successfully",
+        restaurant,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     registerUser,
     verifyOtp,
@@ -223,6 +248,7 @@ const userController = (
     forgotPassword,
     resetPassword,
     getRestaurants,
+    getSingleRestaurant,
   };
 };
 export default userController;

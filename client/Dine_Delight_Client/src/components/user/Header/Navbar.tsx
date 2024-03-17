@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { logo } from "../../../assets/images";
-import { Tooltip } from "flowbite-react";
 import NavItem from "./NavItem";
 import { NavbarItem } from "../../../constants";
 import { useAppSelector } from "../../../redux/store/Store";
@@ -13,9 +12,7 @@ const Navbar = () => {
           to="/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <Tooltip content="Dine Delight" className="bg-red-400">
-            <img src={logo} className="h-10" alt="Dine delight Logo" />
-          </Tooltip>
+          <img src={logo} className="h-10" alt="Dine delight Logo" />
         </Link>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           <button
