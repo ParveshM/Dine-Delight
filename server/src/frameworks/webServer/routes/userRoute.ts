@@ -9,6 +9,13 @@ import { restaurantRepositoryMongodb } from "../../database/mongodb/repositories
 import { restaurantDbRepository } from "../../../app/interfaces/restaurantDbRepository";
 import { TableSlotDbRepository } from "../../../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodb } from "../../database/mongodb/repositories/TableSlotRepositoryMongodb";
+import bookingController from "../../../adapters/bookingController";
+import { reservationService } from "../../services/reservationService";
+import { reservationServiceInterface } from "../../../app/services-Interface/reservationServiceInterface";
+import { bookingDbRepository } from "../../../app/interfaces/bookingDbRepository";
+import { bookingRepositoryMongodb } from "../../database/mongodb/repositories/BookingRepositoryMongodb";
+import { tableDbRepository } from "../../../app/interfaces/tableDbRepository";
+import { tableRepositoryMongodb } from "../../database/mongodb/repositories/tableRepositoryMongoDb";
 
 const userRoute = () => {
   const router = express.Router();
@@ -23,6 +30,18 @@ const userRoute = () => {
     TableSlotDbRepository,
     TableSlotRepositoryMongodb
   );
+
+  const _bookingController = bookingController(
+    reservationServiceInterface,
+    reservationService,
+    bookingDbRepository,
+    bookingRepositoryMongodb,
+    restaurantDbRepository,
+    restaurantRepositoryMongodb,
+    tableDbRepository,
+    tableRepositoryMongodb
+  );
+
   /******** user authentication Routes ********/
   router.post("/signup", controller.registerUser);
   router.post("/verify_otp", controller.verifyOtp);
@@ -35,6 +54,12 @@ const userRoute = () => {
   router.get(
     "/get_singleRestaurant/:restaurantID",
     controller.getSingleRestaurant
+  );
+
+  router.post(
+    "/reserve_table",
+    authenticateUser,
+    _bookingController.reserveTable
   );
 
   /********************************/
