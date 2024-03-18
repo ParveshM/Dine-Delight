@@ -58,8 +58,8 @@ export const sidebarItem = [
 
 export const NavbarItem = [
   { to: "/", label: "Home" },
-  { to: "/about", label: "about" },
-  { to: "/contactUs", label: "contact Us" },
+  { to: "/about", label: "About" },
+  { to: "/contactUs", label: "Contact Us" },
 ];
 
 export const defaultImage =

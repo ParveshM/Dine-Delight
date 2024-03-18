@@ -142,6 +142,7 @@ const AddTableSlotModal: React.FC<AddTableSlotModalProps> = ({
               {!timeSlots.length ? (
                 <Button
                   label="Add time Slot"
+                  className="bg-orange-400 hover:bg-orange-500"
                   handleButtonclick={() => navigate("/restaurant/time_slots")}
                 />
               ) : (

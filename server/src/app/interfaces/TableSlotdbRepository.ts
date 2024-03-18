@@ -22,11 +22,25 @@ export const TableSlotDbRepository = (
   const removeTablSlotebyId = async (tableID: string) =>
     await repository.removeTableSlotById(tableID);
 
+  const getAvailableTableSlotsByFilter = async (
+    restaurantID: string,
+    capacity: number,
+    startTime: string,
+    currentDate: Date
+  ) =>
+    await repository.getAvailableTableSlotsByFilter(
+      restaurantID,
+      capacity,
+      startTime,
+      currentDate
+    );
+
   return {
     addNewTableSlot,
     getTablSlotebyId,
     isSlotAvailable,
     removeTablSlotebyId,
+    getAvailableTableSlotsByFilter,
   };
 };
 

@@ -6,6 +6,7 @@ import SearchBar from "../components/user/SearchBar";
 import { RestaurantInterface } from "../types/RestaurantInterface";
 import axios from "axios";
 import { USER_API } from "../constants";
+import Footer from "../components/user/Footer/Footer";
 const Home: React.FC = () => {
   const [restaurant, setRestaurant] = useState<RestaurantInterface[]>();
 
@@ -31,6 +32,7 @@ const Home: React.FC = () => {
           ))}
         </div>
       </section>
+      <Footer />
     </>
   );
 };

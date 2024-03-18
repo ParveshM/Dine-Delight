@@ -27,7 +27,7 @@ const CardsList: React.FC<restaurantCardProps> = ({
   return (
     <div className="my-4 rounded-xl hover:shadow-lg  shadow-gray-200 dark:shadow-gray-900 bg-white dark:bg-gray-800 duration-300 hover:-translate-y-1">
       <figure>
-        <Link to={"restaurant_details/" + _id}>
+        <Link to={`view_restaurant/${_id}`}>
           <img
             src={primaryImage ?? defaultImage}
             alt={"Image of " + restaurantName}
@@ -40,7 +40,7 @@ const CardsList: React.FC<restaurantCardProps> = ({
             className="absolute top-2 right-3 text-xl text-black  cursor-pointer"
             onClick={() => console.log("cliked")}
           />
-          <Link to={"/restaurant_details/" + _id}>
+          <Link to={`/view_restaurant/${_id}`}>
             <h1 className="text-lg mb-1 font-bold leading-relaxed text-gray-800 dark:text-gray-300">
               {restaurantName}
             </h1>

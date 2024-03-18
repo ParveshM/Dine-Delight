@@ -29,21 +29,24 @@ import Home from "../pages/Home";
 import Tables from "../pages/restaurant/Tables/Tables";
 import TimeSlots from "../pages/restaurant/Tables/timeSlots";
 import ViewTable from "../pages/restaurant/Tables/viewTableSlots";
+import RestaurantView from "../pages/user/RestaurantViewPage";
 
 export const MainRouter = () => {
   return (
     <Routes>
       {/******************* User routes *****************/}
       <Route path="/" element={<Home />} />
-      <Route path="user/auth/" element={<PubliceRoute />}>
+      <Route path="/view_restaurant/:id" element={<RestaurantView />} />
+      <Route path="/user/auth/" element={<PubliceRoute />}>
         <Route path="signup" element={<SignUp />} />
         <Route path="verify_otp" element={<VerifyOTP />} />
         <Route path="login" element={<Login />} />
         <Route path="forgot_password" element={<ForgotPassword />} />
         <Route path="reset_password/:id" element={<ResetPassword />} />
       </Route>
+
       {/* User Protected Route  */}
-      <Route path="user/" element={<ProtectedRoute />}>
+      <Route path="/user/" element={<ProtectedRoute />}>
         <Route index element={<Navigate to="profile" />} />
         <Route path="profile" element={<Profile />} />
       </Route>

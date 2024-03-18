@@ -17,7 +17,12 @@ import { HttpStatus } from "../types/httpStatus";
 import { GoogleResponseType } from "../types/googleResponseType";
 import { restaurantRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/restaurantRepositoryMongodb";
 import { restaurantDbInterface } from "../app/interfaces/restaurantDbRepository";
-import { getAllListedRestaurants } from "../app/use-cases/user/read/getRestaurants";
+import {
+  getAllListedRestaurants,
+  getSingleRestaurantById,
+} from "../app/use-cases/user/read/getRestaurants";
+import { TableSlotDbInterface } from "../app/interfaces/TableSlotdbRepository";
+import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
 // Controller will be passing all the necessaary parameers to the repositories
 
 const userController = (
@@ -26,11 +31,16 @@ const userController = (
   userDbRepository: UserDbInterface,
   userRepositoryImpl: UserRepositoryMongodbType,
   restaurantDbRepository: restaurantDbInterface,
-  restaurantDbRepositoryImpl: restaurantRepositoryMongodbType
+  restaurantDbRepositoryImpl: restaurantRepositoryMongodbType,
+  tableSlotDbRepository: TableSlotDbInterface,
+  tableSlotDbRepositoryImpl: TableSlotRepositoryMongodbType
 ) => {
   const dbRepositoryUser = userDbRepository(userRepositoryImpl());
   const restaurantRepository = restaurantDbRepository(
     restaurantDbRepositoryImpl()
+  );
+  const tableSlotRepository = tableSlotDbRepository(
+    tableSlotDbRepositoryImpl()
   );
   const authService = authServiceInterface(authServiceImpl());
 
@@ -214,6 +224,30 @@ const userController = (
       next(error);
     }
   };
+
+  const getSingleRestaurant = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { restaurantID } = req.params;
+      const { restaurant, tableSlots } = await getSingleRestaurantById(
+        restaurantID,
+        restaurantRepository,
+        tableSlotRepository
+      );
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Restaurant details fetched successfully",
+        restaurant,
+        tableSlots,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     registerUser,
     verifyOtp,
@@ -223,6 +257,7 @@ const userController = (
     forgotPassword,
     resetPassword,
     getRestaurants,
+    getSingleRestaurant,
   };
 };
 export default userController;
