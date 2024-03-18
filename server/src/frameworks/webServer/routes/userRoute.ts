@@ -7,6 +7,8 @@ import userController from "../../../adapters/userController";
 import authenticateUser from "../middlewares/authMiddleware";
 import { restaurantRepositoryMongodb } from "../../database/mongodb/repositories/restaurantRepositoryMongodb";
 import { restaurantDbRepository } from "../../../app/interfaces/restaurantDbRepository";
+import { TableSlotDbRepository } from "../../../app/interfaces/TableSlotdbRepository";
+import { TableSlotRepositoryMongodb } from "../../database/mongodb/repositories/TableSlotRepositoryMongodb";
 
 const userRoute = () => {
   const router = express.Router();
@@ -17,7 +19,9 @@ const userRoute = () => {
     userDbRepository,
     userRepositoryMongodb,
     restaurantDbRepository,
-    restaurantRepositoryMongodb
+    restaurantRepositoryMongodb,
+    TableSlotDbRepository,
+    TableSlotRepositoryMongodb
   );
   /******** user authentication Routes ********/
   router.post("/signup", controller.registerUser);

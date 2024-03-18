@@ -36,8 +36,8 @@ export const MainRouter = () => {
     <Routes>
       {/******************* User routes *****************/}
       <Route path="/" element={<Home />} />
-      <Route path="view_restaurant/:id" element={<RestaurantView />} />
-      <Route path="user/auth/" element={<PubliceRoute />}>
+      <Route path="/view_restaurant/:id" element={<RestaurantView />} />
+      <Route path="/user/auth/" element={<PubliceRoute />}>
         <Route path="signup" element={<SignUp />} />
         <Route path="verify_otp" element={<VerifyOTP />} />
         <Route path="login" element={<Login />} />
@@ -46,7 +46,7 @@ export const MainRouter = () => {
       </Route>
 
       {/* User Protected Route  */}
-      <Route path="user/" element={<ProtectedRoute />}>
+      <Route path="/user/" element={<ProtectedRoute />}>
         <Route index element={<Navigate to="profile" />} />
         <Route path="profile" element={<Profile />} />
       </Route>

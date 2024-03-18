@@ -3,7 +3,7 @@ export interface RestaurantInterface {
   restaurantName: string;
   slug: string;
   email: string;
-  mobile: string;
+  phone: string;
   address?: string;
   description?: string;
   tableRatePerPerson?: number;

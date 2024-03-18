@@ -51,7 +51,7 @@ const Navbar = () => {
             {userName ? (
               <NavItem to="/user/profile" label={userName} />
             ) : (
-              <NavItem to="user/auth/login" label="Login" />
+              <NavItem to="/user/auth/login" label="Login" />
             )}
           </ul>
         </div>

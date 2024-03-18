@@ -34,6 +34,7 @@ const ViewTable = () => {
             <h1 className="text-xl font-semibold ">Table Slots </h1>
             <Button
               label="Add Slots"
+              className="bg-orange-400 hover:bg-orange-500"
               handleButtonclick={() => setIsModalOpen(true)}
             />
           </div>
@@ -92,6 +93,7 @@ const ViewTable = () => {
           <h1 className="text-xl font-semibold ">No Slot available </h1>
           <Button
             label="Add Slots"
+            className="bg-orange-400 hover:bg-orange-500"
             handleButtonclick={() => setIsModalOpen(true)}
           />
         </div>
