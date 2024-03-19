@@ -8,19 +8,23 @@ import axios from "axios";
 import { USER_API } from "../constants";
 import Footer from "../components/user/Footer/Footer";
 import ShimmerCard from "../components/shimmers/ShimmerCard";
-const Home: React.FC = () => {
-  const [restaurant, setRestaurant] = useState<RestaurantInterface[]>();
-  const [isLoading, setIsLoading] = useState<boolean>();
+import { useQuery } from "react-query";
+import NotFoundPage from "../components/Error404";
 
-  useEffect(() => {
-    axios
-      .get(USER_API + "/restaurants")
-      .then(({ data }) => {
-        setRestaurant(data.restaurants);
-        setTimeout(() => setIsLoading(false), 1000);
-      })
-      .catch((error) => console.error(error));
-  }, []);
+const Home: React.FC = () => {
+  // use Query for caching the data fetched on home page
+  const { isLoading, data } = useQuery(
+    "restaurants",
+    () => axios.get(USER_API + "/restaurants"),
+    {
+      refetchOnWindowFocus: false,
+      select: (data) => {
+        return data?.data?.restaurants ?? [];
+      },
+    }
+  );
+
+  console.log(isLoading);
 
   return (
     <>
@@ -35,10 +39,7 @@ const Home: React.FC = () => {
             ))
           ) : (
             <>
-              {restaurant?.map((res) => (
-                <CardsList {...res} key={res._id} />
-              ))}
-              {restaurant?.map((res) => (
+              {data?.map((res: RestaurantInterface) => (
                 <CardsList {...res} key={res._id} />
               ))}
             </>
