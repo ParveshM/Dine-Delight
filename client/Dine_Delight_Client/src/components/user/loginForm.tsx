@@ -53,7 +53,7 @@ const LoginForm: React.FC = () => {
         dispatch(
           setUser({ name: user.name, isAuthenticated: true, role: user.role })
         );
-        navigate("/user/profile");
+        navigate("/");
       })
       .catch(({ response }) => showToast(response.data.message, "error"));
   };

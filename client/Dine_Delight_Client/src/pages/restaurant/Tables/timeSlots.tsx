@@ -75,7 +75,7 @@ const TimeSlots = () => {
         <div className="col-span-6 sm:col-span-2 md:col-span-3 lg:col-span-2">
           <div className="flex flex-col gap-4 items-center justify-between md:ml-20">
             <h2 className="text-lg font-semibold">Add New Slot</h2>
-            <form onSubmit={handleSubmit} className="flex items-center mb-4">
+            <form onSubmit={handleSubmit} className="flex items-center">
               <input
                 type="time"
                 name="startTime"

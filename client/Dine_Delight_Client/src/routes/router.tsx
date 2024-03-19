@@ -12,10 +12,7 @@ import ProtectedRoute, {
   AdminProtectedRoute,
   SellerProtectedRoute,
 } from "./ProtectedRoutes";
-import PubliceRoute, {
-  AdminPublicRoute,
-  SellerPublicRoute,
-} from "./PublicRoutes";
+import PublicRoute from "./PublicRoutes";
 import ForgotPassword from "../pages/user/forgotPassword";
 import ResetPassword from "../pages/user/resetPassword";
 import AdminPage from "../pages/admin/AdminPage";
@@ -37,13 +34,17 @@ export const MainRouter = () => {
       {/******************* User routes *****************/}
       <Route path="/" element={<Home />} />
       <Route path="/view_restaurant/:id" element={<RestaurantView />} />
-      <Route path="/user/auth/" element={<PubliceRoute />}>
-        <Route path="signup" element={<SignUp />} />
-        <Route path="verify_otp" element={<VerifyOTP />} />
-        <Route path="login" element={<Login />} />
-        <Route path="forgot_password" element={<ForgotPassword />} />
-        <Route path="reset_password/:id" element={<ResetPassword />} />
+      <Route path="" element={<PublicRoute />}>
+        <Route path="/user/auth/signup" element={<SignUp />} />
+        <Route path="/user/auth/verify_otp" element={<VerifyOTP />} />
+        <Route path="/user/auth/login" element={<Login />} />
+        <Route path="/user/auth/forgot_password" element={<ForgotPassword />} />
+        <Route
+          path="/user/auth/reset_password/:id"
+          element={<ResetPassword />}
+        />
       </Route>
+      {/* </Route>  */}
 
       {/* User Protected Route  */}
       <Route path="/user/" element={<ProtectedRoute />}>
@@ -52,7 +53,7 @@ export const MainRouter = () => {
       </Route>
 
       {/******************* Restaurant routes *****************/}
-      <Route path="restaurant/auth/" element={<SellerPublicRoute />}>
+      <Route path="restaurant/auth/" element={<PublicRoute />}>
         <Route path="login" element={<RestaurantLogin />} />
         <Route path="signup" element={<RestaurantSignup />} />
         <Route path="verify_token/:token" element={<EmailVerificationPage />} />
@@ -88,13 +89,12 @@ export const MainRouter = () => {
       </Route>
 
       {/******************* Admin routes *****************/}
-      <Route path="/admin/auth/" element={<AdminPublicRoute />}>
+      <Route path="/admin/auth/" element={<PublicRoute />}>
         <Route path="login" element={<AdminLogin />} />
       </Route>
 
       {/* admin protected Route  */}
       <Route path="/admin" element={<AdminProtectedRoute />}>
-        <Route index element={<Navigate to="dashboard" />} />
         <Route
           path="dashboard"
           element={<AdminPage children={<AdminDashboard />} />}
