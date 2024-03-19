@@ -9,7 +9,7 @@ const UserData: React.FC<UserInterface> = ({ _id, name, email, isBlocked }) => {
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
     axiosJWT
-      .post(ADMIN_API + `/block_user/${_id}`)
+      .patch(ADMIN_API + `/block_user/${_id}`)
       .catch((err) => console.log(err));
   };
   return (

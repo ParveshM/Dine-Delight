@@ -17,15 +17,6 @@ export const restaurantDbRepository = (
   const verifyRestaurant = async (token: string) =>
     await repository.verifyRestaurant(token);
 
-  const updateRestaurantApproval = async (id: string) =>
-    await repository.updateRestaurantApproval(id);
-
-  const updateRestaurantRejected = async (id: string) =>
-    await repository.updateRestaurantRejected(id);
-
-  const updateRestaurantListing = async (id: string, status: boolean) =>
-    await repository.updateRestaurantListing(id, status);
-
   const getAllRestaurants = async () => await repository.getAllRestaurants();
 
   const getNewRegisteredRestaurants = async () =>
@@ -36,6 +27,13 @@ export const restaurantDbRepository = (
     updateData: RestaurantInterface
   ) => await repository.updateRestaurant(id, updateData);
 
+  const updateRestaurantStatus = async (
+    id: string,
+    updateFields: Record<string, any>
+  ) => {
+    return await repository.updateRestaurantStatus(id, updateFields);
+  };
+
   const getListedRestaurants = async () =>
     await repository.getListedRestaurants();
   return {
@@ -45,10 +43,9 @@ export const restaurantDbRepository = (
     verifyRestaurant,
     getAllRestaurants,
     getNewRegisteredRestaurants,
-    updateRestaurantApproval,
-    updateRestaurantRejected,
-    updateRestaurantListing,
+
     updateRestaurant,
+    updateRestaurantStatus,
     getListedRestaurants,
   };
 };

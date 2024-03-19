@@ -66,7 +66,7 @@ const AddTableSlotModal: React.FC<AddTableSlotModalProps> = ({
       }
     }
     axiosJWT
-      .post(RESTAURANT_API + "/allot_tableSlot", data)
+      .post(RESTAURANT_API + "/table_slots/allot", data)
       .then(({ data }) => {
         addNewSlot(data.newSlot);
         showToast(data.message);

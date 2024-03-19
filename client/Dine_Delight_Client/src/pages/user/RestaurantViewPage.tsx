@@ -30,14 +30,13 @@ const RestaurantView = () => {
 
   useEffect(() => {
     axios
-      .get(USER_API + `/get_singleRestaurant/${id}`)
+      .get(USER_API + `/restaurants/${id}`)
       .then(({ data }) => {
         setResturant(data.restaurant);
         setTableSlot(data.tableSlots);
       })
       .catch(() => {
-        showToast("Something went wrong while fetching restaurant", "error");
-        navigate("/");
+        navigate("*");
       });
   }, []);
 

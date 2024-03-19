@@ -2,11 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AuthServiceInterfaceType } from "../app/services-Interface/authServiceInterface";
 import { AuthService } from "../frameworks/services/authService";
 import { loginAdmin } from "../app/use-cases/Admin/adminAuth";
-import {
-  getUsers,
-  getNewRegisteredRestaurants,
-  getRestaurants,
-} from "../app/use-cases/Admin/adminRead";
+import { getUsers, getRestaurants } from "../app/use-cases/Admin/adminRead";
 import { HttpStatus } from "../types/httpStatus";
 import { UserDbInterface } from "../app/interfaces/userDbRepository";
 import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/userRepositoryMongodb";
@@ -85,26 +81,9 @@ export default (
       next(error);
     }
   };
+
   /*
    * METHOD:GET
-   * Retrieve the new registered restaurnats
-   */
-  const newRegistrations = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const restaurants = await getNewRegisteredRestaurants(
-        dbResaurantRepository
-      );
-      return res.status(HttpStatus.OK).json({ success: true, restaurants });
-    } catch (error) {
-      next(error);
-    }
-  };
-  /*
-   * METHOD:POST
    * Retrieve all the restaurants in the system
    */
   const getAllRestaurants = async (
@@ -113,7 +92,14 @@ export default (
     next: NextFunction
   ) => {
     try {
-      const restaurants = await getRestaurants(dbResaurantRepository);
+      const new_registrations = req.query.new_registrations as
+        | boolean
+        | undefined; // if there is a query return the new registration
+      console.log(typeof new_registrations);
+      const restaurants = await getRestaurants(
+        new_registrations,
+        dbResaurantRepository
+      );
       return res.status(HttpStatus.OK).json({ success: true, restaurants });
     } catch (error) {
       next(error);
@@ -138,7 +124,7 @@ export default (
 
   /*
    * METHOD:PATCH
-   * Approve restaurant and inform through email
+   * Approve/reject restaurant and inform through email
    */
   const validateRestaurant = async (
     req: Request,
@@ -164,10 +150,6 @@ export default (
       next(error);
     }
   };
-  /*
-   * METHOD:PATCH
-   * Reject restaurant
-   */
 
   /*
    * METHOD:PATCH
@@ -193,7 +175,6 @@ export default (
     adminLogin,
     getAllUser,
     getAllRestaurants,
-    newRegistrations,
     userBlock,
     validateRestaurant,
     listRestaurant,

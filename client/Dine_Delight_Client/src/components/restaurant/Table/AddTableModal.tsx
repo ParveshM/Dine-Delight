@@ -38,7 +38,7 @@ const AddTableModal: React.FC<AddTableModalProps> = ({
     onSubmit: (data) => {
       setIsSubmitting(true);
       axiosJWT
-        .post(RESTAURANT_API + "/add_table", data)
+        .post(RESTAURANT_API + "/table/new", data)
         .then(({ data }) => {
           addNewTable(data.newTable);
           setIsModalOpen(false);

@@ -31,7 +31,7 @@ const NewRegistration = () => {
 
   const handleAction = (action: string) => {
     axiosJWT
-      .post(ADMIN_API + `/validate_restaurant/${restDetails?.id}`, { action })
+      .patch(ADMIN_API + `/validate_restaurant/${restDetails?.id}`, { action })
       .then(({ data }) => {
         const newFilterRegistration = filterNewRegistrations(
           restDetails?.id,

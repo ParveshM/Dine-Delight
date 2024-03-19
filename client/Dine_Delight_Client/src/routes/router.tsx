@@ -101,7 +101,7 @@ export const MainRouter = () => {
         />
         <Route path="users" element={<AdminPage children={<UsersList />} />} />
         <Route
-          path="restaurant_list"
+          path="restaurants"
           element={<AdminPage children={<RestaurantList />} />} //passing  component as props
         />
         <Route

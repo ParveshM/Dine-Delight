@@ -6,7 +6,7 @@ import { clearUser } from "../redux/UserSlice";
 const logout = (message: string, type: ToastType = "success"): void => {
   axios.defaults.withCredentials = true;
   axios
-    .post(TOKEN_API + "/clear_token")
+    .put(TOKEN_API + "/clear_token")
     .then(() => {
       store.dispatch(clearUser());
       showToast(message, type);

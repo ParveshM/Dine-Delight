@@ -12,7 +12,7 @@ const useRestaurant = () => {
 
   useEffect(() => {
     axiosJWT
-      .get(ADMIN_API + "/get_allRestaurants")
+      .get(ADMIN_API + "/restaurants")
       .then(({ data }) => {
         setRestaurants(data.restaurants);
         setFilteredRestaurants(data.restaurants);

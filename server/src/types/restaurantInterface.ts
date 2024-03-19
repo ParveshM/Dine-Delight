@@ -28,5 +28,5 @@ export interface RestaurantInterface {
   isApproved?: boolean;
   isRejected: boolean;
   primaryImage?: string;
-  secondaryImage?: { url: string }[];
+  secondaryImage?: string[];
 }

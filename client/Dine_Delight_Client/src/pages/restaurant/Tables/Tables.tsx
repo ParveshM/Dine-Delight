@@ -19,7 +19,7 @@ const Tables = () => {
 
   useEffect(() => {
     axiosJWT
-      .get(RESTAURANT_API + "/get_allTables")
+      .get(RESTAURANT_API + "/tables")
       .then(({ data }) => {
         setTableData(data.tables);
       })
@@ -39,6 +39,7 @@ const Tables = () => {
         <h1 className="text-xl font-semibold ">Tables </h1>
         <Button
           label="Add Table"
+          className="bg-orange-400 hover:bg-orange-500"
           handleButtonclick={() => setIsModalOpen(true)}
         />
       </div>

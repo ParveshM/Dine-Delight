@@ -30,22 +30,6 @@ export const restaurantRepositoryMongodb = () => {
       { isVerified: true, verificationToken: null }
     );
 
-  const updateRestaurantApproval = async (id: string) => {
-    return await Restaurant.findByIdAndUpdate(id, {
-      isApproved: true,
-      isListed: true,
-    });
-  };
-
-  const updateRestaurantRejected = async (id: string) => {
-    return await Restaurant.findByIdAndUpdate(id, {
-      isRejected: true,
-    });
-  };
-
-  const updateRestaurantListing = async (id: string, status: boolean) =>
-    await Restaurant.findByIdAndUpdate(id, { isListed: status });
-
   const getAllRestaurants = async () =>
     await Restaurant.find({ isVerified: true, isApproved: true });
 
@@ -61,6 +45,13 @@ export const restaurantRepositoryMongodb = () => {
       isRejected: false,
     });
 
+  const updateRestaurantStatus = async (
+    id: string,
+    updateFields: Record<string, any>
+  ) => {
+    return await Restaurant.findByIdAndUpdate(id, updateFields);
+  };
+
   const updateRestaurant = async (
     id: string,
     updateData: RestaurantInterface
@@ -73,10 +64,8 @@ export const restaurantRepositoryMongodb = () => {
     verifyRestaurant,
     getAllRestaurants,
     getNewRegistrations,
-    updateRestaurantApproval,
-    updateRestaurantRejected,
-    updateRestaurantListing,
     updateRestaurant,
+    updateRestaurantStatus,
     getListedRestaurants,
   };
 };

@@ -12,7 +12,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get(USER_API + "/get_restaurants")
+      .get(USER_API + "/restaurants")
       .then(({ data }) => setRestaurant(data.restaurants))
       .catch((error) => console.error(error));
   }, []);

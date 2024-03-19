@@ -18,7 +18,7 @@ const ViewTable = () => {
 
   const handleDeleteSlot = (id: string) => {
     axiosJWT
-      .delete(RESTAURANT_API + `/delete_tableSlot/${id}`)
+      .delete(RESTAURANT_API + `/table_slots/${id}`)
       .then(({ data }) => {
         showToast(data.message);
         const filteredSlots = tableSlot.filter((slot) => slot._id !== id);

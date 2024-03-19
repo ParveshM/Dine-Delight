@@ -29,7 +29,7 @@ const LoginForm: React.FC = () => {
           const { name, role } = data.user;
           showToast(data.message, "success");
           dispatch(setUser({ isAuthenticated: true, name, role }));
-          navigate("/user/profile");
+          navigate("/");
         })
         .catch(({ response }) => {
           console.log(response);

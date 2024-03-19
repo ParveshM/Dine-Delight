@@ -16,7 +16,7 @@ const TimeSlots = () => {
 
   useEffect(() => {
     axiosJWT
-      .get(RESTAURANT_API + "/get_timeSlots")
+      .get(RESTAURANT_API + "/time_slots")
       .then(({ data }) => setSlots(data.timeSlots))
       .catch((error) => console.log(error));
   }, []);
@@ -28,7 +28,7 @@ const TimeSlots = () => {
 
   const handleDeleteSlot = (slotId: string) => {
     axiosJWT
-      .delete(RESTAURANT_API + `/delete_timeSlot/${slotId}`)
+      .delete(RESTAURANT_API + `/time_slots/${slotId}`)
       .then(({ data }) => {
         showToast(data.message);
         const filterOutDeltedSlot = slots.filter((slot) => slot._id !== slotId);
@@ -44,7 +44,7 @@ const TimeSlots = () => {
       const startTime = convert24HourTime(time.startTime);
       const endTime = convert24HourTime(time.endTime);
       axiosJWT
-        .post(RESTAURANT_API + "/add_timeSlot", { startTime, endTime })
+        .post(RESTAURANT_API + "/time_slots/new", { startTime, endTime })
         .then(({ data }) => {
           showToast(data.message);
           setSlots((prevSlots) => [...prevSlots, data.newTimeSlot]);

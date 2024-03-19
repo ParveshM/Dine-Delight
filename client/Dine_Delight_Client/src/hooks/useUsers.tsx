@@ -8,7 +8,7 @@ const useUsers = () => {
 
   useEffect(() => {
     axiosJWT
-      .get(ADMIN_API + "/get_allUsers")
+      .get(ADMIN_API + "/users")
       .then(({ data }) => setUsers(data.users))
       .catch((error: any) => console.log(error));
   }, [setUsers]);

@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import restaurantController from "../../../adapters/restaurantController";
 import { authServiceInterface } from "../../../app/services-Interface/authServiceInterface";
 import { authService } from "../../services/authService";
@@ -36,57 +36,38 @@ const restaurantRoute = () => {
   router.post("/signup", controller.signup);
   router.post("/verify_token/:token", controller.verifyToken);
   router.post("/login", controller.login);
-  router.get(
-    "/get_details",
-    authenticateSeller,
-    controller.get_restaurantDetails
-  );
-  router.put(
-    "/update_details",
-    authenticateSeller,
-    controller.updateRestaurantDetails
-  );
+  router.get("/info", authenticateSeller, controller.get_restaurantDetails);
+  router.put("/info", authenticateSeller, controller.updateRestaurantDetails);
 
   /**** Table routes ******/
-  router.post("/add_table", authenticateSeller, _tableController.addTable);
+  router.post("/table/new", authenticateSeller, _tableController.addTable);
   router.post(
-    "/allot_tableSlot",
+    "/table_slots/allot",
     authenticateSeller,
     _tableController.allotTableSlots
   );
 
   router.delete(
-    "/delete_tableSlot/:tableID",
+    "/table_slots/:tableID",
     authenticateSeller,
     _tableController.deleteTableSlot
   );
 
+  router.get("/tables", authenticateSeller, _tableController.getAllTable);
   router.get(
-    "/get_allTables",
-    authenticateSeller,
-    _tableController.getAllTable
-  );
-  router.get(
-    "/get_allTableSlots/:tableID",
+    "/table_slots/:tableID",
     authenticateSeller,
     _tableController.getAllTableSlots
   );
 
   /**** Time slot routes ****/
+  router.get("/time_slots", authenticateSeller, _tableController.getTimeSlots);
   router.post(
-    "/add_timeslot",
+    "/time_slots/new",
     authenticateSeller,
-    _tableController.addTimeSlots
+    _tableController.addTimeSlots //create new time slot
   );
-  router.get(
-    "/get_timeSlots",
-    authenticateSeller,
-    _tableController.getTimeSlots
-  );
-  router.delete(
-    "/delete_timeSlot/:timeSlotId",
-    _tableController.removeTimeSlot
-  );
+  router.delete("/time_slots/:timeSlotId", _tableController.removeTimeSlot);
   /*********************************/
 
   return router;

@@ -50,11 +50,8 @@ const userRoute = () => {
   router.post("/google_signIn", controller.googleSignIn); // google sign in
   router.post("/forgot_password", controller.forgotPassword);
   router.post("/reset_password/:token", controller.resetPassword);
-  router.get("/get_restaurants", controller.getRestaurants);
-  router.get(
-    "/get_singleRestaurant/:restaurantID",
-    controller.getSingleRestaurant
-  );
+  router.get("/restaurants", controller.getRestaurants);
+  router.get("/restaurants/:restaurantID", controller.getSingleRestaurant);
 
   router.post(
     "/reserve_table",
