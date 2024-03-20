@@ -30,3 +30,10 @@ export interface RestaurantInterface {
   primaryImage?: string;
   secondaryImage?: string[];
 }
+
+export type Filter = {
+  query: Record<string, any>;
+  limit?: number;
+  skip?: number;
+  sortBy?: Record<string, "asc" | "desc">;
+};

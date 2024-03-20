@@ -9,7 +9,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosJWT from "../../../utils/axiosService";
 import { RESTAURANT_API } from "../../../constants";
 import showToast from "../../../utils/toaster";
-import { formatDate } from "../../../utils/formatDate";
+import { formatDate } from "../../../utils/util";
 import Button from "../Button";
 
 interface AddTableSlotModalProps {

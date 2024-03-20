@@ -23,6 +23,7 @@ import {
 } from "../app/use-cases/user/read/getRestaurants";
 import { TableSlotDbInterface } from "../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
+import { Filter } from "../types/restaurantInterface";
 // Controller will be passing all the necessaary parameers to the repositories
 
 const userController = (
@@ -218,7 +219,14 @@ const userController = (
     next: NextFunction
   ) => {
     try {
-      const restaurants = await getAllListedRestaurants(restaurantRepository);
+      const q = req.query.q as string;
+      const location = req.query.location as (string | number)[];
+
+      const restaurants = await getAllListedRestaurants(
+        q,
+        location,
+        restaurantRepository
+      );
       res.status(200).json({ success: true, restaurants });
     } catch (error) {
       next(error);

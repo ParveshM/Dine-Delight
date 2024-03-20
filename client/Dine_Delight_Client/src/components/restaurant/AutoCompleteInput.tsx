@@ -46,7 +46,7 @@ const AutoCompleteInput: FC<AutoCompleteProps> = ({
       <DebounceInput
         type="text"
         name="searchLocation"
-        placeholder="searchLocation"
+        placeholder="search...."
         minLength={1}
         debounceTimeout={500}
         value={searchLocation}

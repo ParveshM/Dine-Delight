@@ -8,7 +8,9 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import "tw-elements-react/dist/css/tw-elements-react.min.css";
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { refetchOnWindowFocus: false } },
+});
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>

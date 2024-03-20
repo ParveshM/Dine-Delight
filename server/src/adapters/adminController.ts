@@ -95,7 +95,6 @@ export default (
       const new_registrations = req.query.new_registrations as
         | boolean
         | undefined; // if there is a query return the new registration
-      console.log(typeof new_registrations);
       const restaurants = await getRestaurants(
         new_registrations,
         dbResaurantRepository

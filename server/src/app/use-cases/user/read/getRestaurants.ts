@@ -1,9 +1,30 @@
+import { Filter } from "../../../../types/restaurantInterface";
 import { TableSlotDbInterface } from "../../../interfaces/TableSlotdbRepository";
 import { restaurantDbInterface } from "../../../interfaces/restaurantDbRepository";
 
 export const getAllListedRestaurants = async (
+  searchText: string,
+  userCoordinates: (string | number)[],
   restaurantRepository: ReturnType<restaurantDbInterface>
-) => await restaurantRepository.getListedRestaurants();
+) => {
+  const filter = {
+    isListed: true,
+    restaurantName: { $regex: new RegExp(searchText, "i") },
+    ...(userCoordinates &&
+      userCoordinates.length === 2 && {
+        location: {
+          $nearSphere: {
+            $geometry: {
+              type: "Point",
+              coordinates: userCoordinates,
+            },
+            $maxDistance: 10000,
+          },
+        },
+      }),
+  };
+  return await restaurantRepository.getListedRestaurants(filter);
+};
 
 export const getSingleRestaurantById = async (
   restaurantID: string,

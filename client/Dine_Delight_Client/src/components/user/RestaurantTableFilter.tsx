@@ -1,5 +1,5 @@
 import { TableSlotInterface } from "../../types/RestaurantInterface";
-import { formatDate } from "../../utils/formatDate";
+import { formatDate } from "../../utils/util";
 import Button from "../restaurant/Button";
 
 interface TableSlotFilterProps {
