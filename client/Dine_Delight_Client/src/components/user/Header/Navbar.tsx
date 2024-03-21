@@ -1,24 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { logo } from "../../../assets/images";
 import NavItem from "./NavItem";
 import { NavbarItem } from "../../../constants";
-import { useAppDispatch, useAppSelector } from "../../../redux/store/Store";
+import { useAppSelector } from "../../../redux/store/Store";
 import { useEffect, useState } from "react";
 import { ChevronDown, MapPin, Menu } from "lucide-react";
 import LocationSidebar from "../Sidebar/LocationSidebar";
 import { getAddressByReversedGeocode } from "../../../Api/reverseGeocode";
 import { truncate } from "../../../utils/util";
-import { clearLocation } from "../../../redux/LocationSlice";
 
 const Navbar = () => {
-  const [isNavOpen, setIsNavOpen] = useState<boolean>(true);
+  const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const userName = useAppSelector((state) => state.UserSlice.name);
-  const dispatch = useAppDispatch();
   const coordinates = useAppSelector(
     (state) => state.LocationSlice?.location?.coordinates
   ) as string[];
+
   const [locationDetails, setLocationDetails] = useState<string | null>(null);
+
   useEffect(() => {
     if (coordinates.length) {
       getAddressByReversedGeocode(coordinates[0], coordinates[1])
@@ -35,6 +35,8 @@ const Navbar = () => {
     setIsSidebarOpen(!isSidebarOpen);
     setIsNavOpen(false);
   };
+  const location = useLocation();
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-[999] bg-white border-gray-200 dark:bg-gray-900 shadow-md rounded-md ">
       <div className=" max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -42,19 +44,21 @@ const Navbar = () => {
           <Link to="/">
             <img src={logo} className="h-10" alt="Dine delight Logo" />
           </Link>
-          <button
-            className=" hover:text-orange-400 inline-flex items-center text-sm"
-            onClick={handleSidebarOpen}
-          >
-            {locationDetails ? (
-              <>
-                <p>{locationDetails}</p>
-                <ChevronDown />
-              </>
-            ) : (
-              <MapPin />
-            )}
-          </button>
+          {location.pathname === "/" && (
+            <button
+              className=" hover:text-orange-400 inline-flex items-center text-sm"
+              onClick={handleSidebarOpen}
+            >
+              {locationDetails ? (
+                <>
+                  <p>{locationDetails}</p>
+                  <ChevronDown />
+                </>
+              ) : (
+                <MapPin />
+              )}
+            </button>
+          )}
         </div>
         {isSidebarOpen && (
           <LocationSidebar handleSidebarOpen={handleSidebarOpen} />

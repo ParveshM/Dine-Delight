@@ -4,7 +4,7 @@ import { RESTAURANT_API } from "../../../constants";
 import showToast from "../../../utils/toaster";
 import TableRowData from "../../../components/restaurant/Table/tableRowItem";
 import Button from "../../../components/restaurant/Button";
-import AddTableModal from "../../../components/restaurant/Table/AddTableModal";
+import AddTableModal from "../../../components/restaurant/Table/Modal/AddTableModal";
 
 export interface TableDataInterface {
   _id: string;

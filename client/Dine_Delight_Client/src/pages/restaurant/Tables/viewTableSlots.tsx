@@ -3,7 +3,7 @@ import Button from "../../../components/restaurant/Button";
 import TableSlotsData from "../../../components/restaurant/Table/TableSlotsData";
 import useTableSlots from "../../../hooks/useTableSlots";
 import { useState } from "react";
-import AddTableSlotModal from "../../../components/restaurant/Table/AddTableSlotModal";
+import AddTableSlotModal from "../../../components/restaurant/Table/Modal/AddTableSlotModal";
 import { TableSlotInterface } from "../../../types/RestaurantInterface";
 import axiosJWT from "../../../utils/axiosService";
 import { RESTAURANT_API } from "../../../constants";

@@ -28,7 +28,7 @@ export const TableSlotRepositoryMongodb = () => {
     restaurantID: string,
     capacity: number,
     startTime: string | "$startTime", //type   '$startTime' that is matched by whole dataset startTime else the given time
-    currentDate: Date
+    currentDate: string
   ) => {
     const startOfDay = new Date(currentDate);
     startOfDay.setHours(0, 0, 0);

@@ -240,8 +240,13 @@ const userController = (
   ) => {
     try {
       const { restaurantID } = req.params;
+      const guest =
+        typeof req?.query?.guest === "string" ? parseInt(req.query.guest) : 2;
+      const date = req.query.date as string;
       const { restaurant, tableSlots } = await getSingleRestaurantById(
         restaurantID,
+        guest,
+        date,
         restaurantRepository,
         tableSlotRepository
       );

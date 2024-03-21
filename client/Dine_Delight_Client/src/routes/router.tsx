@@ -20,7 +20,7 @@ import UsersList from "../pages/admin/UserList";
 import RestaurantList from "../pages/admin/RestaurantList";
 import NewRegistration from "../pages/admin/newRegistration";
 import AdminDashboard from "../pages/admin/AdminDashboard";
-import NotFoundPage from "../components/Error404";
+import NotFoundPage from "../pages/Error404";
 import ViewRestaurant from "../pages/restaurant/restaurantDetails";
 import Home from "../pages/Home";
 import Tables from "../pages/restaurant/Tables/Tables";

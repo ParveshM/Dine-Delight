@@ -7,7 +7,7 @@ import {
   TableSlotInterface,
 } from "../../types/RestaurantInterface";
 import { USER_API } from "../../constants";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import showToast from "../../utils/toaster";
 import axios from "axios";
 import {
@@ -21,12 +21,11 @@ import { convert24HourTime } from "../../utils/timeConverter";
 import TableSlotFilter from "../../components/user/RestaurantTableFilter";
 import { BiSolidNavigation } from "react-icons/bi";
 import { MdEmail } from "react-icons/md";
-import NotFoundPage from "../../components/Error404";
+import NotFoundPage from "../Error404";
 import { RestaurantViewShimmer } from "../../components/shimmers/RestaurantViewShimmer";
 
 const RestaurantView = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [restaurant, setResturant] = useState<RestaurantInterface>();
   const [tableSlot, setTableSlot] = useState<TableSlotInterface[]>([]);
   const [error, setError] = useState<boolean>(false);
@@ -94,6 +93,7 @@ const RestaurantView = () => {
                   <p className="font-medium">{restaurant.description}</p>
                 </div>
                 <TableSlotFilter
+                  restaurantID={id}
                   tableSlots={tableSlot}
                   setTableSlot={setTableSlot}
                 />

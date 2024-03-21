@@ -28,12 +28,14 @@ export const getAllListedRestaurants = async (
 
 export const getSingleRestaurantById = async (
   restaurantID: string,
+  guest: number,
+  date: string,
   restaurantRepository: ReturnType<restaurantDbInterface>,
   tableSlotRepository: ReturnType<TableSlotDbInterface>
 ) => {
-  const capacity = 2;
+  const capacity = guest ?? 2;
   const startTime = "$startTime";
-  const currentDate = new Date();
+  const currentDate = date ?? new Date();
   const restaurant = await restaurantRepository.getRestaurantById(restaurantID);
   const tableSlots = await tableSlotRepository.getAvailableTableSlotsByFilter(
     restaurantID,
