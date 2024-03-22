@@ -14,7 +14,7 @@ const useNewRegistrations = () => {
 
   useEffect(() => {
     axiosJWT
-      .get(ADMIN_API + "/get_newRegistrations")
+      .get(ADMIN_API + "/restaurants?new_registrations=true")
       .then(({ data }) => {
         setNewRestaurants(data.restaurants);
         setFilteredRegistration(data.restaurants);

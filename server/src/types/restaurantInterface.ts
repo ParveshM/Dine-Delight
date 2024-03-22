@@ -28,5 +28,12 @@ export interface RestaurantInterface {
   isApproved?: boolean;
   isRejected: boolean;
   primaryImage?: string;
-  secondaryImage?: { url: string }[];
+  secondaryImage?: string[];
 }
+
+export type Filter = {
+  query: Record<string, any>;
+  limit?: number;
+  skip?: number;
+  sortBy?: Record<string, "asc" | "desc">;
+};

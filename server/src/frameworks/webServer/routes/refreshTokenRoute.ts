@@ -18,9 +18,9 @@ const refreshTokenRoute = () => {
     restaurantRepositoryMongodb
   );
 
-  router.post("/get_accessToken", controller.returnAccessToClient);
+  router.get("/accessToken", controller.returnAccessToClient);
   router.post("/refresh_token", controller.getNewAccessToken);
-  router.post("/clear_token", controller.clearToken);
+  router.put("/clear_token", controller.clearToken);
 
   return router;
 };

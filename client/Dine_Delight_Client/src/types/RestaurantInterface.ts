@@ -24,7 +24,11 @@ export interface newRestaurantInterface {
   email: string;
   createdAt: string;
 }
-
+export interface TableInterface {
+  tableNumber: string;
+  capacity: number;
+  location: "In" | "Out";
+}
 export interface TimeSlotInterface {
   startTime: string;
   endTime: string;
@@ -32,10 +36,10 @@ export interface TimeSlotInterface {
 }
 
 export interface TableSlotInterface {
-  _id: string;
-  tableId: string;
-  slotDate: Date;
-  startTime: string;
-  endTime: string;
-  isAvailable: boolean;
+  _id: string | null;
+  tableId: string | null;
+  slotDate: string | null;
+  startTime: string | null;
+  endTime: string | null;
+  isAvailable: boolean | null;
 }

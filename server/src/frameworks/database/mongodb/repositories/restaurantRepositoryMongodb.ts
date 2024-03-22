@@ -30,29 +30,14 @@ export const restaurantRepositoryMongodb = () => {
       { isVerified: true, verificationToken: null }
     );
 
-  const updateRestaurantApproval = async (id: string) => {
-    return await Restaurant.findByIdAndUpdate(id, {
-      isApproved: true,
-      isListed: true,
-    });
-  };
-
-  const updateRestaurantRejected = async (id: string) => {
-    return await Restaurant.findByIdAndUpdate(id, {
-      isRejected: true,
-    });
-  };
-
-  const updateRestaurantListing = async (id: string, status: boolean) =>
-    await Restaurant.findByIdAndUpdate(id, { isListed: status });
-
   const getAllRestaurants = async () =>
     await Restaurant.find({ isVerified: true, isApproved: true });
 
-  const getListedRestaurants = async () =>
-    await Restaurant.find({ isListed: true }).select(
+  const getListedRestaurants = async (filter: Record<string, any>) => {
+    return await Restaurant.find(filter).select(
       "-password -isApproved -isRejected -isVerified -verificationToken -role"
     );
+  };
 
   const getNewRegistrations = async () =>
     await Restaurant.find({
@@ -60,6 +45,13 @@ export const restaurantRepositoryMongodb = () => {
       isVerified: true,
       isRejected: false,
     });
+
+  const updateRestaurantStatus = async (
+    id: string,
+    updateFields: Record<string, any>
+  ) => {
+    return await Restaurant.findByIdAndUpdate(id, updateFields);
+  };
 
   const updateRestaurant = async (
     id: string,
@@ -73,10 +65,8 @@ export const restaurantRepositoryMongodb = () => {
     verifyRestaurant,
     getAllRestaurants,
     getNewRegistrations,
-    updateRestaurantApproval,
-    updateRestaurantRejected,
-    updateRestaurantListing,
     updateRestaurant,
+    updateRestaurantStatus,
     getListedRestaurants,
   };
 };

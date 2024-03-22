@@ -1,6 +1,6 @@
 import { logo } from "../../assets/images";
 import { useAppDispatch, useAppSelector } from "../../redux/store/Store";
-import { clearUser } from "../../redux/UserSlice";
+import { clearUser } from "../../redux/slices/UserSlice";
 import logout from "../../utils/logout";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";

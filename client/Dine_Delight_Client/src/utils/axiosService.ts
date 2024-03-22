@@ -22,7 +22,7 @@ const getAccessToken = async () => {
   try {
     let token;
     let user;
-    const { data } = await axios.post(TOKEN_API + "/get_accessToken");
+    const { data } = await axios.get(TOKEN_API + "/accessToken");
     token = data?.access_token;
     user = data?.user;
 

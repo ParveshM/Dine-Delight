@@ -16,7 +16,7 @@ export const timeSlotRepositoryMongodb = () => {
   ) => await TimeSlot.findOne({ restaurantId, startTime, endTime });
 
   const getAllTimeSlots = async (restaurantId: string) =>
-    await TimeSlot.find({ restaurantId }).sort({ startTime: 1 });
+    await TimeSlot.find({ restaurantId }).sort({ startTime: -1 });
 
   const removeTimeSlotbyId = async (id: string) =>
     await TimeSlot.findByIdAndDelete(id);

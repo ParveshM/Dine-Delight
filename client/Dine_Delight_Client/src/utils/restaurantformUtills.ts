@@ -58,7 +58,7 @@ const formUtils = () => {
 
   useEffect(() => {
     axiosJWT
-      .get(RESTAURANT_API + "/get_details")
+      .get(RESTAURANT_API + "/info")
       .then(async ({ data }) => {
         const {
           location: { coordinates },
@@ -160,7 +160,7 @@ const formUtils = () => {
     const isValidForm = Object.keys(newErrors).length === 0;
     if (isValidForm) {
       axiosJWT
-        .put(RESTAURANT_API + "/update_details", formData)
+        .put(RESTAURANT_API + "/info", formData)
         .then(({ data }) => {
           showToast(data.message);
         })

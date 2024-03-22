@@ -26,7 +26,7 @@ export const TableSlotDbRepository = (
     restaurantID: string,
     capacity: number,
     startTime: string,
-    currentDate: Date
+    currentDate: string
   ) =>
     await repository.getAvailableTableSlotsByFilter(
       restaurantID,

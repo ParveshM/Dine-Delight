@@ -15,7 +15,7 @@ const useTableSlots = () => {
   const [tableSlot, setTableSlot] = useState<TableSlotInterface[]>([]);
   useEffect(() => {
     axiosJWT
-      .get(RESTAURANT_API + `/get_allTableSlots/${id}`)
+      .get(RESTAURANT_API + `/table_slots/${id}`)
       .then(({ data }) => {
         setTableSlot(data.tableSlot);
       })
@@ -27,7 +27,7 @@ const useTableSlots = () => {
 
   useEffect(() => {
     axiosJWT
-      .get(RESTAURANT_API + `/get_timeSlots`)
+      .get(RESTAURANT_API + `/time_slots`)
       .then(({ data }) => {
         setTimeSlots(data.timeSlots);
       })

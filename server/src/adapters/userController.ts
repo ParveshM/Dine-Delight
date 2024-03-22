@@ -23,6 +23,10 @@ import {
 } from "../app/use-cases/user/read/getRestaurants";
 import { TableSlotDbInterface } from "../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
+import { Filter } from "../types/restaurantInterface";
+import { TableDbInterface } from "../app/interfaces/tableDbRepository";
+import { TableRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/tableRepositoryMongoDb";
+import { getTableDetails } from "../app/use-cases/user/read/getTable";
 // Controller will be passing all the necessaary parameers to the repositories
 
 const userController = (
@@ -33,7 +37,9 @@ const userController = (
   restaurantDbRepository: restaurantDbInterface,
   restaurantDbRepositoryImpl: restaurantRepositoryMongodbType,
   tableSlotDbRepository: TableSlotDbInterface,
-  tableSlotDbRepositoryImpl: TableSlotRepositoryMongodbType
+  tableSlotDbRepositoryImpl: TableSlotRepositoryMongodbType,
+  tableDbRepository: TableDbInterface,
+  tableDbRepositoryImpl: TableRepositoryMongodbType
 ) => {
   const dbRepositoryUser = userDbRepository(userRepositoryImpl());
   const restaurantRepository = restaurantDbRepository(
@@ -42,6 +48,7 @@ const userController = (
   const tableSlotRepository = tableSlotDbRepository(
     tableSlotDbRepositoryImpl()
   );
+  const tableRepository = tableDbRepository(tableDbRepositoryImpl());
   const authService = authServiceInterface(authServiceImpl());
 
   /**
@@ -218,7 +225,14 @@ const userController = (
     next: NextFunction
   ) => {
     try {
-      const restaurants = await getAllListedRestaurants(restaurantRepository);
+      const q = req.query.q as string;
+      const location = req.query.location as (string | number)[];
+
+      const restaurants = await getAllListedRestaurants(
+        q,
+        location,
+        restaurantRepository
+      );
       res.status(200).json({ success: true, restaurants });
     } catch (error) {
       next(error);
@@ -232,8 +246,13 @@ const userController = (
   ) => {
     try {
       const { restaurantID } = req.params;
+      const guest =
+        typeof req?.query?.guest === "string" ? parseInt(req.query.guest) : 2;
+      const date = req.query.date as string;
       const { restaurant, tableSlots } = await getSingleRestaurantById(
         restaurantID,
+        guest,
+        date,
         restaurantRepository,
         tableSlotRepository
       );
@@ -243,6 +262,26 @@ const userController = (
         restaurant,
         tableSlots,
       });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * * METHODS :GET
+   * * @param tableID {string}
+   * * Retrieve table details by Id
+   */
+  const tableDetails = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { tableID } = req.params;
+
+      const tableData = await getTableDetails(tableID, tableRepository);
+      res.status(200).json({ success: true, tableData });
     } catch (error) {
       next(error);
     }
@@ -258,6 +297,7 @@ const userController = (
     resetPassword,
     getRestaurants,
     getSingleRestaurant,
+    tableDetails,
   };
 };
 export default userController;

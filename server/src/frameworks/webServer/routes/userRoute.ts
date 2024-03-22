@@ -9,6 +9,13 @@ import { restaurantRepositoryMongodb } from "../../database/mongodb/repositories
 import { restaurantDbRepository } from "../../../app/interfaces/restaurantDbRepository";
 import { TableSlotDbRepository } from "../../../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodb } from "../../database/mongodb/repositories/TableSlotRepositoryMongodb";
+import bookingController from "../../../adapters/bookingController";
+import { reservationService } from "../../services/reservationService";
+import { reservationServiceInterface } from "../../../app/services-Interface/reservationServiceInterface";
+import { bookingDbRepository } from "../../../app/interfaces/bookingDbRepository";
+import { bookingRepositoryMongodb } from "../../database/mongodb/repositories/BookingRepositoryMongodb";
+import { tableDbRepository } from "../../../app/interfaces/tableDbRepository";
+import { tableRepositoryMongodb } from "../../database/mongodb/repositories/tableRepositoryMongoDb";
 
 const userRoute = () => {
   const router = express.Router();
@@ -21,8 +28,22 @@ const userRoute = () => {
     restaurantDbRepository,
     restaurantRepositoryMongodb,
     TableSlotDbRepository,
-    TableSlotRepositoryMongodb
+    TableSlotRepositoryMongodb,
+    tableDbRepository,
+    tableRepositoryMongodb
   );
+
+  const _bookingController = bookingController(
+    reservationServiceInterface,
+    reservationService,
+    bookingDbRepository,
+    bookingRepositoryMongodb,
+    restaurantDbRepository,
+    restaurantRepositoryMongodb,
+    tableDbRepository,
+    tableRepositoryMongodb
+  );
+
   /******** user authentication Routes ********/
   router.post("/signup", controller.registerUser);
   router.post("/verify_otp", controller.verifyOtp);
@@ -31,10 +52,14 @@ const userRoute = () => {
   router.post("/google_signIn", controller.googleSignIn); // google sign in
   router.post("/forgot_password", controller.forgotPassword);
   router.post("/reset_password/:token", controller.resetPassword);
-  router.get("/get_restaurants", controller.getRestaurants);
-  router.get(
-    "/get_singleRestaurant/:restaurantID",
-    controller.getSingleRestaurant
+  router.get("/restaurants", controller.getRestaurants);
+  router.get("/restaurants/:restaurantID", controller.getSingleRestaurant);
+  router.get("/tables/:tableID", controller.tableDetails);
+
+  router.post(
+    "/reserve_table",
+    authenticateUser,
+    _bookingController.reserveTable
   );
 
   /********************************/

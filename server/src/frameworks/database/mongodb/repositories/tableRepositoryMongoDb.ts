@@ -10,7 +10,8 @@ export const tableRepositoryMongodb = () => {
       location: tableData.getLocation(),
     });
 
-  const getTablebyId = async (tableId: string) => await Table.findById(tableId);
+  const getTablebyId = async (tableId: string) =>
+    await Table.findById(tableId).populate("restaurantId");
 
   const getTablebyNumber = async (tableNumber: string, restaurantId: string) =>
     await Table.findOne({ tableNumber, restaurantId });

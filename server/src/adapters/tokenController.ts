@@ -58,7 +58,7 @@ const tokenContoller = (
   };
 
   /*
-   * METHOD:POST,
+   * METHOD:GET,
    * Return acces token to client
    */
 

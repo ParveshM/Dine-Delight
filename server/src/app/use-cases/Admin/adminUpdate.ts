@@ -1,3 +1,4 @@
+import { RestaurantInterface } from "../../../types/restaurantInterface";
 import restaurantApprovalEmail, {
   restaurantRejectionMail,
 } from "../../../utils/restaurantApprovalEmail";
@@ -19,7 +20,10 @@ export const updateRestaurantApproval = async (
   id: string,
   restaurantDbRepository: ReturnType<restaurantDbInterface>
 ) => {
-  const updated = await restaurantDbRepository.updateRestaurantApproval(id);
+  const updated = await restaurantDbRepository.updateRestaurantStatus(id, {
+    isApproved: true,
+    isListed: true,
+  });
   if (updated) {
     sentMail(
       updated.email,
@@ -33,7 +37,9 @@ export const updateRestaurantRejected = async (
   id: string,
   restaurantDbRepository: ReturnType<restaurantDbInterface>
 ) => {
-  const updated = await restaurantDbRepository.updateRestaurantRejected(id);
+  const updated = await restaurantDbRepository.updateRestaurantStatus(id, {
+    isRejected: true,
+  });
   if (updated) {
     sentMail(
       updated.email,
@@ -48,8 +54,7 @@ export const updateRestaurantListing = async (
   restaurantDbRepository: ReturnType<restaurantDbInterface>
 ) => {
   const restaurant = await restaurantDbRepository.getRestaurantById(id);
-  await restaurantDbRepository.updateRestaurantListing(
-    id,
-    !restaurant?.isListed
-  );
+  await restaurantDbRepository.updateRestaurantStatus(id, {
+    isListed: !restaurant?.isListed,
+  });
 };

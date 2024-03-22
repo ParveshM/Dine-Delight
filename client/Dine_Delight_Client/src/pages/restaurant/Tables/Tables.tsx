@@ -4,7 +4,7 @@ import { RESTAURANT_API } from "../../../constants";
 import showToast from "../../../utils/toaster";
 import TableRowData from "../../../components/restaurant/Table/tableRowItem";
 import Button from "../../../components/restaurant/Button";
-import AddTableModal from "../../../components/restaurant/Table/AddTableModal";
+import AddTableModal from "../../../components/restaurant/Table/Modal/AddTableModal";
 
 export interface TableDataInterface {
   _id: string;
@@ -19,7 +19,7 @@ const Tables = () => {
 
   useEffect(() => {
     axiosJWT
-      .get(RESTAURANT_API + "/get_allTables")
+      .get(RESTAURANT_API + "/tables")
       .then(({ data }) => {
         setTableData(data.tables);
       })
@@ -39,6 +39,7 @@ const Tables = () => {
         <h1 className="text-xl font-semibold ">Tables </h1>
         <Button
           label="Add Table"
+          className="bg-orange-400 hover:bg-orange-500"
           handleButtonclick={() => setIsModalOpen(true)}
         />
       </div>

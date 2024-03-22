@@ -7,7 +7,7 @@ import { validateLogin } from "../../utils/validation";
 import { USER_API } from "../../constants";
 import { logo, vectorLogin } from "../../assets/images";
 import { useAppDispatch } from "../../redux/store/Store";
-import { setUser } from "../../redux/UserSlice";
+import { setUser } from "../../redux/slices/UserSlice";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
@@ -29,7 +29,7 @@ const LoginForm: React.FC = () => {
           const { name, role } = data.user;
           showToast(data.message, "success");
           dispatch(setUser({ isAuthenticated: true, name, role }));
-          navigate("/user/profile");
+          navigate("/");
         })
         .catch(({ response }) => {
           console.log(response);
@@ -53,7 +53,7 @@ const LoginForm: React.FC = () => {
         dispatch(
           setUser({ name: user.name, isAuthenticated: true, role: user.role })
         );
-        navigate("/user/profile");
+        navigate("/");
       })
       .catch(({ response }) => showToast(response.data.message, "error"));
   };

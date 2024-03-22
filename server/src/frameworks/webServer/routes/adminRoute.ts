@@ -21,20 +21,11 @@ export default () => {
   );
 
   router.post("/login", controller.adminLogin);
-  router.get("/get_allUsers", authenticateAdmin, controller.getAllUser);
-  router.get(
-    "/get_allRestaurants",
-    authenticateAdmin,
-    controller.getAllRestaurants
-  );
-  router.get(
-    "/get_newRegistrations",
-    authenticateAdmin,
-    controller.newRegistrations
-  );
-  router.post("/block_user/:id", authenticateAdmin, controller.userBlock);
-  router.post("/validate_restaurant/:id", controller.validateRestaurant);
-  router.post("/list_restaurant/:id", controller.listRestaurant);
+  router.get("/users", authenticateAdmin, controller.getAllUser);
+  router.get("/restaurants", authenticateAdmin, controller.getAllRestaurants);
+  router.patch("/block_user/:id", authenticateAdmin, controller.userBlock);
+  router.patch("/validate_restaurant/:id", controller.validateRestaurant);
+  router.patch("/list_restaurant/:id", controller.listRestaurant);
 
   return router;
 };

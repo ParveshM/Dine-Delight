@@ -3,10 +3,10 @@ import { memo, useState } from "react";
 import { ImSpinner } from "react-icons/im";
 import { MdOutlineTableBar } from "react-icons/md";
 import * as Yup from "yup";
-import axiosJWT from "../../../utils/axiosService";
-import { RESTAURANT_API } from "../../../constants";
-import { TableDataInterface } from "../../../pages/restaurant/Tables/Tables";
-import showToast from "../../../utils/toaster";
+import axiosJWT from "../../../../utils/axiosService";
+import { RESTAURANT_API } from "../../../../constants";
+import { TableDataInterface } from "../../../../pages/restaurant/Tables/Tables";
+import showToast from "../../../../utils/toaster";
 
 export interface AddTableModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
@@ -38,7 +38,7 @@ const AddTableModal: React.FC<AddTableModalProps> = ({
     onSubmit: (data) => {
       setIsSubmitting(true);
       axiosJWT
-        .post(RESTAURANT_API + "/add_table", data)
+        .post(RESTAURANT_API + "/table/new", data)
         .then(({ data }) => {
           addNewTable(data.newTable);
           setIsModalOpen(false);

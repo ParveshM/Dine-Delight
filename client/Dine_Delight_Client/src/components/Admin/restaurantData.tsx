@@ -17,7 +17,7 @@ const RestaurantData: React.FC<RestaurantInterface> = ({
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
     axiosJWT
-      .post(ADMIN_API + `/list_restaurant/${_id}`)
+      .patch(ADMIN_API + `/list_restaurant/${_id}`)
       .catch((err) => console.log(err));
   };
   return (
@@ -29,9 +29,7 @@ const RestaurantData: React.FC<RestaurantInterface> = ({
         {restaurantName}
       </th>
       <td className="px-6 py-4">{email}</td>
-      <td className="px-6 py-4">
-        344 Plaza Real, Suite 1433 Boca Raton, FL 33432-3937
-      </td>
+      <td className="px-6 py-4">{address ?? "N/A"}</td>
       <td className="px-6 py-4">Open</td>
       <td className="px-6 py-4">
         <label className="flex cursor-pointer select-none items-center">
