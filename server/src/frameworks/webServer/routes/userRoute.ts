@@ -10,9 +10,9 @@ import { restaurantDbRepository } from "../../../app/interfaces/restaurantDbRepo
 import { TableSlotDbRepository } from "../../../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodb } from "../../database/mongodb/repositories/TableSlotRepositoryMongodb";
 import bookingController from "../../../adapters/bookingController";
-import { reservationService } from "../../services/reservationService";
-import { reservationServiceInterface } from "../../../app/services-Interface/reservationServiceInterface";
-import { bookingDbRepository } from "../../../app/interfaces/bookingDbRepository";
+import { reservationService } from "../../services/reservationservice";
+import { reservationServiceInterface } from "../../../app/services-Interface/reservationserviceinterface";
+import { bookingDbRepository } from "../../../app/interfaces/bookingdbrepository";
 import { bookingRepositoryMongodb } from "../../database/mongodb/repositories/BookingRepositoryMongodb";
 import { tableDbRepository } from "../../../app/interfaces/tableDbRepository";
 import { tableRepositoryMongodb } from "../../database/mongodb/repositories/tableRepositoryMongoDb";

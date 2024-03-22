@@ -1,9 +1,9 @@
 import bookingEntity from "../../../../entities/bookingEntity";
-import { createReservationInterface } from "../../../../types/BookingInterface";
-import { BookingDbRepositoryInterface } from "../../../interfaces/bookingDbRepository";
+import { createReservationInterface } from "../../../../types/bookinginterface";
+import { BookingDbRepositoryInterface } from "../../../interfaces/bookingdbrepository";
 import { restaurantDbInterface } from "../../../interfaces/restaurantDbRepository";
 import { TableDbInterface } from "../../../interfaces/tableDbRepository";
-import { ReservationServiceInterface } from "../../../services-Interface/reservationServiceInterface";
+import { ReservationServiceInterface } from "../../../services-Interface/reservationserviceinterface";
 
 export const reserveATable = async (
   reservationData: createReservationInterface,

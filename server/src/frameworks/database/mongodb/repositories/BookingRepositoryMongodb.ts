@@ -1,5 +1,5 @@
 import { BookingEntityType } from "../../../../entities/bookingEntity";
-import Booking from "../models/Booking";
+import Booking from "../models/booking";
 
 export const bookingRepositoryMongodb = () => {
   const createBooking = async (reservationData: BookingEntityType) =>

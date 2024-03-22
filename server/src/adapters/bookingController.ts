@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { ReservationServiceInterface } from "../app/services-Interface/reservationServiceInterface";
-import { ReservationServiceType } from "../frameworks/services/reservationService";
-import { BookingDbRepositoryInterface } from "../app/interfaces/bookingDbRepository";
+import { ReservationServiceInterface } from "../app/services-Interface/reservationserviceinterface";
+import { ReservationServiceType } from "../frameworks/services/reservationservice";
+import { BookingDbRepositoryInterface } from "../app/interfaces/bookingdbrepository";
 import { BookingRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/BookingRepositoryMongodb";
 import { restaurantDbInterface } from "../app/interfaces/restaurantDbRepository";
 import { restaurantRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/restaurantRepositoryMongodb";
@@ -46,13 +46,11 @@ const bookingController = (
         dbTableRepository
       );
       if (createBooking) {
-        res
-          .status(HttpStatus.OK)
-          .json({
-            success: true,
-            message: "Booking created successfully",
-            createBooking,
-          });
+        res.status(HttpStatus.OK).json({
+          success: true,
+          message: "Booking created successfully",
+          createBooking,
+        });
       }
     } catch (error) {
       next(error);
