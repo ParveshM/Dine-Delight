@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { validateLogin } from "../../utils/validation";
 import { ADMIN_API } from "../../constants";
 import { useAppDispatch } from "../../redux/store/Store";
-import { setUser } from "../../redux/UserSlice";
+import { setUser } from "../../redux/slices/UserSlice";
 
 const Login: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<Boolean>(false);

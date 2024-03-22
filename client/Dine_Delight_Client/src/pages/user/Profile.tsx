@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { USER_API } from "../../constants";
 import axiosJWT from "../../utils/axiosService";
 import { useAppDispatch, useAppSelector } from "../../redux/store/Store";
-import { clearUser } from "../../redux/UserSlice";
+import { clearUser } from "../../redux/slices/UserSlice";
 import logout from "../../utils/logout";
 import { useNavigate } from "react-router-dom";
 

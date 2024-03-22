@@ -24,6 +24,9 @@ import {
 import { TableSlotDbInterface } from "../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
 import { Filter } from "../types/restaurantInterface";
+import { TableDbInterface } from "../app/interfaces/tableDbRepository";
+import { TableRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/tableRepositoryMongoDb";
+import { getTableDetails } from "../app/use-cases/user/read/getTable";
 // Controller will be passing all the necessaary parameers to the repositories
 
 const userController = (
@@ -34,7 +37,9 @@ const userController = (
   restaurantDbRepository: restaurantDbInterface,
   restaurantDbRepositoryImpl: restaurantRepositoryMongodbType,
   tableSlotDbRepository: TableSlotDbInterface,
-  tableSlotDbRepositoryImpl: TableSlotRepositoryMongodbType
+  tableSlotDbRepositoryImpl: TableSlotRepositoryMongodbType,
+  tableDbRepository: TableDbInterface,
+  tableDbRepositoryImpl: TableRepositoryMongodbType
 ) => {
   const dbRepositoryUser = userDbRepository(userRepositoryImpl());
   const restaurantRepository = restaurantDbRepository(
@@ -43,6 +48,7 @@ const userController = (
   const tableSlotRepository = tableSlotDbRepository(
     tableSlotDbRepositoryImpl()
   );
+  const tableRepository = tableDbRepository(tableDbRepositoryImpl());
   const authService = authServiceInterface(authServiceImpl());
 
   /**
@@ -261,6 +267,26 @@ const userController = (
     }
   };
 
+  /**
+   * * METHODS :GET
+   * * @param tableID {string}
+   * * Retrieve table details by Id
+   */
+  const tableDetails = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { tableID } = req.params;
+
+      const tableData = await getTableDetails(tableID, tableRepository);
+      res.status(200).json({ success: true, tableData });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     registerUser,
     verifyOtp,
@@ -271,6 +297,7 @@ const userController = (
     resetPassword,
     getRestaurants,
     getSingleRestaurant,
+    tableDetails,
   };
 };
 export default userController;

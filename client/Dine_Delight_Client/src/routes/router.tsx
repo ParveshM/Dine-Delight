@@ -27,6 +27,7 @@ import Tables from "../pages/restaurant/Tables/Tables";
 import TimeSlots from "../pages/restaurant/Tables/timeSlots";
 import ViewTable from "../pages/restaurant/Tables/viewTableSlots";
 import RestaurantView from "../pages/user/RestaurantViewPage";
+import BookTable from "../pages/user/BookTable";
 
 export const MainRouter = () => {
   return (
@@ -47,9 +48,9 @@ export const MainRouter = () => {
       {/* </Route>  */}
 
       {/* User Protected Route  */}
-      <Route path="/user/" element={<ProtectedRoute />}>
-        <Route index element={<Navigate to="profile" />} />
-        <Route path="profile" element={<Profile />} />
+      <Route path="" element={<ProtectedRoute />}>
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/reserve_table" element={<BookTable />} />
       </Route>
 
       {/******************* Restaurant routes *****************/}

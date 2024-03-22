@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Utensils, Images, ListPlus } from "lucide-react";
 import logout from "../../../utils/logout";
 import { useAppDispatch } from "../../../redux/store/Store";
-import { clearUser } from "../../../redux/UserSlice";
+import { clearUser } from "../../../redux/slices/UserSlice";
 
 const Sidebar: React.FC = () => {
   const dispatch = useAppDispatch();

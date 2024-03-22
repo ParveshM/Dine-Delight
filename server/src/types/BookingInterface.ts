@@ -1,4 +1,5 @@
 export interface createReservationInterface {
+  phone: string;
   restaurantId: string;
   tableId: string;
   tableSlotId: string;

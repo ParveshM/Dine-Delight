@@ -12,7 +12,7 @@ import { truncate } from "../../../utils/util";
 const Navbar = () => {
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-  const userName = useAppSelector((state) => state.UserSlice.name);
+  const user = useAppSelector((state) => state.UserSlice);
   const coordinates = useAppSelector(
     (state) => state.LocationSlice?.location?.coordinates
   ) as string[];
@@ -81,8 +81,8 @@ const Navbar = () => {
             {NavbarItem.map((item, index) => {
               return <NavItem to={item.to} label={item.label} key={index} />;
             })}
-            {userName ? (
-              <NavItem to="/user/profile" label={userName} />
+            {user.role === "user" ? (
+              <NavItem to="/profile" label={user.name ?? "Unknown"} />
             ) : (
               <NavItem to="/user/auth/login" label="Login" />
             )}

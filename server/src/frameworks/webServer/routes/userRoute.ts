@@ -28,7 +28,9 @@ const userRoute = () => {
     restaurantDbRepository,
     restaurantRepositoryMongodb,
     TableSlotDbRepository,
-    TableSlotRepositoryMongodb
+    TableSlotRepositoryMongodb,
+    tableDbRepository,
+    tableRepositoryMongodb
   );
 
   const _bookingController = bookingController(
@@ -52,6 +54,7 @@ const userRoute = () => {
   router.post("/reset_password/:token", controller.resetPassword);
   router.get("/restaurants", controller.getRestaurants);
   router.get("/restaurants/:restaurantID", controller.getSingleRestaurant);
+  router.get("/tables/:tableID", controller.tableDetails);
 
   router.post(
     "/reserve_table",

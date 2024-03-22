@@ -28,7 +28,10 @@ const restaurantSchema = new mongoose.Schema(
     },
     address: String,
     description: String,
-    tableRatePerPerson: Number,
+    tableRatePerPerson: {
+      type: Number,
+      default: 200,
+    },
     location: {
       type: {
         type: String,

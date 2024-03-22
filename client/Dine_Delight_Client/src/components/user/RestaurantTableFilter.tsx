@@ -1,5 +1,8 @@
 import { useSearchParams } from "react-router-dom";
-import { TableSlotInterface } from "../../types/RestaurantInterface";
+import {
+  RestaurantInterface,
+  TableSlotInterface,
+} from "../../types/RestaurantInterface";
 import { formatDate } from "../../utils/util";
 import Button from "../restaurant/Button";
 import React, { useEffect, useState } from "react";
@@ -8,24 +11,32 @@ import axios from "axios";
 import LoadingAnimation from "./LoadingAnimation";
 import ReservationModal from "./Modals/ReservationModal";
 interface TableSlotFilterProps {
-  restaurantID?: string;
+  restaurantInfo: RestaurantInterface;
   tableSlots: TableSlotInterface[];
   setTableSlot: (slots: TableSlotInterface[]) => void;
 }
 
 const TableSlotFilter: React.FC<TableSlotFilterProps> = ({
-  restaurantID,
+  restaurantInfo,
   tableSlots,
   setTableSlot,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedSlot, setSelectedSlot] = useState<TableSlotInterface | null>(
+    null
+  );
+  const [inputData, setInputData] = useState({
+    date: formatDate(new Date()),
+    guest: 2,
+  });
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+    setInputData((prev) => ({ ...prev, [name]: value }));
     const currentParams = Object.fromEntries(searchParams.entries());
     setSearchParams({ ...currentParams, [name]: value });
   };
@@ -35,7 +46,7 @@ const TableSlotFilter: React.FC<TableSlotFilterProps> = ({
     if (searchQuery.length) {
       setIsLoading(true);
       axios
-        .get(USER_API + `/restaurants/${restaurantID}?${searchQuery}`)
+        .get(USER_API + `/restaurants/${restaurantInfo._id}?${searchQuery}`)
         .then(({ data }) => {
           setTimeout(() => {
             setTableSlot(data.tableSlots);
@@ -47,16 +58,28 @@ const TableSlotFilter: React.FC<TableSlotFilterProps> = ({
           console.error("Page not found");
         });
     }
+    return () => setIsModalOpen(false);
   }, [searchParams]);
+
+  const handleTableSlotButtonClick = (slotData: TableSlotInterface) => {
+    setIsModalOpen(true);
+    setSelectedSlot(slotData);
+  };
 
   return (
     <>
-      {isModalOpen && <ReservationModal setIsModalOpen={setIsModalOpen} />}
+      {isModalOpen && (
+        <ReservationModal
+          setIsModalOpen={setIsModalOpen}
+          selectedSlot={selectedSlot}
+          restaurant={restaurantInfo}
+        />
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mt-8 bg-white min-w-sm max-w-2xl rounded-3xl shadow-md focus-within:border-gray-300">
           <div className="grid grid-cols-2 border rounded-3xl">
-            <div className="flex flex-col justify-center items-center border-r rounded-l-xl  hover:bg-slate-100">
+            <div className="flex flex-col justify-evenly items-center border-r rounded-l-xl  hover:bg-slate-100">
               <label htmlFor="guests" className="font-semibold py-2">
                 No of guests
               </label>
@@ -79,7 +102,7 @@ const TableSlotFilter: React.FC<TableSlotFilterProps> = ({
                 type="date"
                 placeholder="Date"
                 name="date"
-                value={new Date().toISOString().split("T")[0]}
+                value={inputData.date}
                 min={formatDate(new Date())}
                 onChange={handleInputChange}
                 className="py-2 px-6 bg-transparent outline-none"
@@ -98,9 +121,9 @@ const TableSlotFilter: React.FC<TableSlotFilterProps> = ({
               <>
                 {tableSlots.map((slot) => (
                   <Button
-                    label={slot.startTime}
+                    label={slot.startTime ?? ""}
                     className="bg-blue-500 hover:bg-blue-600 m-1"
-                    handleButtonclick={() => setIsModalOpen(true)}
+                    handleButtonclick={() => handleTableSlotButtonClick(slot)}
                     key={slot._id}
                   />
                 ))}

@@ -6,6 +6,8 @@ import {
   descriptionRegex,
 } from "../constants";
 import { FormInitalState } from "./restaurantformUtills";
+import * as Yup from "yup";
+
 type SignupValidation = Partial<{
   name: string;
   email: string;
@@ -217,3 +219,9 @@ export function validateTimeRange(
 
   return true;
 }
+
+export const PhoneValidation = Yup.object().shape({
+  phone: Yup.string()
+    .required("Phone number is required")
+    .matches(phoneRegex, "Please enter a valid phone number"),
+});

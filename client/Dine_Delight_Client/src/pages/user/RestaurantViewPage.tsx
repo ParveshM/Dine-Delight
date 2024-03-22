@@ -93,7 +93,7 @@ const RestaurantView = () => {
                   <p className="font-medium">{restaurant.description}</p>
                 </div>
                 <TableSlotFilter
-                  restaurantID={id}
+                  restaurantInfo={restaurant}
                   tableSlots={tableSlot}
                   setTableSlot={setTableSlot}
                 />

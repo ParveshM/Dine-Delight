@@ -7,7 +7,7 @@ import { RESTAURANT_API } from "../../constants";
 import showToast from "../../utils/toaster";
 import axios from "axios";
 import { useAppDispatch } from "../../redux/store/Store";
-import { setUser } from "../../redux/UserSlice";
+import { setUser } from "../../redux/slices/UserSlice";
 
 const Login: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -87,17 +87,12 @@ const Login: React.FC = () => {
                 <div className="text-red-500">{formik.errors.password}</div>
               )}
             </div>
-            {/* <div className="text-right mt-2">
-                <a
-                  href="#"
-                  className="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700"
-                >
-                  Forgot Password?
-                </a>
-              </div> */}
+
             <button
               type="submit"
-              className="w-full block bg-indigo-700 hover:bg-indigo-600 transition duration-300 focus:bg-indigo-400 text-white font-semibold rounded-lg px-4 py-3 mt-6"
+              className={`w-full block  bg-indigo-700 hover:bg-indigo-600 transition duration-300 focus:bg-indigo-400 text-white font-semibold rounded-lg px-4 py-3 mt-6 ${
+                isSubmitting ? "cursor-not-allowed" : "cursor-pointer"
+              }`}
               disabled={isSubmitting}
             >
               LogIn

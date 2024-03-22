@@ -18,7 +18,6 @@ export const reserveATable = async (
     restaurantId
   );
   const tableDetails = await tableDbRepository.getTablebyId(tableId);
-  console.log(tableDetails);
   // calculate subTotal , gst and totalAmount
   let subTotal: number,
     gstAmount: number = 0,

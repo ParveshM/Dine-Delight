@@ -7,7 +7,7 @@ import { validateLogin } from "../../utils/validation";
 import { USER_API } from "../../constants";
 import { logo, vectorLogin } from "../../assets/images";
 import { useAppDispatch } from "../../redux/store/Store";
-import { setUser } from "../../redux/UserSlice";
+import { setUser } from "../../redux/slices/UserSlice";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 

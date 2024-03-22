@@ -1,7 +1,10 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import AutoCompleteInput from "../../restaurant/AutoCompleteInput";
 import { useAppDispatch } from "../../../redux/store/Store";
-import { clearLocation, setLocation } from "../../../redux/LocationSlice";
+import {
+  clearLocation,
+  setLocation,
+} from "../../../redux/slices/LocationSlice";
 
 interface LocationSidebarProps {
   handleSidebarOpen: () => void;
