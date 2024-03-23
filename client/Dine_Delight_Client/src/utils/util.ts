@@ -8,3 +8,32 @@ export const formatDate = (date: Date) => {
 export const truncate = (str: string) => {
   return str.length > 10 ? str.substring(0, 15) + "..." : str;
 };
+
+export const statusTextColor = (status:string):string => {
+  let textColor = "";
+
+  switch (status) {
+    case "Pending":
+      textColor = "text-yellow-500";
+      break;
+    case "Confirmed":
+      textColor = "text-green-500";
+      break;
+    case "Cancelled":
+      textColor = "text-red-500";
+      break;
+    case "Checked-in":
+      textColor = "text-blue-500";
+      break;
+    case "No-show":
+      textColor = "text-gray-500";
+      break;
+    case "Completed":
+      textColor = "text-greem-500";
+      break;
+    default:
+      textColor = "text-gray-800";
+  }
+
+  return textColor;
+};

@@ -51,7 +51,7 @@ const BookTable: React.FC = () => {
         })
         .catch(() => console.log("Error"));
       return () => {
-        // dispatch(clearTableSlot());
+        dispatch(clearTableSlot());
       };
     } else {
       hasPageBeenRendered.current = true;

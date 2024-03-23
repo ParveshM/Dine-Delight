@@ -11,7 +11,7 @@ const PaymentCompleted = () => {
   const status = searchParams.get("success");
   const isSuccess = status === "true" ? true : false;
 
-  if (isSuccess) {
+  if (status) {
     const paymentStatus = isSuccess ? "Paid" : "Failed";
     axiosJWT
       .patch(USER_API + `/payment/status/${id}`, { paymentStatus })

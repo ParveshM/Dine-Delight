@@ -26,7 +26,7 @@ import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/r
 import { Filter } from "../types/restaurantInterface";
 import { TableDbInterface } from "../app/interfaces/tableDbRepository";
 import { TableRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/tableRepositoryMongoDb";
-import { getTableDetails } from "../app/use-cases/user/read/gettable";
+import { getTableDetails } from "../app/use-cases/user/read/getTable";
 // Controller will be passing all the necessaary parameers to the repositories
 
 const userController = (

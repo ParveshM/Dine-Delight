@@ -18,6 +18,11 @@ import configKeys from "../config";
 import { getUserById } from "../app/use-cases/user/auth/userAuth";
 import { UserDbInterface } from "../app/interfaces/userDbRepository";
 import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/userRepositoryMongodb";
+import {
+  TableSlotDbInterface,
+  TableSlotDbRepository,
+} from "../app/interfaces/TableSlotdbRepository";
+import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
 
 const bookingController = (
   reservationServiceInterface: ReservationServiceInterface,
@@ -29,7 +34,9 @@ const bookingController = (
   tableDbRepository: TableDbInterface,
   tableDbRepositoryImpl: TableRepositoryMongodbType,
   userDbRepository: UserDbInterface,
-  userDbRepositoryImpl: UserRepositoryMongodbType
+  userDbRepositoryImpl: UserRepositoryMongodbType,
+  tablSlotDbRepository: TableSlotDbInterface,
+  tablSlotDbRepositoryImpl: TableSlotRepositoryMongodbType
 ) => {
   const dbBookingRepository = bookingDbRepository(bookingDbRepositoryImpl());
   const dbResaurantRepository = restaurantDbRepository(
@@ -37,6 +44,9 @@ const bookingController = (
   );
   const dbTableRepository = tableDbRepository(tableDbRepositoryImpl());
   const userRepository = userDbRepository(userDbRepositoryImpl());
+  const dbTableSlotRepository = tablSlotDbRepository(
+    tablSlotDbRepositoryImpl()
+  );
 
   const reservationService = reservationServiceInterface(
     reservationServiceImpl()
@@ -55,7 +65,8 @@ const bookingController = (
         reservationService,
         dbBookingRepository,
         dbResaurantRepository,
-        dbTableRepository
+        dbTableRepository,
+        dbTableSlotRepository
       );
       if (createBooking.paymentMethod === "Online") {
         const user = await getUserById(userId, userRepository);
@@ -96,10 +107,11 @@ const bookingController = (
       const { id } = req.params;
       const { paymentStatus } = req.body;
       console.log(paymentStatus);
-      const updateStatus = await updateBookingStatus(
+      await updateBookingStatus(
         id,
         paymentStatus,
-        dbBookingRepository
+        dbBookingRepository,
+        dbTableSlotRepository
       );
       res
         .status(HttpStatus.OK)

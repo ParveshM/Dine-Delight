@@ -24,7 +24,9 @@ const ViewTable = () => {
         const filteredSlots = tableSlot.filter((slot) => slot._id !== id);
         setTableSlot(filteredSlots);
       })
-      .catch(() => showToast("Oops! Something went wrong while deleting slot"));
+      .catch(() =>
+        showToast("Oops! Something went wrong while deleting slot", "error")
+      );
   };
   return (
     <>
@@ -62,10 +64,10 @@ const ViewTable = () => {
                     SL:no
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Time
+                    Date
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Date
+                    Time
                   </th>
                   <th scope="col" className="px-6 py-3">
                     IsAvailable

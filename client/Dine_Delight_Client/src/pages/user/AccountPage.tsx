@@ -5,23 +5,25 @@ import { useAppDispatch, useAppSelector } from "../../redux/store/Store";
 import { clearUser } from "../../redux/slices/UserSlice";
 import logout from "../../utils/logout";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../../components/user/Header/Navbar";
+import { childrenProps } from "../../types/PropsType";
+import UserSidebar from "../../components/user/Sidebar/UserSidebar";
 
-const Profile: React.FC = () => {
+const AccountPage: React.FC<childrenProps> = ({ children }) => {
   const user = useAppSelector((state) => state.UserSlice);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    axiosJWT
-      .get(USER_API + "/test")
-      .then(({ data }) => {
-        setMessage(data);
-      })
-      .catch(({ response }) => {
-        console.log(response);
-        setMessage(response?.data?.message);
-      });
+    // axiosJWT
+    //   .get(USER_API + "/")
+    //   .then(({ data }) => {
+    //     setMessage(data);
+    //   })
+    //   .catch(({ response }) => {
+    //     console.log(response);
+    //     setMessage(response?.data?.message);
+    //   });
   }, []);
 
   const handleLogout = () => {
@@ -32,16 +34,12 @@ const Profile: React.FC = () => {
 
   return (
     <>
-      <h1>
-        Name : {user.name} , message :{message}
-      </h1>
-      <button
-        className="bg-yellow-500 border tex-white font-semibold py-2 px-3 rounded-lg text-center"
-        onClick={handleLogout}
-      >
-        Logout
-      </button>
+      <Navbar />
+      <div>
+        <UserSidebar />
+        <div className="p-4 mt-10 sm:ml-64">{children}</div>
+      </div>
     </>
   );
 };
-export default Profile;
+export default AccountPage;

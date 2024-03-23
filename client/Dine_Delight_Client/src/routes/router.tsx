@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import Profile from "../pages/user/Profile";
+import AccountPage from "../pages/user/AccountPage";
 import Login from "../pages/user/Login";
 import SignUp from "../pages/user/signup";
 import RestaurantLogin from "../pages/restaurant/restaurantLogin";
@@ -29,6 +29,7 @@ import ViewTable from "../pages/restaurant/Tables/viewTableSlots";
 import RestaurantView from "../pages/user/RestaurantViewPage";
 import BookTable from "../pages/user/BookTable";
 import PaymentCompleted from "../pages/user/payment/PaymentCompleted";
+import BookingHistory from "../pages/user/BookingHistory";
 
 export const MainRouter = () => {
   return (
@@ -50,9 +51,16 @@ export const MainRouter = () => {
 
       {/* User Protected Route  */}
       <Route path="" element={<ProtectedRoute />}>
-        <Route path="/profile" element={<Profile />} />
+        <Route
+          path="/profile"
+          element={<AccountPage children={<div>Profile</div>} />}
+        />
         <Route path="/reserve_table" element={<BookTable />} />
         <Route path="/payment_status/:id" element={<PaymentCompleted />} />
+        <Route
+          path="/booking_history"
+          element={<AccountPage children={<BookingHistory />} />}
+        />
       </Route>
 
       {/******************* Restaurant routes *****************/}

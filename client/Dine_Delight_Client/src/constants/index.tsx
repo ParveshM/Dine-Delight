@@ -17,7 +17,10 @@ import { Hourglass, LayoutDashboard, LogOut, Utensils } from "lucide-react";
 import { MdOutlineTableBar } from "react-icons/md";
 import { SlCalender } from "react-icons/sl";
 import { MdOutlineRestaurantMenu } from "react-icons/md";
-
+import { FaUser } from "react-icons/fa6";
+import { FaHistory } from "react-icons/fa";
+import { FaBookmark } from "react-icons/fa";
+import { MdLogout } from "react-icons/md";
 export const sidebarItem = [
   {
     to: "/restaurant/dashboard",
@@ -62,5 +65,23 @@ export const NavbarItem = [
   { to: "/contactUs", label: "Contact Us" },
 ];
 
-export const defaultImage =
+export const defaultImageCardImage =
   "https://static.vecteezy.com/system/resources/previews/004/141/669/original/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg";
+
+export const userSidebarItem = [
+  {
+    to: "/profile",
+    Icon: FaUser,
+    text: "Profile",
+  },
+  {
+    to: "/booking_history",
+    Icon: FaHistory,
+    text: "Booking History",
+  },
+  {
+    to: "/bookmarks",
+    Icon: FaBookmark,
+    text: "Bookmarks",
+  },
+];

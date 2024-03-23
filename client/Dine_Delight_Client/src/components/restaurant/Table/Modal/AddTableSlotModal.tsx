@@ -54,7 +54,7 @@ const AddTableSlotModal: React.FC<AddTableSlotModalProps> = ({
       setIsSubmitting(true);
     }
 
-    const [startTime, endTime] = selectTime.split("-");
+    const [startTime, endTime] = selectTime.trim().split("-");
     form.append("startTime", startTime);
     form.append("endTime", endTime);
     form.append("tableId", formData.tableId);
@@ -62,7 +62,7 @@ const AddTableSlotModal: React.FC<AddTableSlotModalProps> = ({
     let data: Record<string, string> = {};
     for (let [key, value] of form.entries()) {
       if (typeof value === "string") {
-        data[key] = value;
+        data[key] = value.trim();
       }
     }
     axiosJWT

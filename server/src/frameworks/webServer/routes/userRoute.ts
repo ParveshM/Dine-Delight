@@ -43,7 +43,9 @@ const userRoute = () => {
     tableDbRepository,
     tableRepositoryMongodb,
     userDbRepository,
-    userRepositoryMongodb
+    userRepositoryMongodb,
+    TableSlotDbRepository,
+    TableSlotRepositoryMongodb
   );
 
   /******** user authentication Routes ********/
@@ -68,11 +70,6 @@ const userRoute = () => {
     authenticateUser,
     _bookingController.reserveTable
   );
-
-  /********************************/
-  router.get("/test", authenticateUser, (req, res) => {
-    res.status(200).json("message from test router");
-  });
 
   return router;
 };

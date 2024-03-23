@@ -7,6 +7,10 @@ import { TableDbInterface } from "../../../interfaces/tableDbRepository";
 import { ReservationServiceInterface } from "../../../services-Interface/reservationServiceInterface";
 import configKeys from "../../../../config";
 import { Types } from "mongoose";
+import {
+  TableSlotDbInterface,
+  TableSlotDbRepository,
+} from "../../../interfaces/TableSlotdbRepository";
 
 export const reserveATable = async (
   reservationData: createReservationInterface,
@@ -14,7 +18,8 @@ export const reserveATable = async (
   reservationService: ReturnType<ReservationServiceInterface>,
   bookingDbRepository: ReturnType<BookingDbRepositoryInterface>,
   restaurantDbRepository: ReturnType<restaurantDbInterface>,
-  tableDbRepository: ReturnType<TableDbInterface>
+  tableDbRepository: ReturnType<TableDbInterface>,
+  tablSlotDbRepository: ReturnType<TableSlotDbInterface>
 ) => {
   const { restaurantId, tableId, tableSlotId, paymentMethod } = reservationData;
   const restaurantDetails = await restaurantDbRepository.getRestaurantById(
@@ -43,7 +48,13 @@ export const reserveATable = async (
     gstAmount,
     totalAmount
   );
-  return await bookingDbRepository.createBooking(newReservation);
+  const booking = await bookingDbRepository.createBooking(newReservation);
+
+  const updateSlot = await tablSlotDbRepository.updateSlot(tableId, {
+    isAvailable: false,
+  });
+
+  return booking;
 };
 
 export const createPayment = async (
@@ -84,8 +95,9 @@ export const createPayment = async (
 
 export const updateBookingStatus = async (
   id: string,
-  paymentStatus: string,
-  bookingRepository: ReturnType<BookingDbRepositoryInterface>
+  paymentStatus: "Paid" | "Failed",
+  bookingRepository: ReturnType<BookingDbRepositoryInterface>,
+  tableSlotRepository: ReturnType<TableSlotDbInterface>
 ) => {
   const bookingStatus = paymentStatus === "Paid" ? "Confirmed" : "Pending";
   const updationData: Record<string, any> = {
@@ -93,5 +105,13 @@ export const updateBookingStatus = async (
     bookingStatus,
   };
 
-  await bookingRepository.updateBookingDetails(id, updationData);
+  const bookingData = await bookingRepository.updateBookingDetails(
+    id,
+    updationData
+  );
+  const tableSlotId = bookingData?.tableSlotId as unknown as string;
+  if (paymentStatus === "Failed") {
+    await tableSlotRepository.updateSlot(tableSlotId, { isAvailable: true });
+  }
+  return bookingData;
 };

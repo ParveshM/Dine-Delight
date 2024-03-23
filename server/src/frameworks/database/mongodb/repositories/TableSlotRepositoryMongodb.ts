@@ -12,7 +12,7 @@ export const TableSlotRepositoryMongodb = () => {
     });
 
   const getTableSlotbyId = async (tableId: string) =>
-    await TableSlot.find({ tableId });
+    await TableSlot.find({ tableId }).sort({ slotDate: 1 });
 
   const isSlotAvailable = async (
     tableId: string,
@@ -21,18 +21,20 @@ export const TableSlotRepositoryMongodb = () => {
     endTime: string
   ) => await TableSlot.findOne({ tableId, slotDate, startTime, endTime });
 
+  const updateSlot = async (id: string, updatingData: Record<string, any>) =>
+    await TableSlot.findByIdAndUpdate(id, updatingData);
+
   const removeTableSlotById = async (tableId: string) =>
     await TableSlot.findByIdAndDelete(tableId);
 
   const getAvailableTableSlotsByFilter = async (
     restaurantID: string,
     capacity: number,
-    startTime: string | "$startTime", //type   '$startTime' that is matched by whole dataset startTime else the given time
+    startTime: string | "$startTime", //type '$startTime' that is matched by whole dataset startTime else the given time
     currentDate: string
   ) => {
     const startOfDay = new Date(currentDate);
     startOfDay.setHours(0, 0, 0);
-
     const endOfDay = new Date(currentDate);
     endOfDay.setHours(23, 59, 59);
     const objectIdRestaurantID = new mongoose.Types.ObjectId(restaurantID);
@@ -75,7 +77,7 @@ export const TableSlotRepositoryMongodb = () => {
       },
       {
         $sort: {
-          _id: 1,
+          _id: -1,
         },
       },
       {
@@ -96,6 +98,7 @@ export const TableSlotRepositoryMongodb = () => {
     addNewTableSlot,
     getTableSlotbyId,
     isSlotAvailable,
+    updateSlot,
     removeTableSlotById,
     getAvailableTableSlotsByFilter,
   };

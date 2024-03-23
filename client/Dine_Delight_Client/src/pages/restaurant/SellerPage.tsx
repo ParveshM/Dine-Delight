@@ -47,7 +47,10 @@ const SellerPage: React.FC<childrenProps> = ({ children }) => {
               <Link to="/restaurant/dashboard" className="flex ms-2 md:me-24">
                 <img src={logo} className="h-12 me-3" alt="Dine Delight Logo" />
                 <span className="self-center text-xl font-semibold font-serif sm:text-2xl whitespace-nowrap dark:text-white invisible sm:visible">
-                  {name}
+                  {name
+                    ?.split(" ")
+                    .map((str) => str.charAt(0).toUpperCase() + str.slice(1))
+                    .join(" ")}
                 </span>
               </Link>
             </div>
