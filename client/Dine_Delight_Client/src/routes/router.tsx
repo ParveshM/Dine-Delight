@@ -51,6 +51,10 @@ export const MainRouter = () => {
       <Route path="" element={<ProtectedRoute />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/reserve_table" element={<BookTable />} />
+        <Route
+          path="/payment_status/:id"
+          element={<div>Payment completed 🎉</div>}
+        />
       </Route>
 
       {/******************* Restaurant routes *****************/}

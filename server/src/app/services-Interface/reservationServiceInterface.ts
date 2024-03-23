@@ -1,4 +1,4 @@
-import { ReservationServiceType } from "../../frameworks/services/reservationservice";
+import { ReservationServiceType } from "../../frameworks/services/reservationService";
 
 export const reservationServiceInterface = (
   service: ReturnType<ReservationServiceType>
