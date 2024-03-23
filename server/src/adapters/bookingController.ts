@@ -10,6 +10,7 @@ import { TableRepositoryMongodbType } from "../frameworks/database/mongodb/repos
 import {
   createPayment,
   reserveATable,
+  updateBookingStatus,
 } from "../app/use-cases/user/Booking/reservation";
 import { HttpStatus } from "../types/httpStatus";
 import Stripe from "stripe";
@@ -92,22 +93,17 @@ const bookingController = (
     next: NextFunction
   ) => {
     try {
-      const stripe = new Stripe(configKeys.STRIPE_SECRET_KEY);
-
-      const session = await stripe.checkout.sessions.create({
-        line_items: [
-          {
-            price_data: {
-              currency: "inr",
-              product_data: { name: "Guests" },
-              unit_amount: 100,
-            },
-          },
-        ],
-        mode: "payment",
-        success_url: `${configKeys.CLIENT_PORT}/payment_completed?success=true`,
-        cancel_url: `${configKeys.CLIENT_PORT}/payment_completed?canceled=true`,
-      });
+      const { id } = req.params;
+      const { paymentStatus } = req.body;
+      console.log(paymentStatus);
+      const updateStatus = await updateBookingStatus(
+        id,
+        paymentStatus,
+        dbBookingRepository
+      );
+      res
+        .status(HttpStatus.OK)
+        .json({ success: true, message: "Booking status updated" });
     } catch (error) {
       next(error);
     }

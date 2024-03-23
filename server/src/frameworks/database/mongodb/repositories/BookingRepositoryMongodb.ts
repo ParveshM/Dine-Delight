@@ -1,5 +1,5 @@
 import { BookingEntityType } from "../../../../entities/bookingEntity";
-import Booking from "../models/booking";
+import Booking from "../models/Booking";
 
 export const bookingRepositoryMongodb = () => {
   const createBooking = async (reservationData: BookingEntityType) =>
@@ -13,8 +13,12 @@ export const bookingRepositoryMongodb = () => {
       totalAmount: reservationData.getTotalAmount(),
     });
 
+  const updateBooking = async (id: string, updatingData: Record<string, any>) =>
+    await Booking.findByIdAndUpdate(id, updatingData);
+
   return {
     createBooking,
+    updateBooking,
   };
 };
 export type BookingRepositoryMongodbType = typeof bookingRepositoryMongodb;

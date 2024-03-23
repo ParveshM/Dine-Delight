@@ -57,7 +57,11 @@ const userRoute = () => {
   router.get("/restaurants", controller.getRestaurants);
   router.get("/restaurants/:restaurantID", controller.getSingleRestaurant);
   router.get("/tables/:tableID", controller.tableDetails);
-  router.patch("/payment/status", _bookingController.updatePaymentStatus);
+  router.patch(
+    "/payment/status/:id",
+    authenticateUser,
+    _bookingController.updatePaymentStatus
+  );
 
   router.post(
     "/reserve_table",

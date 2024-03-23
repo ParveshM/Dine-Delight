@@ -81,3 +81,17 @@ export const createPayment = async (
   });
   return session.id;
 };
+
+export const updateBookingStatus = async (
+  id: string,
+  paymentStatus: string,
+  bookingRepository: ReturnType<BookingDbRepositoryInterface>
+) => {
+  const bookingStatus = paymentStatus === "Paid" ? "Confirmed" : "Pending";
+  const updationData: Record<string, any> = {
+    paymentStatus,
+    bookingStatus,
+  };
+
+  await bookingRepository.updateBookingDetails(id, updationData);
+};
