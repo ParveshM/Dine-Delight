@@ -4,6 +4,7 @@ import restLoginVector from "./pexels-wendy-wei-1546039.jpg";
 import restSignupVector from "./resSignupPage.avif";
 import logo from "./logo_copy.png";
 import dineinVector from "./10085382.png";
+import paymentFailedImg from "./credit-card.png";
 export {
   vector,
   logo,
@@ -11,4 +12,5 @@ export {
   restLoginVector,
   restSignupVector,
   dineinVector,
+  paymentFailedImg,
 };

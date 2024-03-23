@@ -7,6 +7,7 @@ import axios from "axios";
 import Navbar from "../../components/user/Header/Navbar";
 import { CalendarCheck2, Clock, Users } from "lucide-react";
 import axiosJWT from "../../utils/axiosService";
+import { loadStripe } from "@stripe/stripe-js";
 
 interface RestaurantTableInterface {
   _id: string;
@@ -22,10 +23,11 @@ interface RestaurantTableInterface {
 
 const BookTable: React.FC = () => {
   const tableSlot = useAppSelector((state) => state.BookingSlice);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [tableData, setTableData] = useState<RestaurantTableInterface | null>(
     null
   );
+
   const [formData, setFormData] = useState({
     restaurantId: tableData?.restaurantId._id ?? "",
     tableId: tableSlot.tableId,
@@ -49,7 +51,7 @@ const BookTable: React.FC = () => {
         })
         .catch(() => console.log("Error"));
       return () => {
-        dispatch(clearTableSlot());
+        // dispatch(clearTableSlot());
       };
     } else {
       hasPageBeenRendered.current = true;
@@ -64,14 +66,26 @@ const BookTable: React.FC = () => {
       })
     : "";
 
-  const handlePaynowButton = () => {
-    console.log(formData);
+  const handlePaynowButton = async () => {
+    const stripe = await loadStripe(
+      import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+    );
+    setIsSubmitting(true);
     axiosJWT
       .post(USER_API + "/reserve_table", formData)
-      .then(({ data }) => {
-        console.log(data);
+      .then(async ({ data }) => {
+        if (data.id) {
+          const result = await stripe?.redirectToCheckout({
+            sessionId: data.id,
+          });
+          if (result?.error) console.error(result.error);
+        }
+        console.log(data.message, data);
       })
-      .catch((error) => console.log("Error in creating order" + error));
+      .catch((error) => {
+        console.log("Error in creating order" + error);
+        setIsSubmitting(true);
+      });
   };
 
   if (!tableSlot.tableId) {
@@ -190,8 +204,9 @@ const BookTable: React.FC = () => {
             className="w-full  px-4 py-2 bg-indigo-500 hover:bg-indigo-600
            text-white text-sm font-medium rounded-md"
             onClick={handlePaynowButton}
+            disabled={isSubmitting}
           >
-            Pay now
+            {isSubmitting ? "Submitting..." : "Continue"}
           </button>
         </div>
       </div>

@@ -28,6 +28,7 @@ import TimeSlots from "../pages/restaurant/Tables/timeSlots";
 import ViewTable from "../pages/restaurant/Tables/viewTableSlots";
 import RestaurantView from "../pages/user/RestaurantViewPage";
 import BookTable from "../pages/user/BookTable";
+import PaymentCompleted from "../pages/user/payment/PaymentCompleted";
 
 export const MainRouter = () => {
   return (
@@ -51,6 +52,7 @@ export const MainRouter = () => {
       <Route path="" element={<ProtectedRoute />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/reserve_table" element={<BookTable />} />
+        <Route path="/payment_status/:id" element={<PaymentCompleted />} />
       </Route>
 
       {/******************* Restaurant routes *****************/}
