@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
 import { BookingInterface } from "../../types/BookingInterface";
+import axiosJWT from "../../utils/axiosService";
+import { USER_API } from "../../constants";
+import BookingHistoryList from "../../components/user/BookinghistoryList";
 
 const BookingHistory: React.FC = () => {
   const [bookings, setBookings] = useState<BookingInterface[]>([]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    axiosJWT
+      .get(USER_API + "/bookings")
+      .then(({ data }) => setBookings(data.bookings))
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <div className="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
@@ -12,7 +20,7 @@ const BookingHistory: React.FC = () => {
         Hisory & Recent bookings
       </h1>
       {bookings.map((booking) => (
-        <BookingHistory {...booking} key={booking._id} />
+        <BookingHistoryList {...booking} key={booking._id} />
       ))}
     </div>
   );

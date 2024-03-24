@@ -4,10 +4,8 @@ export interface BookingInterface {
   restaurantId: {
     restaurantName: string;
     tableRatePerPerson: number;
-    secondaryImages: string[];
-    verificationToken: string;
+    primaryImage: string;
     createdAt: Date;
-    updatedAt: Date;
   };
   tableId: {
     tableNumber: string;

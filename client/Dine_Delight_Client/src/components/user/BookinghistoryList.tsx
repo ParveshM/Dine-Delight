@@ -1,37 +1,54 @@
-import { statusTextColor } from "../../utils/util";
+import { Link } from "react-router-dom";
+import { BookingInterface } from "../../types/BookingInterface";
+import { statusTextColor, timeAgo } from "../../utils/util";
 import { Calendar, Users } from "lucide-react";
 
-const BookingHistoryList: React.FC = ({}) => {
+const BookingHistoryList: React.FC<BookingInterface> = ({
+  _id,
+  bookingId,
+  bookingStatus,
+  restaurantId,
+  tableId,
+  tableSlotId,
+  createdAt,
+}) => {
   return (
     <div className="flex flex-col justify-start items-start mt-2 dark:bg-gray-800 rounded-lg bg-gray-50 px-4  w-full">
       <div className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
         <div className="pb-4 md:pb-8 w-full md:w-40">
-          <img
-            className="w-28 rounded-lg"
-            src="https://i.ibb.co/84qQR4p/Rectangle-10.png"
-            alt="dress"
-          />
+          <Link to={`/view_restaurant/${_id}`}>
+            <img
+              className="w-full md:w-80 md:h-24 rounded-lg"
+              src={restaurantId.primaryImage}
+              alt={restaurantId.restaurantName}
+            />
+          </Link>
         </div>
         <div className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
           <div className="w-full flex flex-col justify-start items-start space-y-2">
             <h3 className="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">
-              Restaurant Name
+              {restaurantId.restaurantName}
             </h3>
             <div className="flex justify-start items-start flex-col space-y-3">
               <p
                 className={`text-sm font-semibold leading-none ${statusTextColor(
-                  "Confirmed"
+                  bookingStatus
                 )}`}
               >
-                Italic Minimal Design
+                {bookingStatus}
               </p>
               <p className="text-sm inline-flex items-center gap-2 dark:text-white leading-none text-gray-800">
                 <Users />
-                Italic Minimal Design
+                {tableId.capacity} guests
               </p>
               <p className="text-sm inline-flex items-center gap-2 dark:text-white leading-none text-gray-800">
                 <Calendar />
-                Italic Minimal Design
+                {new Date(createdAt).toLocaleDateString("en-IN", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </p>
             </div>
           </div>
@@ -44,7 +61,7 @@ const BookingHistoryList: React.FC = ({}) => {
               {" "}
             </p>
             <p className="text-sm  dark:text-white   leading-6 text-slate-500">
-              2 days ago
+              {timeAgo(createdAt)}
             </p>
           </div>
         </div>

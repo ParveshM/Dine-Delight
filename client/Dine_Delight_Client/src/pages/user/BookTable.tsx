@@ -35,8 +35,8 @@ const BookTable: React.FC = () => {
     paymentMethod: "Online",
   });
   const hasPageBeenRendered = useRef(false);
-
   const dispatch = useAppDispatch();
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (hasPageBeenRendered.current) {
@@ -80,7 +80,8 @@ const BookTable: React.FC = () => {
           });
           if (result?.error) console.error(result.error);
         }
-        console.log(data.message, data);
+        const bookingId = data.booking.bookingId
+        navigate(`/payment_status/${bookingId}?success=true`)
       })
       .catch((error) => {
         console.log("Error in creating order" + error);

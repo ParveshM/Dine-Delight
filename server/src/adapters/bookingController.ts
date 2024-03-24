@@ -9,6 +9,7 @@ import { TableDbInterface } from "../app/interfaces/tableDbRepository";
 import { TableRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/tableRepositoryMongoDb";
 import {
   createPayment,
+  getBookings,
   reserveATable,
   updateBookingStatus,
 } from "../app/use-cases/user/Booking/reservation";
@@ -23,6 +24,7 @@ import {
   TableSlotDbRepository,
 } from "../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
+import { cancelBookingAndUpdateWallet } from "../app/use-cases/user/Booking/cancellation";
 
 const bookingController = (
   reservationServiceInterface: ReservationServiceInterface,
@@ -66,14 +68,15 @@ const bookingController = (
         dbBookingRepository,
         dbResaurantRepository,
         dbTableRepository,
-        dbTableSlotRepository
+        dbTableSlotRepository,
+        userRepository
       );
       if (createBooking.paymentMethod === "Online") {
         const user = await getUserById(userId, userRepository);
         const sessionId = await createPayment(
           user?.name,
           user?.email,
-          createBooking._id,
+          createBooking.bookingId,
           createBooking.totalAmount
         );
         res.status(HttpStatus.OK).json({
@@ -106,7 +109,6 @@ const bookingController = (
     try {
       const { id } = req.params;
       const { paymentStatus } = req.body;
-      console.log(paymentStatus);
       await updateBookingStatus(
         id,
         paymentStatus,
@@ -121,9 +123,62 @@ const bookingController = (
     }
   };
 
+  /**
+   * *METHOD :GET
+   * * Retrieve all bookings done by user
+   */
+  const getAllbookings = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userID = req.user;
+      const bookings = await getBookings(userID, dbBookingRepository);
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Bookings fetched successfully",
+        bookings,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /*
+   * * METHOD :POST
+   * * Cancel booking and update the amount in wallet
+   */
+
+  const cancelBooking = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userID = req.user;
+      const { bookingID } = req.params;
+
+      const bookings = await cancelBookingAndUpdateWallet(
+        userID,
+        bookingID,
+        dbBookingRepository,
+        userRepository
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Booking cancelled successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     reserveTable,
     updatePaymentStatus,
+    getAllbookings,
+    cancelBooking,
   };
 };
 

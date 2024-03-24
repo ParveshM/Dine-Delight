@@ -1,16 +1,19 @@
 import Stripe from "stripe";
 import bookingEntity from "../../../../entities/bookingEntity";
-import { createReservationInterface } from "../../../../types/BookingInterface";
+import {
+  TransactionDataType,
+  createReservationInterface,
+} from "../../../../types/BookingInterface";
 import { BookingDbRepositoryInterface } from "../../../interfaces/bookingDbRepository";
 import { restaurantDbInterface } from "../../../interfaces/restaurantDbRepository";
 import { TableDbInterface } from "../../../interfaces/tableDbRepository";
 import { ReservationServiceInterface } from "../../../services-Interface/reservationServiceInterface";
 import configKeys from "../../../../config";
-import { Types } from "mongoose";
-import {
-  TableSlotDbInterface,
-  TableSlotDbRepository,
-} from "../../../interfaces/TableSlotdbRepository";
+import { TableSlotDbInterface } from "../../../interfaces/TableSlotdbRepository";
+import { updateWallet } from "./updateWallet";
+import { UserDbInterface } from "../../../interfaces/userDbRepository";
+import CustomError from "../../../../utils/customError";
+import { HttpStatus } from "../../../../types/httpStatus";
 
 export const reserveATable = async (
   reservationData: createReservationInterface,
@@ -19,7 +22,8 @@ export const reserveATable = async (
   bookingDbRepository: ReturnType<BookingDbRepositoryInterface>,
   restaurantDbRepository: ReturnType<restaurantDbInterface>,
   tableDbRepository: ReturnType<TableDbInterface>,
-  tablSlotDbRepository: ReturnType<TableSlotDbInterface>
+  tablSlotDbRepository: ReturnType<TableSlotDbInterface>,
+  userRepository: ReturnType<UserDbInterface>
 ) => {
   const { restaurantId, tableId, tableSlotId, paymentMethod } = reservationData;
   const restaurantDetails = await restaurantDbRepository.getRestaurantById(
@@ -48,6 +52,24 @@ export const reserveATable = async (
     gstAmount,
     totalAmount
   );
+  if (paymentMethod === "Wallet") {
+    const wallet = await userRepository.getWalletByUseId(userId);
+    if (wallet) {
+      if (wallet.balance >= totalAmount) {
+        const transactionData: TransactionDataType = {
+          newBalance: totalAmount,
+          type: "Debit",
+          description: "Booking transaction",
+        };
+        await updateWallet(userId, transactionData, userRepository);
+      } else {
+        throw new CustomError(
+          "Insufficient wallet balance",
+          HttpStatus.BAD_REQUEST
+        );
+      }
+    }
+  }
   const booking = await bookingDbRepository.createBooking(newReservation);
 
   const updateSlot = await tablSlotDbRepository.updateSlot(tableId, {
@@ -60,7 +82,7 @@ export const reserveATable = async (
 export const createPayment = async (
   userName: string = "John Doe",
   email: string = "johndoe@gmail.com",
-  bookingId: string | Types.ObjectId,
+  bookingId: string,
   totalAmount: number
 ) => {
   const stripe = new Stripe(configKeys.STRIPE_SECRET_KEY);
@@ -111,7 +133,15 @@ export const updateBookingStatus = async (
   );
   const tableSlotId = bookingData?.tableSlotId as unknown as string;
   if (paymentStatus === "Failed") {
-    await tableSlotRepository.updateSlot(tableSlotId, { isAvailable: true });
+    await tableSlotRepository.updateSlot(tableSlotId, {
+      paymentStatus: "Failed",
+      isAvailable: true,
+    });
   }
   return bookingData;
 };
+
+export const getBookings = async (
+  userID: string,
+  bookingRepository: ReturnType<BookingDbRepositoryInterface>
+) => await bookingRepository.bookings(userID);

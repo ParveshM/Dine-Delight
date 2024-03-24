@@ -56,19 +56,27 @@ const userRoute = () => {
   router.post("/google_signIn", controller.googleSignIn); // google sign in
   router.post("/forgot_password", controller.forgotPassword);
   router.post("/reset_password/:token", controller.resetPassword);
+
   router.get("/restaurants", controller.getRestaurants);
   router.get("/restaurants/:restaurantID", controller.getSingleRestaurant);
   router.get("/tables/:tableID", controller.tableDetails);
+
+  /****************Booking Routes ********************/
+  router.get("/bookings", authenticateUser, _bookingController.getAllbookings);
+  router.post(
+    "/reserve_table",
+    authenticateUser,
+    _bookingController.reserveTable
+  );
   router.patch(
     "/payment/status/:id",
     authenticateUser,
     _bookingController.updatePaymentStatus
   );
-
   router.post(
-    "/reserve_table",
+    "/booking/cancel/:bookingID",
     authenticateUser,
-    _bookingController.reserveTable
+    _bookingController.cancelBooking
   );
 
   return router;

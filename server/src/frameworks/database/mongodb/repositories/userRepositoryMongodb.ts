@@ -5,6 +5,9 @@ import {
 import { UserInterface } from "../../../../types/userInterface";
 import User from "../models/user";
 import OTPModel from "../models/OTPmodel";
+import wallet from "../models/wallet";
+import Transactions from "../models/transactions";
+import { TransactionEntityType } from "../../../../entities/transactionEntity";
 
 export const userRepositoryMongodb = () => {
   const getUserbyEmail = async (email: string) => {
@@ -27,18 +30,31 @@ export const userRepositoryMongodb = () => {
     await newUser.save();
     return newUser;
   };
+  const addWallet = async (userId: string) => await wallet.create({ userId });
+  const updateWallet = async (userId: string, newBalance: number) =>
+    await wallet.findOneAndUpdate(
+      { userId },
+      { $inc: { balance: newBalance } }
+    );
 
-  const registerGoogleSignedUser = async (user: googleSignInUserEntityType) => {
-    const newUser = new User({
+  const getWalletByUseId = async (userId: string) =>
+    await wallet.findOne({ userId });
+
+  const createTransaction = async (transactionDetails: TransactionEntityType) =>
+    await Transactions.create({
+      walletId: transactionDetails.getWalletId(),
+      type: transactionDetails.getType(),
+      description: transactionDetails.getDescription(),
+      amount: transactionDetails.getAmount(),
+    });
+
+  const registerGoogleSignedUser = async (user: googleSignInUserEntityType) =>
+    await User.create({
       name: user.name(),
       email: user.email(),
       profilePicture: user.picture(),
       isVerified: user.email_verified(),
     });
-
-    await newUser.save();
-    return newUser;
-  };
 
   const AddOTP = async (OTP: string, userId: string) => {
     await OTPModel.create({ OTP, userId });
@@ -76,6 +92,10 @@ export const userRepositoryMongodb = () => {
     getUserbyEmail,
     getUserbyId,
     addUser,
+    addWallet,
+    getWalletByUseId,
+    updateWallet,
+    createTransaction,
     registerGoogleSignedUser,
     AddOTP,
     findOtpUser,
