@@ -3,6 +3,7 @@ import {
   googleSignInUserEntityType,
   userEntityType,
 } from "../../entities/userEntity";
+import { TransactionEntityType } from "../../entities/transactionEntity";
 
 // Interface for the database repository that we need to use
 /*
@@ -22,6 +23,18 @@ export const userDbRepository = (
 
   const addUser = async (user: userEntityType) =>
     await repository.addUser(user);
+
+  const addWallet = async (userID: string) =>
+    await repository.addWallet(userID);
+
+  const getWalletByUseId = async (userId: string) =>
+    await repository.getWalletByUseId(userId);
+
+  const updateWallet = async (userId: string, newBalance: number) =>
+    await repository.updateWallet(userId, newBalance);
+
+  const createTransaction = async (transactionDetails: TransactionEntityType) =>
+    await repository.createTransaction(transactionDetails);
 
   const registerGoogleSignedUser = async (user: googleSignInUserEntityType) =>
     await repository.registerGoogleSignedUser(user);
@@ -59,6 +72,10 @@ export const userDbRepository = (
     getUserbyId,
     updateUserBlock,
     addUser,
+    addWallet,
+    getWalletByUseId,
+    updateWallet,
+    createTransaction,
     registerGoogleSignedUser,
     addOTP,
     findOtpUser,

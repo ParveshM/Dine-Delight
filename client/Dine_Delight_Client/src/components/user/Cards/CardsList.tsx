@@ -1,7 +1,7 @@
 import { BiSolidNavigation } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa6";
-import { defaultImage } from "../../../constants";
+import { defaultImageCardImage } from "../../../constants";
 import {
   convert24HourTime,
   convertTimeFormat,
@@ -29,7 +29,7 @@ const CardsList: React.FC<restaurantCardProps> = ({
       <figure>
         <Link to={`view_restaurant/${_id}`}>
           <img
-            src={primaryImage ?? defaultImage}
+            src={primaryImage ?? defaultImageCardImage}
             alt={"Image of " + restaurantName}
             className="rounded-t h-52 w-full object-cover"
           />

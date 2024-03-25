@@ -43,7 +43,9 @@ const userRoute = () => {
     tableDbRepository,
     tableRepositoryMongodb,
     userDbRepository,
-    userRepositoryMongodb
+    userRepositoryMongodb,
+    TableSlotDbRepository,
+    TableSlotRepositoryMongodb
   );
 
   /******** user authentication Routes ********/
@@ -54,13 +56,17 @@ const userRoute = () => {
   router.post("/google_signIn", controller.googleSignIn); // google sign in
   router.post("/forgot_password", controller.forgotPassword);
   router.post("/reset_password/:token", controller.resetPassword);
+
   router.get("/restaurants", controller.getRestaurants);
   router.get("/restaurants/:restaurantID", controller.getSingleRestaurant);
   router.get("/tables/:tableID", controller.tableDetails);
-  router.patch(
-    "/payment/status/:id",
+
+  /****************Booking Routes ********************/
+  router.get("/bookings", authenticateUser, _bookingController.getAllbookings);
+  router.get(
+    "/bookings/:bookingID",
     authenticateUser,
-    _bookingController.updatePaymentStatus
+    _bookingController.getBookingDetails
   );
 
   router.post(
@@ -68,11 +74,16 @@ const userRoute = () => {
     authenticateUser,
     _bookingController.reserveTable
   );
-
-  /********************************/
-  router.get("/test", authenticateUser, (req, res) => {
-    res.status(200).json("message from test router");
-  });
+  router.patch(
+    "/payment/status/:id",
+    authenticateUser,
+    _bookingController.updatePaymentStatus
+  );
+  router.patch(
+    "/booking/cancel/:bookingID",
+    authenticateUser,
+    _bookingController.cancelBooking
+  );
 
   return router;
 };

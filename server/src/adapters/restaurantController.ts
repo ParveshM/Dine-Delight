@@ -13,17 +13,32 @@ import {
   getRestaurantDetails,
   updateRestaurantInfo,
 } from "../app/use-cases/restaurant/updateRestaurant";
+import { BookingDbRepositoryInterface } from "../app/interfaces/bookingDbRepository";
+import { BookingRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/BookingRepositoryMongodb";
+import {
+  getRestaurantReservations,
+  updateReservationData,
+} from "../app/use-cases/restaurant/reservations";
+import { UserDbInterface } from "../app/interfaces/userDbRepository";
+import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/userRepositoryMongodb";
+import { getBookingByBookingId } from "../app/use-cases/user/Booking/reservation";
 
 const restaurantController = (
   authServiceInterface: AuthServiceInterfaceType,
   authServiceImpl: AuthService,
   restaurantDbRepository: restaurantDbInterface,
-  restaurantDbRepositoryImpl: restaurantRepositoryMongodbType
+  restaurantDbRepositoryImpl: restaurantRepositoryMongodbType,
+  bookingDbRepository: BookingDbRepositoryInterface,
+  bookingDbRepositoryImpl: BookingRepositoryMongodbType,
+  userDbRepository: UserDbInterface,
+  userDbRepositoryImpl: UserRepositoryMongodbType
 ) => {
   const authService = authServiceInterface(authServiceImpl());
   const dbRepositoryRestaurants = restaurantDbRepository(
     restaurantDbRepositoryImpl()
   );
+  const bookingRepository = bookingDbRepository(bookingDbRepositoryImpl());
+  const userRepository = userDbRepository(userDbRepositoryImpl());
 
   /*
    * METHOD: POST
@@ -141,12 +156,94 @@ const restaurantController = (
     }
   };
 
+  /*
+   * METHOD: GET
+   * Retriving all the reservations to the restaurant
+   */
+
+  const reservations = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const restaurantID = req.seller;
+      const reservations = await getRestaurantReservations(
+        restaurantID,
+        bookingRepository
+      );
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Reservations fetched successfully",
+        reservations,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /*
+   * METHOD: GET
+   * Retriving all the reservations to the restaurant
+   */
+  const getReservationbybookingId = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { bookingID } = req.params;
+      const bookingDetails = await getBookingByBookingId(
+        bookingID,
+        bookingRepository
+      );
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        message: "bookingDetails fetched successfully",
+        bookingDetails,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * * METHOD:PATCH
+   * * update booking details by seller
+   */
+  const updateReservations = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { bookingStatus, userID } = req.body;
+      const { bookingID } = req.params;
+      const upda = await updateReservationData(
+        bookingID,
+        bookingStatus,
+        userID,
+        bookingRepository,
+        userRepository
+      );
+      console.log(upda, bookingStatus, userID);
+      res
+        .status(HttpStatus.OK)
+        .json({ success: true, message: "Booking updated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     signup,
     verifyToken,
     login,
     updateRestaurantDetails,
     get_restaurantDetails,
+    reservations,
+    updateReservations,
+    getReservationbybookingId,
   };
 };
 export default restaurantController;

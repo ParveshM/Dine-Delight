@@ -13,12 +13,32 @@ export const bookingRepositoryMongodb = () => {
       totalAmount: reservationData.getTotalAmount(),
     });
 
-  const updateBooking = async (id: string, updatingData: Record<string, any>) =>
-    await Booking.findByIdAndUpdate(id, updatingData);
+  const getBookingById = async (bookingId: string) =>
+    await Booking.findOne({ bookingId }).populate([
+      "restaurantId",
+      "tableId",
+      "tableSlotId",
+      "userId",
+    ]);
+
+  const updateBooking = async (
+    bookingId: string,
+    updatingData: Record<string, any>
+  ) =>
+    await Booking.findOneAndUpdate({ bookingId }, updatingData, {
+      new: true,
+    });
+
+  const bookings = async (filter: Record<string, any>) =>
+    await Booking.find(filter)
+      .populate(["restaurantId", "tableId", "tableSlotId", "userId"])
+      .sort({ createdAt: -1 });
 
   return {
     createBooking,
+    getBookingById,
     updateBooking,
+    bookings,
   };
 };
 export type BookingRepositoryMongodbType = typeof bookingRepositoryMongodb;

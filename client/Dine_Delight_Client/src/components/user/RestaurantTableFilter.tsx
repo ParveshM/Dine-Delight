@@ -10,6 +10,7 @@ import { USER_API } from "../../constants";
 import axios from "axios";
 import LoadingAnimation from "./LoadingAnimation";
 import ReservationModal from "./Modals/ReservationModal";
+import { convert24HourTime } from "../../utils/timeConverter";
 interface TableSlotFilterProps {
   restaurantInfo: RestaurantInterface;
   tableSlots: TableSlotInterface[];
@@ -119,14 +120,16 @@ const TableSlotFilter: React.FC<TableSlotFilterProps> = ({
           <>
             {tableSlots.length ? (
               <>
-                {tableSlots.map((slot) => (
-                  <Button
-                    label={slot.startTime ?? ""}
-                    className="bg-blue-500 hover:bg-blue-600 m-1"
-                    handleButtonclick={() => handleTableSlotButtonClick(slot)}
-                    key={slot._id}
-                  />
-                ))}
+                {tableSlots.map((slot) => {
+                  return (
+                    <Button
+                      label={slot.startTime ?? ""}
+                      className="bg-blue-500 hover:bg-blue-600 m-1"
+                      handleButtonclick={() => handleTableSlotButtonClick(slot)}
+                      key={slot._id}
+                    />
+                  );
+                })}
               </>
             ) : (
               <>

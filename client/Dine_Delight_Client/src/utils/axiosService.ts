@@ -44,6 +44,11 @@ axiosJWT.interceptors.request.use(async (config) => {
   let decodedToken;
   try {
     const accessToken: any = await getAccessToken();
+    if (!accessToken) {
+      logout("Session expired ,please Login");
+      return Promise.reject("Access token not available");
+    }
+
     decodedToken = await jwtDecode(accessToken);
   } catch (error) {
     console.log("error in decodeToken" + error);

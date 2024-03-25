@@ -29,10 +29,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  wallet: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Wallet",
-  },
+
   bookmarks: [
     {
       type: mongoose.Schema.Types.ObjectId,

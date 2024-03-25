@@ -12,6 +12,10 @@ import { TableSlotDbRepository } from "../../../app/interfaces/TableSlotdbReposi
 import { TableSlotRepositoryMongodb } from "../../database/mongodb/repositories/TableSlotRepositoryMongodb";
 import { timeSlotDbRepository } from "../../../app/interfaces/timeSlotDbRepository";
 import { timeSlotRepositoryMongodb } from "../../database/mongodb/repositories/timeSlotsRepositoryMongodb";
+import { bookingDbRepository } from "../../../app/interfaces/bookingDbRepository";
+import { bookingRepositoryMongodb } from "../../database/mongodb/repositories/BookingRepositoryMongodb";
+import { userDbRepository } from "../../../app/interfaces/userDbRepository";
+import { userRepositoryMongodb } from "../../database/mongodb/repositories/userRepositoryMongodb";
 
 const restaurantRoute = () => {
   const router = express.Router();
@@ -21,7 +25,11 @@ const restaurantRoute = () => {
     authServiceInterface,
     authService,
     restaurantDbRepository,
-    restaurantRepositoryMongodb
+    restaurantRepositoryMongodb,
+    bookingDbRepository,
+    bookingRepositoryMongodb,
+    userDbRepository,
+    userRepositoryMongodb
   );
   // Table management and controller
   const _tableController = tableController(
@@ -38,6 +46,22 @@ const restaurantRoute = () => {
   router.post("/login", controller.login);
   router.get("/info", authenticateSeller, controller.get_restaurantDetails);
   router.put("/info", authenticateSeller, controller.updateRestaurantDetails);
+
+  /************* Reservations *************** */
+
+  router.get("/bookings", authenticateSeller, controller.reservations);
+  router.get(
+    "/bookings/:bookingID",
+    authenticateSeller,
+    controller.getReservationbybookingId
+  );
+  router.patch(
+    "/booking/edit/:bookingID",
+    authenticateSeller,
+    controller.updateReservations
+  );
+
+  /********************************************/
 
   /**** Table routes ******/
   router.post("/table/new", authenticateSeller, _tableController.addTable);

@@ -9,6 +9,8 @@ import { TableDbInterface } from "../app/interfaces/tableDbRepository";
 import { TableRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/tableRepositoryMongoDb";
 import {
   createPayment,
+  getBookingByBookingId,
+  getBookings,
   reserveATable,
   updateBookingStatus,
 } from "../app/use-cases/user/Booking/reservation";
@@ -18,6 +20,12 @@ import configKeys from "../config";
 import { getUserById } from "../app/use-cases/user/auth/userAuth";
 import { UserDbInterface } from "../app/interfaces/userDbRepository";
 import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/userRepositoryMongodb";
+import {
+  TableSlotDbInterface,
+  TableSlotDbRepository,
+} from "../app/interfaces/TableSlotdbRepository";
+import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
+import { cancelBookingAndUpdateWallet } from "../app/use-cases/user/Booking/cancellation";
 
 const bookingController = (
   reservationServiceInterface: ReservationServiceInterface,
@@ -29,7 +37,9 @@ const bookingController = (
   tableDbRepository: TableDbInterface,
   tableDbRepositoryImpl: TableRepositoryMongodbType,
   userDbRepository: UserDbInterface,
-  userDbRepositoryImpl: UserRepositoryMongodbType
+  userDbRepositoryImpl: UserRepositoryMongodbType,
+  tablSlotDbRepository: TableSlotDbInterface,
+  tablSlotDbRepositoryImpl: TableSlotRepositoryMongodbType
 ) => {
   const dbBookingRepository = bookingDbRepository(bookingDbRepositoryImpl());
   const dbResaurantRepository = restaurantDbRepository(
@@ -37,6 +47,9 @@ const bookingController = (
   );
   const dbTableRepository = tableDbRepository(tableDbRepositoryImpl());
   const userRepository = userDbRepository(userDbRepositoryImpl());
+  const dbTableSlotRepository = tablSlotDbRepository(
+    tablSlotDbRepositoryImpl()
+  );
 
   const reservationService = reservationServiceInterface(
     reservationServiceImpl()
@@ -55,14 +68,16 @@ const bookingController = (
         reservationService,
         dbBookingRepository,
         dbResaurantRepository,
-        dbTableRepository
+        dbTableRepository,
+        dbTableSlotRepository,
+        userRepository
       );
       if (createBooking.paymentMethod === "Online") {
         const user = await getUserById(userId, userRepository);
         const sessionId = await createPayment(
           user?.name,
           user?.email,
-          createBooking._id,
+          createBooking.bookingId,
           createBooking.totalAmount
         );
         res.status(HttpStatus.OK).json({
@@ -95,11 +110,11 @@ const bookingController = (
     try {
       const { id } = req.params;
       const { paymentStatus } = req.body;
-      console.log(paymentStatus);
-      const updateStatus = await updateBookingStatus(
+      await updateBookingStatus(
         id,
         paymentStatus,
-        dbBookingRepository
+        dbBookingRepository,
+        dbTableSlotRepository
       );
       res
         .status(HttpStatus.OK)
@@ -109,9 +124,89 @@ const bookingController = (
     }
   };
 
+  /**
+   * *METHOD :GET
+   * * Retrieve all bookings done by user
+   */
+  const getAllbookings = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userID = req.user;
+      const bookings = await getBookings(userID, dbBookingRepository);
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Bookings fetched successfully",
+        bookings,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /*
+   * * METHOD :GET
+   * * Retrieve booking details
+   */
+  const getBookingDetails = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { bookingID } = req.params;
+      const bookingDetails = await getBookingByBookingId(
+        bookingID,
+        dbBookingRepository
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Bookings details fetched successfully",
+        bookingDetails,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /*
+   * * METHOD :POST
+   * * Cancel booking and update the amount in wallet
+   */
+
+  const cancelBooking = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userID = req.user;
+      const { bookingID } = req.params;
+
+      const updateBooking = await cancelBookingAndUpdateWallet(
+        userID,
+        bookingID,
+        dbBookingRepository,
+        userRepository
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Booking cancelled successfully",
+        booking: updateBooking,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     reserveTable,
     updatePaymentStatus,
+    getAllbookings,
+    cancelBooking,
+    getBookingDetails,
   };
 };
 

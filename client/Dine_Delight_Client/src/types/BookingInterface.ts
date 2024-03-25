@@ -1,29 +1,17 @@
-import { Types } from "mongoose";
-
-export interface createReservationInterface {
-  phone: string;
-  restaurantId: string;
-  tableId: string;
-  tableSlotId: string;
-  paymentMethod: "Online" | "Wallet";
-  gstAmount: number;
-  totalAmount: number;
-}
-
-export type TransactionDataType = {
-  newBalance: number;
-  type: "Debit" | "Credit";
-  description: string;
-};
-
 export interface BookingInterface {
-  _id: Types.ObjectId;
+  _id: string;
   bookingId: string;
   restaurantId: {
+    _id: string;
     restaurantName: string;
     tableRatePerPerson: number;
     primaryImage: string;
     createdAt: Date;
+  };
+  userId: {
+    _id: string;
+    name: string;
+    email: string;
   };
   tableId: {
     tableNumber: string;
@@ -37,7 +25,7 @@ export interface BookingInterface {
   };
   paymentMethod: "Online" | "Wallet";
   paymentStatus: "Pending" | "Paid" | "Failed";
-  bookingStatus:
+  bookingStatus?:
     | "Pending"
     | "Confirmed"
     | "Cancelled"

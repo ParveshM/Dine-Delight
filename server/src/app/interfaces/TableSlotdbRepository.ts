@@ -19,6 +19,9 @@ export const TableSlotDbRepository = (
   }: allotTableSlotInterface) =>
     await repository.isSlotAvailable(tableId, slotDate, startTime, endTime);
 
+  const updateSlot = async (id: string, updateData: Record<string, any>) =>
+    await repository.updateSlot(id, updateData);
+
   const removeTablSlotebyId = async (tableID: string) =>
     await repository.removeTableSlotById(tableID);
 
@@ -39,6 +42,7 @@ export const TableSlotDbRepository = (
     addNewTableSlot,
     getTablSlotebyId,
     isSlotAvailable,
+    updateSlot,
     removeTablSlotebyId,
     getAvailableTableSlotsByFilter,
   };
