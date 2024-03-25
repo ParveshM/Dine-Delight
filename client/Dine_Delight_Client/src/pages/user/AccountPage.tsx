@@ -37,7 +37,7 @@ const AccountPage: React.FC<childrenProps> = ({ children }) => {
       <Navbar />
       <div>
         <UserSidebar />
-        <div className="p-4 mt-10 sm:ml-64">{children}</div>
+        <div className="p-4 mt-20 sm:ml-64">{children}</div>
       </div>
     </>
   );

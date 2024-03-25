@@ -14,6 +14,7 @@ import { updateWallet } from "./updateWallet";
 import { UserDbInterface } from "../../../interfaces/userDbRepository";
 import CustomError from "../../../../utils/customError";
 import { HttpStatus } from "../../../../types/httpStatus";
+import { Types } from "mongoose";
 
 export const reserveATable = async (
   reservationData: createReservationInterface,
@@ -144,4 +145,9 @@ export const updateBookingStatus = async (
 export const getBookings = async (
   userID: string,
   bookingRepository: ReturnType<BookingDbRepositoryInterface>
-) => await bookingRepository.bookings(userID);
+) => await bookingRepository.bookings({ userId: new Types.ObjectId(userID) });
+
+export const getBookingByBookingId = async (
+  bookingID: string,
+  bookingRepository: ReturnType<BookingDbRepositoryInterface>
+) => await bookingRepository.getBookingById(bookingID);

@@ -15,7 +15,8 @@ export const bookingDbRepository = (
     updatingData: Record<string, any>
   ) => await repository.updateBooking(bookingId, updatingData);
 
-  const bookings = async (userID: string) => await repository.bookings(userID);
+  const bookings = async (filter: Record<string, any>) =>
+    await repository.bookings(filter);
 
   return { createBooking, getBookingById, updateBookingDetails, bookings };
 };

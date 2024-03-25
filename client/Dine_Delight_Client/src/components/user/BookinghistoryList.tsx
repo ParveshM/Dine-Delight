@@ -1,22 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BookingInterface } from "../../types/BookingInterface";
 import { statusTextColor, timeAgo } from "../../utils/util";
 import { Calendar, Users } from "lucide-react";
 
 const BookingHistoryList: React.FC<BookingInterface> = ({
-  _id,
   bookingId,
   bookingStatus,
   restaurantId,
   tableId,
-  tableSlotId,
   createdAt,
 }) => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col justify-start items-start mt-2 dark:bg-gray-800 rounded-lg bg-gray-50 px-4  w-full">
       <div className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
         <div className="pb-4 md:pb-8 w-full md:w-40">
-          <Link to={`/view_restaurant/${_id}`}>
+          <Link to={`/view_restaurant/${restaurantId._id}`}>
             <img
               className="w-full md:w-80 md:h-24 rounded-lg"
               src={restaurantId.primaryImage}
@@ -24,7 +23,11 @@ const BookingHistoryList: React.FC<BookingInterface> = ({
             />
           </Link>
         </div>
-        <div className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
+        <div
+          className="border-b border-gray-200 hover:cursor-pointer
+         md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0"
+          onClick={() => navigate(`/booking/view/${bookingId}`)}
+        >
           <div className="w-full flex flex-col justify-start items-start space-y-2">
             <h3 className="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">
               {restaurantId.restaurantName}

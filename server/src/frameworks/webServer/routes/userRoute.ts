@@ -63,6 +63,12 @@ const userRoute = () => {
 
   /****************Booking Routes ********************/
   router.get("/bookings", authenticateUser, _bookingController.getAllbookings);
+  router.get(
+    "/bookings/:bookingID",
+    authenticateUser,
+    _bookingController.getBookingDetails
+  );
+
   router.post(
     "/reserve_table",
     authenticateUser,
@@ -73,7 +79,7 @@ const userRoute = () => {
     authenticateUser,
     _bookingController.updatePaymentStatus
   );
-  router.post(
+  router.patch(
     "/booking/cancel/:bookingID",
     authenticateUser,
     _bookingController.cancelBooking

@@ -2,10 +2,16 @@ export interface BookingInterface {
   _id: string;
   bookingId: string;
   restaurantId: {
+    _id: string;
     restaurantName: string;
     tableRatePerPerson: number;
     primaryImage: string;
     createdAt: Date;
+  };
+  userId: {
+    _id: string;
+    name: string;
+    email: string;
   };
   tableId: {
     tableNumber: string;
@@ -19,7 +25,7 @@ export interface BookingInterface {
   };
   paymentMethod: "Online" | "Wallet";
   paymentStatus: "Pending" | "Paid" | "Failed";
-  bookingStatus:
+  bookingStatus?:
     | "Pending"
     | "Confirmed"
     | "Cancelled"

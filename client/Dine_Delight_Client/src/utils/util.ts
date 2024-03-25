@@ -29,7 +29,7 @@ export const statusTextColor = (status: string): string => {
       textColor = "text-gray-500";
       break;
     case "Completed":
-      textColor = "text-greem-500";
+      textColor = "text-indigo-500";
       break;
     default:
       textColor = "text-gray-800";

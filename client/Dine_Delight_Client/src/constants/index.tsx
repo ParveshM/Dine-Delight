@@ -85,3 +85,13 @@ export const userSidebarItem = [
     text: "Bookmarks",
   },
 ];
+
+export const reservationTableColomns = [
+  { label: "BookingID", key: "bookingId" },
+  { label: "Email", key: "email" },
+  { label: "Time", key: "time" },
+  { label: "Date", key: "date" },
+  { label: "Table Size", key: "tableSize" },
+  { label: "Status", key: "status" },
+  { label: "Action", key: "action" },
+];

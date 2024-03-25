@@ -26,6 +26,7 @@ export const cancelBookingAndUpdateWallet = async (
     bookingID,
     {
       bookingStatus: "Cancelled",
+      paymentStatus: "Refunded",
     }
   );
   const booking = (await bookingRepository.getBookingById(
@@ -44,4 +45,5 @@ export const cancelBookingAndUpdateWallet = async (
       userRepository
     );
   }
+  return bookingDetails;
 };

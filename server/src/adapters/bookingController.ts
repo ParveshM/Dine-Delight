@@ -9,6 +9,7 @@ import { TableDbInterface } from "../app/interfaces/tableDbRepository";
 import { TableRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/tableRepositoryMongoDb";
 import {
   createPayment,
+  getBookingByBookingId,
   getBookings,
   reserveATable,
   updateBookingStatus,
@@ -146,6 +147,31 @@ const bookingController = (
   };
 
   /*
+   * * METHOD :GET
+   * * Retrieve booking details
+   */
+  const getBookingDetails = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { bookingID } = req.params;
+      const bookingDetails = await getBookingByBookingId(
+        bookingID,
+        dbBookingRepository
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Bookings details fetched successfully",
+        bookingDetails,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /*
    * * METHOD :POST
    * * Cancel booking and update the amount in wallet
    */
@@ -159,7 +185,7 @@ const bookingController = (
       const userID = req.user;
       const { bookingID } = req.params;
 
-      const bookings = await cancelBookingAndUpdateWallet(
+      const updateBooking = await cancelBookingAndUpdateWallet(
         userID,
         bookingID,
         dbBookingRepository,
@@ -168,6 +194,7 @@ const bookingController = (
       res.status(HttpStatus.OK).json({
         success: true,
         message: "Booking cancelled successfully",
+        booking: updateBooking,
       });
     } catch (error) {
       next(error);
@@ -179,6 +206,7 @@ const bookingController = (
     updatePaymentStatus,
     getAllbookings,
     cancelBooking,
+    getBookingDetails,
   };
 };
 

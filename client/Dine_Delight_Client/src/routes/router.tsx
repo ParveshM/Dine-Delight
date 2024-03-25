@@ -30,6 +30,9 @@ import RestaurantView from "../pages/user/RestaurantViewPage";
 import BookTable from "../pages/user/BookTable";
 import PaymentCompleted from "../pages/user/payment/PaymentCompleted";
 import BookingHistory from "../pages/user/BookingHistory";
+import Reservations from "../pages/restaurant/Reservations";
+import ViewReservation from "../pages/restaurant/viewReservation";
+import ViewBooking from "../pages/user/viewBooking";
 
 export const MainRouter = () => {
   return (
@@ -61,6 +64,10 @@ export const MainRouter = () => {
           path="/booking_history"
           element={<AccountPage children={<BookingHistory />} />}
         />
+        <Route
+          path="booking/view/:id"
+          element={<AccountPage children={<ViewBooking />} />}
+        />
       </Route>
 
       {/******************* Restaurant routes *****************/}
@@ -78,7 +85,11 @@ export const MainRouter = () => {
         />
         <Route
           path="reservations"
-          element={<SellerPage children={<div>Reservations</div>} />}
+          element={<SellerPage children={<Reservations />} />}
+        />
+        <Route
+          path="reservations/view/:id"
+          element={<SellerPage children={<ViewReservation />} />}
         />
         <Route path="table" element={<SellerPage children={<Tables />} />} />
         <Route

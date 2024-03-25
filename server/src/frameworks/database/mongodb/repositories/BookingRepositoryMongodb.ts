@@ -18,6 +18,7 @@ export const bookingRepositoryMongodb = () => {
       "restaurantId",
       "tableId",
       "tableSlotId",
+      "userId",
     ]);
 
   const updateBooking = async (
@@ -28,10 +29,11 @@ export const bookingRepositoryMongodb = () => {
       new: true,
     });
 
-  const bookings = async (userId: string) =>
-    await Booking.find({ userId })
-      .populate(["restaurantId", "tableId", "tableSlotId"])
+  const bookings = async (filter: Record<string, any>) =>
+    await Booking.find(filter)
+      .populate(["restaurantId", "tableId", "tableSlotId", "userId"])
       .sort({ createdAt: -1 });
+
   return {
     createBooking,
     getBookingById,

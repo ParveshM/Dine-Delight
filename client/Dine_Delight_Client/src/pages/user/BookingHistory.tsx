@@ -16,7 +16,7 @@ const BookingHistory: React.FC = () => {
 
   return (
     <div className="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
-      <h1 className="text-xl dark:text-white lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">
+      <h1 className="text-xl dark:text-white lg:text-2xl font-semibold leading-7 lg:leading-9 text-gray-800">
         Hisory & Recent bookings
       </h1>
       {bookings.map((booking) => (
