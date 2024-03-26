@@ -28,7 +28,11 @@ const ReservationTableData: React.FC<BookingInterface> = ({
         })}
       </td>
       <td className="px-6 py-4">{tableId.capacity}</td>
-      <td className={`px-6 py-4 font-medium ${statusTextColor(bookingStatus)}`}>
+      <td
+        className={`px-6 py-4 font-medium ${
+          bookingStatus && statusTextColor(bookingStatus)
+        }`}
+      >
         {bookingStatus}
       </td>
       <td className="px-6 py-4">

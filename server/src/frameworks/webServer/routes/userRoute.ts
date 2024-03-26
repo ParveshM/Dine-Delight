@@ -57,6 +57,10 @@ const userRoute = () => {
   router.post("/forgot_password", controller.forgotPassword);
   router.post("/reset_password/:token", controller.resetPassword);
 
+  router.get("/profile", authenticateUser, controller.userProfile);
+  router.patch("/profile/edit", authenticateUser, controller.updateUserInfo);
+  router.get("/transactions", authenticateUser, controller.getTransactions);
+
   router.get("/restaurants", controller.getRestaurants);
   router.get("/restaurants/:restaurantID", controller.getSingleRestaurant);
   router.get("/tables/:tableID", controller.tableDetails);

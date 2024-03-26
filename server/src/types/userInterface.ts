@@ -9,7 +9,7 @@ export interface UserInterface {
   name: string;
   email: string;
   password: string;
-  profilePicture?: string;
+  profilePicture: string;
   role: string;
   wallet: object;
   isVerified: boolean;

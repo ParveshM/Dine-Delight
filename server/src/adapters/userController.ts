@@ -12,6 +12,7 @@ import {
   authenticateGoogleSignInUser,
   sendResetVerificationCode,
   verifyTokenAndRestPassword,
+  getUserById,
 } from "../app/use-cases/user/auth/userAuth";
 import { HttpStatus } from "../types/httpStatus";
 import { GoogleResponseType } from "../types/googleResponseType";
@@ -27,6 +28,11 @@ import { Filter } from "../types/restaurantInterface";
 import { TableDbInterface } from "../app/interfaces/tableDbRepository";
 import { TableRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/tableRepositoryMongoDb";
 import { getTableDetails } from "../app/use-cases/user/read/getTable";
+import {
+  WalletTransactions,
+  getUserProfile,
+  updateUser,
+} from "../app/use-cases/user/read/profile";
 // Controller will be passing all the necessaary parameers to the repositories
 
 const userController = (
@@ -268,7 +274,7 @@ const userController = (
   };
 
   /**
-   * * METHODS :GET
+   * * METHOD :GET
    * * @param tableID {string}
    * * Retrieve table details by Id
    */
@@ -279,9 +285,71 @@ const userController = (
   ) => {
     try {
       const { tableID } = req.params;
-
+      const userId = req.query.userId as string;
       const tableData = await getTableDetails(tableID, tableRepository);
-      res.status(200).json({ success: true, tableData });
+      const user = await getUserById(userId, dbRepositoryUser);
+
+      res.status(200).json({ success: true, tableData, user });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * * METHOD :GET
+   * * Retrieve  user profile , wallet
+   */
+  const userProfile = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userId = req.user;
+      const { user, wallet, transactions } = await getUserProfile(
+        userId,
+        dbRepositoryUser
+      );
+      res.status(200).json({ success: true, user, wallet, transactions });
+    } catch (error) {
+      next(error);
+    }
+  };
+  /**
+   * * METHOD :PATCH
+   * * update user profile
+   */
+  const updateUserInfo = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userId = req.user;
+      const updateData = req.body;
+      console.log(req.body);
+      const user = await updateUser(userId, updateData, dbRepositoryUser);
+      res
+        .status(200)
+        .json({ success: true, user, message: "Profile updated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  const getTransactions = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userId = req.user;
+      const transaction = await WalletTransactions(userId, dbRepositoryUser);
+      res.status(200).json({
+        success: true,
+        transaction,
+        message: "Transactions fetched successfully",
+      });
     } catch (error) {
       next(error);
     }
@@ -298,6 +366,9 @@ const userController = (
     getRestaurants,
     getSingleRestaurant,
     tableDetails,
+    userProfile,
+    updateUserInfo,
+    getTransactions,
   };
 };
 export default userController;

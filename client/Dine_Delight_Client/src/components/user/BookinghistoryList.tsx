@@ -35,7 +35,7 @@ const BookingHistoryList: React.FC<BookingInterface> = ({
             <div className="flex justify-start items-start flex-col space-y-3">
               <p
                 className={`text-sm font-semibold leading-none ${statusTextColor(
-                  bookingStatus
+                  bookingStatus ?? ""
                 )}`}
               >
                 {bookingStatus}

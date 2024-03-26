@@ -2,12 +2,23 @@ export type UserInterface = {
   _id: string;
   name: string;
   email: string;
-  password: string;
   profilePicture?: string;
   role: string;
-  wallet: object;
   isVerified: boolean;
   isBlocked: boolean;
-  bookmarks?: Array<string>;
+  bookmarks?: string[];
   createdAt: Date;
 };
+
+export interface UserWalletInterface {
+  _id: string;
+  userId: string;
+  balance: number;
+}
+export interface TransactionsInterface {
+  _id: string;
+  type: "Debit" | "Credit";
+  description: string;
+  amount: number;
+  createdAt: Date;
+}

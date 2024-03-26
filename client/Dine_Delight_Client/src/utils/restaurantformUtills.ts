@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import uploadImagesToCloudinary from "./uploadImages";
+import uploadImagesToCloudinary from "../Api/uploadImages";
 import { RESTAURANT_API } from "../constants";
 import axiosJWT from "./axiosService";
 import showToast from "./toaster";

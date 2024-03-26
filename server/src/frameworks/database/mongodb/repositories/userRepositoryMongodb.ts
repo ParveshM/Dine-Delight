@@ -8,6 +8,7 @@ import OTPModel from "../models/OTPmodel";
 import wallet from "../models/wallet";
 import Transactions from "../models/transactions";
 import { TransactionEntityType } from "../../../../entities/transactionEntity";
+import { Types } from "mongoose";
 
 export const userRepositoryMongodb = () => {
   const getUserbyEmail = async (email: string) => {
@@ -15,7 +16,8 @@ export const userRepositoryMongodb = () => {
     return user;
   };
 
-  const getUserbyId = async (id: string) => await User.findById(id); //   get userby Id
+  const getUserbyId = async (id: string) =>
+    await User.findById(id).populate("wallet").select(["-password"]);
 
   const updateUserBlock = async (id: string, status: boolean) =>
     await User.findByIdAndUpdate(id, { isBlocked: status });
@@ -47,6 +49,9 @@ export const userRepositoryMongodb = () => {
       description: transactionDetails.getDescription(),
       amount: transactionDetails.getAmount(),
     });
+
+  const allTransactions = async (walletId: Types.ObjectId) =>
+    await Transactions.find({ walletId }).sort({ createdAt: -1 });
 
   const registerGoogleSignedUser = async (user: googleSignInUserEntityType) =>
     await User.create({
@@ -87,6 +92,9 @@ export const userRepositoryMongodb = () => {
 
   const getAllUsers = async () => await User.find({ isVerified: true });
 
+  const updateUserInfo = async (id: string, updateData: Record<string, any>) =>
+    await User.findByIdAndUpdate(id, updateData, { new: true });
+
   // exporting the functions
   return {
     getUserbyEmail,
@@ -96,6 +104,7 @@ export const userRepositoryMongodb = () => {
     getWalletByUseId,
     updateWallet,
     createTransaction,
+    allTransactions,
     registerGoogleSignedUser,
     AddOTP,
     findOtpUser,
@@ -106,6 +115,7 @@ export const userRepositoryMongodb = () => {
     updateVerificationCode,
     findVerificationCode,
     findVerificationCodeAndUpdate,
+    updateUserInfo,
   };
 };
 

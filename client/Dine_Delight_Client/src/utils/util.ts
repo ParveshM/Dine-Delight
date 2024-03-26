@@ -61,3 +61,15 @@ export function timeAgo(input: Date) {
     }
   }
 }
+
+export function calculateTotalAmount(
+  capacity: number = 0,
+  tableRatePerPerson: number = 0
+): number {
+  const totalAmount = (
+    (18 / 100) * capacity * tableRatePerPerson +
+    capacity * tableRatePerPerson
+  ).toFixed(2);
+
+  return parseInt(totalAmount);
+}

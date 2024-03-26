@@ -1,4 +1,5 @@
 import { CLOUDINARY_UPLOAD_API, cloudinaryUploadPreset } from "../constants";
+import showToast from "../utils/toaster";
 
 const uploadImagesToCloudinary = async (imageFiles: File[]) => {
   try {
@@ -23,7 +24,7 @@ const uploadImagesToCloudinary = async (imageFiles: File[]) => {
     const uploadedImageUrls = await Promise.all(promises);
     return uploadedImageUrls;
   } catch (error) {
-    console.error("Error uploading images to Cloudinary:", error);
+    showToast("Error uploading images to Cloudinary", "error");
   }
 };
 export default uploadImagesToCloudinary;
