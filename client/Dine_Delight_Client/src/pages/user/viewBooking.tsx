@@ -124,7 +124,7 @@ const ViewBooking: React.FC = () => {
             </div>
           </div>
         </div>
-        {booking?.bookingStatus !== "Cancelled" && (
+        {booking?.bookingStatus && booking?.bookingStatus !== "Cancelled" && (
           <Button
             label="Cancel Booking"
             className="block mx-auto mt-8 bg-red-400 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"

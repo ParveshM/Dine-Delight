@@ -26,9 +26,9 @@ const LoginForm: React.FC = () => {
       axios
         .post(USER_API + "/login", { email, password })
         .then(({ data }) => {
-          const { name, role } = data.user;
+          const { name, role, _id } = data.user;
           showToast(data.message, "success");
-          dispatch(setUser({ isAuthenticated: true, name, role }));
+          dispatch(setUser({ isAuthenticated: true, name, role, id: _id }));
           navigate("/");
         })
         .catch(({ response }) => {
@@ -51,7 +51,12 @@ const LoginForm: React.FC = () => {
         const { message, user } = data;
         showToast(message, "success");
         dispatch(
-          setUser({ name: user.name, isAuthenticated: true, role: user.role })
+          setUser({
+            name: user.name,
+            isAuthenticated: true,
+            role: user.role,
+            id: user._id,
+          })
         );
         navigate("/");
       })

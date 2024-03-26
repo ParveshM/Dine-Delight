@@ -4,6 +4,8 @@ import {
   userEntityType,
 } from "../../entities/userEntity";
 import { TransactionEntityType } from "../../entities/transactionEntity";
+import { Types } from "mongoose";
+import { UserInterface } from "../../types/userInterface";
 
 // Interface for the database repository that we need to use
 /*
@@ -36,6 +38,9 @@ export const userDbRepository = (
   const createTransaction = async (transactionDetails: TransactionEntityType) =>
     await repository.createTransaction(transactionDetails);
 
+  const getTransactions = async (walletId: Types.ObjectId) =>
+    await repository.allTransactions(walletId);
+
   const registerGoogleSignedUser = async (user: googleSignInUserEntityType) =>
     await repository.registerGoogleSignedUser(user);
 
@@ -67,6 +72,9 @@ export const userDbRepository = (
   ) =>
     await repository.findVerificationCodeAndUpdate(verificationCode, password);
 
+  const updateProfile = async (userID: string, userData: Record<string, any>) =>
+    await repository.updateUserInfo(userID, userData);
+
   return {
     getUserbyEmail,
     getUserbyId,
@@ -76,6 +84,7 @@ export const userDbRepository = (
     getWalletByUseId,
     updateWallet,
     createTransaction,
+    getTransactions,
     registerGoogleSignedUser,
     addOTP,
     findOtpUser,
@@ -85,6 +94,7 @@ export const userDbRepository = (
     updateVerificationCode,
     findVerificationCode,
     verifyAndResetPassword,
+    updateProfile,
   };
 };
 

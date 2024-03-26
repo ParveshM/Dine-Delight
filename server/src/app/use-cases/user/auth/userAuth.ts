@@ -66,8 +66,11 @@ export const verifyOtpUser = async (
     );
 
   if (otpUser.OTP === userOTP) {
-    await userRepository.updateVerifiedUser(userId);
-    await userRepository.addWallet(userId);
+    const wallet = await userRepository.addWallet(userId);
+    await userRepository.updateProfile(userId, {
+      isVerified: true,
+      wallet: wallet._id,
+    });
     return true;
   } else {
     throw new CustomError("Invalid OTP,try again", HttpStatus.BAD_REQUEST);
@@ -164,7 +167,8 @@ export const authenticateGoogleSignInUser = async (
       googleSignInUser
     );
     const userId = createdUser._id as unknown as string;
-    await userDbRepository.addWallet(userId);
+    const wallet = await userDbRepository.addWallet(userId);
+    await userDbRepository.updateProfile(userId, { wallet: wallet._id });
 
     const { accessToken, refreshToken } = authService.createTokens(
       userId,
@@ -215,7 +219,6 @@ export const verifyTokenAndRestPassword = async (
     verificationCode,
     hashedPassword
   );
-  console.log(isPasswordUpdated);
 
   if (!isPasswordUpdated)
     throw new CustomError(
