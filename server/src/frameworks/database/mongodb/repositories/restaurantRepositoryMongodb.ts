@@ -33,10 +33,17 @@ export const restaurantRepositoryMongodb = () => {
   const getAllRestaurants = async () =>
     await Restaurant.find({ isVerified: true, isApproved: true });
 
-  const getListedRestaurants = async (filter: Record<string, any>) => {
-    return await Restaurant.find(filter).select(
-      "-password -isApproved -isRejected -isVerified -verificationToken -role"
-    );
+  const getListedRestaurants = async (
+    filter: Record<string, any>,
+    skip: number,
+    page: number
+  ) => {
+    return await Restaurant.find(filter)
+      .select(
+        "-password -isApproved -isRejected -isVerified -verificationToken -role"
+      )
+      .skip(skip)
+      .limit(page);
   };
 
   const getNewRegistrations = async () =>

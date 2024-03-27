@@ -3,7 +3,9 @@ import { TableSlotDbInterface } from "../../../interfaces/TableSlotdbRepository"
 import { restaurantDbInterface } from "../../../interfaces/restaurantDbRepository";
 
 export const getAllListedRestaurants = async (
-  searchText: string,
+  searchText: string = "",
+  skip: number,
+  page: number,
   userCoordinates: (string | number)[],
   restaurantRepository: ReturnType<restaurantDbInterface>
 ) => {
@@ -18,12 +20,13 @@ export const getAllListedRestaurants = async (
               type: "Point",
               coordinates: userCoordinates,
             },
+            // $minDistance: 0,
             $maxDistance: 10000,
           },
         },
       }),
   };
-  return await restaurantRepository.getListedRestaurants(filter);
+  return await restaurantRepository.getListedRestaurants(filter, skip, page);
 };
 
 export const getSingleRestaurantById = async (

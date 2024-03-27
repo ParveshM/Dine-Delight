@@ -233,9 +233,22 @@ const userController = (
     try {
       const q = req.query.q as string;
       const location = req.query.location as (string | number)[];
+      const page = req.query.page as string;
+      const parsedPage = parseInt(page, 10);
+
+      const pageNumber = isNaN(parsedPage) ? 1 : parsedPage;
+
+      const pageSize = 1; // Define the number of documents per page
+
+      // Calculate the number of documents to skip based on the page number
+      const skip = (pageNumber - 1) * pageSize;
+
+      // Use skip value in your MongoDB query to fetch paginated data
 
       const restaurants = await getAllListedRestaurants(
         q,
+        skip,
+        pageSize,
         location,
         restaurantRepository
       );

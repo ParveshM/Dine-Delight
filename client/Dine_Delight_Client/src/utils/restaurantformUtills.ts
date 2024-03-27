@@ -138,6 +138,7 @@ const formUtils = () => {
   const uploadImages = async (image: string = "coverImage") => {
     if (image === "featuredImage") {
       setIsFeauredUploading(true);
+
       const urls: any = await uploadImagesToCloudinary(featuredImage);
       setFormData({ ...formData, ["primaryImage"]: urls[0] });
       setFeaturedImgPreview(null);
@@ -150,8 +151,8 @@ const formUtils = () => {
         secondaryImages: [...prevState.secondaryImages, ...urls],
       }));
       setImagePreviews([]);
-      setIsUploading(false);
     }
+    setIsUploading(false);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

@@ -7,6 +7,9 @@ import {
   convertTimeFormat,
 } from "../../../utils/timeConverter";
 import { Rating } from "flowbite-react";
+import getDistance from "../../../Api/getDistance";
+import { useAppSelector } from "../../../redux/store/Store";
+import { useEffect, useState } from "react";
 
 type restaurantCardProps = {
   restaurantName: string;
@@ -15,6 +18,10 @@ type restaurantCardProps = {
   primaryImage?: string;
   openingTime?: string;
   closingTime?: string;
+  location?: {
+    type: string;
+    coordinates: [number, number];
+  };
 };
 const CardsList: React.FC<restaurantCardProps> = ({
   restaurantName,
@@ -23,7 +30,25 @@ const CardsList: React.FC<restaurantCardProps> = ({
   primaryImage,
   openingTime,
   closingTime,
+  location,
 }) => {
+  const [distance, setDistance] = useState<string | null>(null);
+  const userLocation = useAppSelector((state) => state.LocationSlice);
+
+  useEffect(() => {
+    if (userLocation && location) {
+      const fetchDistance = async () => {
+        const distanceInKm = await getDistance(
+          userLocation.location.coordinates,
+          location?.coordinates ?? []
+        );
+
+        setDistance(distanceInKm);
+      };
+      fetchDistance();
+    }
+  }, [userLocation]);
+
   return (
     <div className="my-4 rounded-xl hover:shadow-lg  shadow-gray-200 dark:shadow-gray-900 bg-white dark:bg-gray-800 duration-300 hover:-translate-y-1">
       <figure>
@@ -34,12 +59,16 @@ const CardsList: React.FC<restaurantCardProps> = ({
             className="rounded-t h-52 w-full object-cover"
           />
         </Link>
-        <figcaption className="p-4 relative">
+        <figcaption className="p-4 relative ">
           {/* <FaBookmark /> */}
           <FaRegBookmark
             className="absolute top-2 right-3 text-xl text-black  cursor-pointer"
             onClick={() => console.log("cliked")}
           />
+          <p className="absolute bottom-0 right-3 inline-flex gap-2 items-center text-sm">
+            {<BiSolidNavigation />}
+            {distance}Km
+          </p>
           <Link to={`/view_restaurant/${_id}`}>
             <h1 className="text-lg mb-1 font-bold leading-relaxed text-gray-800 dark:text-gray-300">
               {restaurantName}
@@ -47,6 +76,9 @@ const CardsList: React.FC<restaurantCardProps> = ({
           </Link>
           <p className="leading-5 text-gray-500 dark:text-gray-400">
             {address}
+          </p>
+          <p className="leading-5 text-gray-500 dark:text-gray-400">
+            200 for one
           </p>
         </figcaption>
         <div className="flex items-center justify-between px-2">
@@ -56,6 +88,7 @@ const CardsList: React.FC<restaurantCardProps> = ({
               4.95
             </p>
           </Rating>
+
           <p className="p-4 text-sm font-semibold">
             {convert24HourTime(openingTime)} - {convert24HourTime(closingTime)}
           </p>
