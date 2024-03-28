@@ -16,7 +16,6 @@ export default async function getDistance(
     const distanceInKilometers = (distance / 1000).toFixed(1);
     return distanceInKilometers;
   } catch (error) {
-    console.error("Error fetching distance:", error);
     return "";
   }
 }

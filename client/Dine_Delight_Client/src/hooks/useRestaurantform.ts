@@ -1,12 +1,12 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import uploadImagesToCloudinary from "../Api/uploadImages";
 import { RESTAURANT_API } from "../constants";
-import axiosJWT from "./axiosService";
-import showToast from "./toaster";
+import axiosJWT from "../utils/axiosService";
+import showToast from "../utils/toaster";
 import {
   ValidateRestaurantType,
   validateRestaurantDetails,
-} from "./validation";
+} from "../utils/validation";
 import { getAddressByReversedGeocode } from "../Api/reverseGeocode";
 
 export interface FormInitalState {
@@ -19,6 +19,7 @@ export interface FormInitalState {
   openingTime: string;
   closingTime: string;
   tableRatePerPerson: number;
+  costForTwo: number;
   primaryImage: string;
   secondaryImages: string[];
   location: {
@@ -37,6 +38,7 @@ const formUtils = () => {
     searchLocation: "",
     openingTime: "",
     closingTime: "",
+    costForTwo: 300,
     tableRatePerPerson: 200,
     primaryImage: "",
     secondaryImages: [""],
@@ -82,6 +84,7 @@ const formUtils = () => {
           secondaryImages,
           openingTime,
           closingTime,
+          tableRatePerPerson,
           location: { coordinates },
         } = restaurant;
 
@@ -97,6 +100,8 @@ const formUtils = () => {
           openingTime: openingTime ?? "09:00",
           closingTime: closingTime ?? "21:00",
           searchLocation: code ?? prevState.searchLocation,
+          tableRatePerPerson:
+            tableRatePerPerson ?? prevState.tableRatePerPerson,
           location: {
             type: "Point",
             coordinates: coordinates ??

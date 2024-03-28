@@ -6,7 +6,7 @@ import {
   RestaurantInterface,
   TableSlotInterface,
 } from "../../types/RestaurantInterface";
-import { USER_API } from "../../constants";
+import { USER_API, defaultImageCardImage } from "../../constants";
 import { Link, useParams } from "react-router-dom";
 import showToast from "../../utils/toaster";
 import axios from "axios";
@@ -120,19 +120,27 @@ const RestaurantView = () => {
                 interval={false}
               >
                 <div className="relative w-full overflow-hidden after:clear-both after:block after:content-[''] rounded-md">
-                  {restaurant?.secondaryImages?.map((imageUrl, index) => (
-                    <TECarouselItem
-                      itemID={index}
-                      key={index}
-                      className="relative float-left -mr-[100%] hidden w-full transition-transform duration-[600ms] ease-in-out motion-reduce:transition-none"
-                    >
-                      <img
-                        src={imageUrl}
-                        className="block w-full object-cover h-72 "
-                        alt={restaurant.restaurantName + " images"}
-                      />
-                    </TECarouselItem>
-                  ))}
+                  {restaurant.secondaryImages?.length ? (
+                    restaurant?.secondaryImages?.map((imageUrl, index) => (
+                      <TECarouselItem
+                        itemID={index}
+                        key={index}
+                        className="relative float-left -mr-[100%] hidden w-full transition-transform duration-[600ms] ease-in-out motion-reduce:transition-none"
+                      >
+                        <img
+                          src={imageUrl}
+                          className="block w-full object-cover h-72 "
+                          alt={restaurant.restaurantName + " images"}
+                        />
+                      </TECarouselItem>
+                    ))
+                  ) : (
+                    <img
+                      src={restaurant.primaryImage ?? defaultImageCardImage}
+                      className="block w-full object-cover h-72 "
+                      alt={restaurant.restaurantName + " images"}
+                    />
+                  )}
                 </div>
               </TECarousel>
               {/* <h1 className="text-2xl font-bold">Direction</h1>

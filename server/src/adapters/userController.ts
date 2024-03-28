@@ -24,7 +24,6 @@ import {
 } from "../app/use-cases/user/read/getRestaurants";
 import { TableSlotDbInterface } from "../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
-import { Filter } from "../types/restaurantInterface";
 import { TableDbInterface } from "../app/interfaces/tableDbRepository";
 import { TableRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/tableRepositoryMongoDb";
 import { getTableDetails } from "../app/use-cases/user/read/getTable";
@@ -234,21 +233,19 @@ const userController = (
       const q = req.query.q as string;
       const location = req.query.location as (string | number)[];
       const page = req.query.page as string;
-      const parsedPage = parseInt(page, 10);
+      const cost = req.query.cost as string;
+      const rating = req.query.rating as string;
+      const sort = req.query.sort as string;
 
-      const pageNumber = isNaN(parsedPage) ? 1 : parsedPage;
-
-      const pageSize = 1; // Define the number of documents per page
-
-      // Calculate the number of documents to skip based on the page number
-      const skip = (pageNumber - 1) * pageSize;
-
-      // Use skip value in your MongoDB query to fetch paginated data
+      const costPerPerson = parseInt(cost, 10);
+      const parsedPage = parseInt(page, 10) || 1;
+      const limit = 1;
+      const skip = (parsedPage - 1) * limit;
 
       const restaurants = await getAllListedRestaurants(
         q,
         skip,
-        pageSize,
+        limit,
         location,
         restaurantRepository
       );

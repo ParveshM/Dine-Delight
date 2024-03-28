@@ -2,14 +2,11 @@ import { BiSolidNavigation } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa6";
 import { defaultImageCardImage } from "../../../constants";
-import {
-  convert24HourTime,
-  convertTimeFormat,
-} from "../../../utils/timeConverter";
+import { convert24HourTime } from "../../../utils/timeConverter";
 import { Rating } from "flowbite-react";
 import getDistance from "../../../Api/getDistance";
 import { useAppSelector } from "../../../redux/store/Store";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 
 type restaurantCardProps = {
   restaurantName: string;
@@ -23,20 +20,26 @@ type restaurantCardProps = {
     coordinates: [number, number];
   };
 };
-const CardsList: React.FC<restaurantCardProps> = ({
-  restaurantName,
-  _id,
-  address,
-  primaryImage,
-  openingTime,
-  closingTime,
-  location,
-}) => {
+const CardsList: React.ForwardRefRenderFunction<
+  HTMLDivElement,
+  restaurantCardProps
+> = (
+  {
+    restaurantName,
+    _id,
+    address,
+    primaryImage,
+    openingTime,
+    closingTime,
+    location,
+  },
+  ref
+) => {
   const [distance, setDistance] = useState<string | null>(null);
   const userLocation = useAppSelector((state) => state.LocationSlice);
 
   useEffect(() => {
-    if (userLocation && location) {
+    if (userLocation.location.coordinates[0] && location) {
       const fetchDistance = async () => {
         const distanceInKm = await getDistance(
           userLocation.location.coordinates,
@@ -47,10 +50,13 @@ const CardsList: React.FC<restaurantCardProps> = ({
       };
       fetchDistance();
     }
-  }, [userLocation]);
+  }, [userLocation.location.coordinates]);
 
   return (
-    <div className="my-4 rounded-xl hover:shadow-lg  shadow-gray-200 dark:shadow-gray-900 bg-white dark:bg-gray-800 duration-300 hover:-translate-y-1">
+    <div
+      ref={ref}
+      className="my-4 rounded-xl hover:shadow-lg  shadow-gray-200 dark:shadow-gray-900 bg-white dark:bg-gray-800 duration-300 hover:-translate-y-1"
+    >
       <figure>
         <Link to={`view_restaurant/${_id}`}>
           <img
@@ -65,10 +71,12 @@ const CardsList: React.FC<restaurantCardProps> = ({
             className="absolute top-2 right-3 text-xl text-black  cursor-pointer"
             onClick={() => console.log("cliked")}
           />
-          <p className="absolute bottom-0 right-3 inline-flex gap-2 items-center text-sm">
-            {<BiSolidNavigation />}
-            {distance}Km
-          </p>
+          {userLocation.location.coordinates[0] && distance && (
+            <p className="absolute bottom-0 right-3 inline-flex gap-2 items-center text-sm">
+              {<BiSolidNavigation />}
+              {distance}Km
+            </p>
+          )}
           <Link to={`/view_restaurant/${_id}`}>
             <h1 className="text-lg mb-1 font-bold leading-relaxed text-gray-800 dark:text-gray-300">
               {restaurantName}
@@ -98,4 +106,4 @@ const CardsList: React.FC<restaurantCardProps> = ({
   );
 };
 
-export default CardsList;
+export default forwardRef(CardsList);

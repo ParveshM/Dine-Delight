@@ -23,6 +23,7 @@ const LocationSidebar: React.FC<LocationSidebarProps> = ({
   });
   useEffect(() => {
     if (formData.location.coordinates.length) {
+      handleSidebarOpen();
       dispatch(
         setLocation({
           location: {
