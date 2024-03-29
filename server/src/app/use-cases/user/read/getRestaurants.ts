@@ -3,7 +3,8 @@ import { TableSlotDbInterface } from "../../../interfaces/TableSlotdbRepository"
 import { restaurantDbInterface } from "../../../interfaces/restaurantDbRepository";
 
 export const getAllListedRestaurants = async (
-  searchText: string = "",
+  queryFilters: Record<string, any>,
+  sortBy: Record<string, any>,
   skip: number,
   limit: number,
   userCoordinates: (string | number)[],
@@ -11,7 +12,8 @@ export const getAllListedRestaurants = async (
 ) => {
   const filter = {
     isListed: true,
-    restaurantName: { $regex: new RegExp(searchText, "i") },
+    // restaurantName: { $regex: new RegExp(searchText, "i") },X
+    ...queryFilters,
     ...(userCoordinates &&
       userCoordinates.length === 2 && {
         location: {
@@ -26,7 +28,12 @@ export const getAllListedRestaurants = async (
         },
       }),
   };
-  return await restaurantRepository.getListedRestaurants(filter, skip, limit);
+  return await restaurantRepository.getListedRestaurants(
+    filter,
+    sortBy,
+    skip,
+    limit
+  );
 };
 
 export const getSingleRestaurantById = async (

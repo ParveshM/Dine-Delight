@@ -15,6 +15,8 @@ const Home: React.FC = () => {
     isLoading,
     isLoadingMore,
     hasMore,
+    filter,
+    handleFilter,
     setPage,
     handleSearchQuery,
   } = useRestaurantList();
@@ -38,8 +40,12 @@ const Home: React.FC = () => {
     <>
       <Navbar />
       <Banner />
-      <SearchBar handleSearch={handleSearchQuery} />
-      <section className="bg-gray-50 dark:bg-gray-900 py-10 px-12">
+      <SearchBar
+        handleSearch={handleSearchQuery}
+        appliedFilters={filter}
+        setFilter={handleFilter}
+      />
+      <section className="bg-gray-50 dark:bg-gray-900 py-10 px-12 ">
         <div className="grid grid-flow-row gap-4 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
           {isLoading ? (
             Array.from({ length: 8 }).map((_, index) => (

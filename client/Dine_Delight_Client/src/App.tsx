@@ -6,7 +6,6 @@ import store, { persistor } from "./redux/store/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClientProvider, QueryClient } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
 import "tw-elements-react/dist/css/tw-elements-react.min.css";
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false } },
@@ -24,7 +23,6 @@ const App = () => {
           </GoogleOAuthProvider>
         </PersistGate>
       </Provider>
-      <ReactQueryDevtools position="bottom-right" />
     </QueryClientProvider>
   );
 };

@@ -5,6 +5,10 @@ import { useAppSelector } from "../redux/store/Store";
 import showToast from "../utils/toaster";
 import { RestaurantInterface } from "../types/RestaurantInterface";
 
+export type FilterType = {
+  costPerPerson?: string | null;
+  sortType?: string | null;
+};
 export default function useRestaurantList() {
   const { location } = useAppSelector((state) => state.LocationSlice);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -12,6 +16,11 @@ export default function useRestaurantList() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [pageNumber, setPage] = useState<number>(1);
+  const [filter, setFilter] = useState<FilterType>({
+    costPerPerson: "",
+    sortType: "",
+  });
+  // const [sortBy, setSortBy] = useState<"asc" | "desc">("asc");
   const [hasMore, setHasMore] = useState<boolean>(false);
 
   useEffect(() => {
@@ -23,6 +32,9 @@ export default function useRestaurantList() {
             q: searchQuery,
             location: location.coordinates,
             page: pageNumber,
+            cost: filter.costPerPerson,
+            sort: filter.sortType,
+            // sortOrder: "desc",
           },
         });
         setData((prev) => [...prev, ...data?.restaurants]);
@@ -33,16 +45,19 @@ export default function useRestaurantList() {
       }
     };
     fetchRestaurants();
-  }, [searchQuery, pageNumber, location.coordinates]);
+  }, [searchQuery, pageNumber, location.coordinates, filter]);
 
   useEffect(() => {
     setData([]);
     setPage(1);
-  }, [location.coordinates, searchQuery]);
+  }, [location.coordinates, searchQuery, filter]);
 
   const handleSearchQuery = (query: string) => {
     setSearchQuery(query);
-    setPage(1);
+  };
+
+  const handleFilter = (filter: FilterType) => {
+    setFilter((prev) => ({ ...prev, ...filter }));
   };
 
   return {
@@ -51,6 +66,8 @@ export default function useRestaurantList() {
     isLoadingMore,
     hasMore,
     setPage,
+    filter,
+    handleFilter,
     handleSearchQuery,
   };
 }

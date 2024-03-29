@@ -35,6 +35,7 @@ export const restaurantRepositoryMongodb = () => {
 
   const getListedRestaurants = async (
     filter: Record<string, any>,
+    sortBy: Record<string, any>,
     skip: number,
     page: number
   ) => {
@@ -42,6 +43,7 @@ export const restaurantRepositoryMongodb = () => {
       .select(
         "-password -isApproved -isRejected -isVerified -verificationToken -role"
       )
+      .sort(sortBy)
       .skip(skip)
       .limit(page);
   };

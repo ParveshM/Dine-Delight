@@ -19,6 +19,7 @@ type restaurantCardProps = {
     type: string;
     coordinates: [number, number];
   };
+  tableRatePerPerson?: number;
 };
 const CardsList: React.ForwardRefRenderFunction<
   HTMLDivElement,
@@ -32,6 +33,7 @@ const CardsList: React.ForwardRefRenderFunction<
     openingTime,
     closingTime,
     location,
+    tableRatePerPerson,
   },
   ref
 ) => {
@@ -86,7 +88,7 @@ const CardsList: React.ForwardRefRenderFunction<
             {address}
           </p>
           <p className="leading-5 text-gray-500 dark:text-gray-400">
-            200 for one
+            {tableRatePerPerson} for one
           </p>
         </figcaption>
         <div className="flex items-center justify-between px-2">
