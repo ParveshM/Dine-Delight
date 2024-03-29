@@ -24,7 +24,6 @@ import {
 } from "../app/use-cases/user/read/getRestaurants";
 import { TableSlotDbInterface } from "../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
-import { Filter } from "../types/restaurantInterface";
 import { TableDbInterface } from "../app/interfaces/tableDbRepository";
 import { TableRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/tableRepositoryMongoDb";
 import { getTableDetails } from "../app/use-cases/user/read/getTable";
@@ -233,9 +232,35 @@ const userController = (
     try {
       const q = req.query.q as string;
       const location = req.query.location as (string | number)[];
+      const page = parseInt(req.query.page as string);
+      const cost = parseInt(req.query.cost as string);
+      // const rating = req.query.rating as string;
+      const sort = req.query.sort as string;
+      const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
+
+      const filters: Record<string, any> = {};
+      if (q) filters.restaurantName = new RegExp(q ?? "", "i");
+      // if (rating) filters.rating = { $gte: rating };
+      if (cost) {
+        if (cost < 300) {
+          filters.tableRatePerPerson = { $lt: 300 };
+        } else if (cost >= 300 && cost < 600) {
+          filters.tableRatePerPerson = { $gte: 300, $lt: 600 };
+        } else {
+          filters.tableRatePerPerson = { $gte: 600 };
+        }
+      }
+      const sortBy: Record<string, any> = {};
+      sort ? (sortBy[sort] = sortOrder) : (sortBy["createdAt"] = sortOrder);
+
+      const limit = 2;
+      const skip = (page - 1) * limit;
 
       const restaurants = await getAllListedRestaurants(
-        q,
+        filters,
+        sortBy,
+        skip,
+        limit,
         location,
         restaurantRepository
       );

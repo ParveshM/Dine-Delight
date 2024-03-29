@@ -23,6 +23,7 @@ const LocationSidebar: React.FC<LocationSidebarProps> = ({
   });
   useEffect(() => {
     if (formData.location.coordinates.length) {
+      handleSidebarOpen();
       dispatch(
         setLocation({
           location: {
@@ -37,9 +38,9 @@ const LocationSidebar: React.FC<LocationSidebarProps> = ({
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) =>
     setformData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   return (
-    <>
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-[998]">
       <div
-        className="fixed top-20 left-64 z-[999] w-64 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-gray-800"
+        className="fixed top-[72px] left-64 z-[999] w-64 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-white bg-opacity-100 dark:bg-gray-800"
         tabIndex={-1}
         aria-labelledby="drawer-navigationLabel"
       >
@@ -88,7 +89,7 @@ const LocationSidebar: React.FC<LocationSidebarProps> = ({
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

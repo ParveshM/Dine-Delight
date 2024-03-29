@@ -34,8 +34,12 @@ export const restaurantDbRepository = (
     return await repository.updateRestaurantStatus(id, updateFields);
   };
 
-  const getListedRestaurants = async (filter: Record<string, any>) =>
-    await repository.getListedRestaurants(filter);
+  const getListedRestaurants = async (
+    filter: Record<string, any>,
+    sortBy: Record<string, any>,
+    skip: number,
+    page: number
+  ) => await repository.getListedRestaurants(filter, sortBy, skip, page);
   return {
     getRestaurantById,
     getRestaurantByemail,

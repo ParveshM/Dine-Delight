@@ -31,8 +31,7 @@ export interface RestaurantInterface {
   secondaryImage?: string[];
 }
 
-export type Filter = {
-  query: Record<string, any>;
+export type paginateFilter = {
   limit?: number;
   skip?: number;
   sortBy?: Record<string, "asc" | "desc">;

@@ -5,7 +5,7 @@ import {
   phoneRegex,
   descriptionRegex,
 } from "../constants";
-import { FormInitalState } from "./restaurantformUtills";
+import { FormInitalState } from "../hooks/useRestaurantform";
 import * as Yup from "yup";
 
 type SignupValidation = Partial<{
@@ -139,7 +139,6 @@ const validateRestaurantDetails = (formData: FormInitalState) => {
     closingTime,
     searchLocation,
   } = formData;
-  console.log(formData);
 
   // Validate restaurant name
   if (!restaurantName.trim().length) {
@@ -171,7 +170,7 @@ const validateRestaurantDetails = (formData: FormInitalState) => {
 
   // Validate table rate
   if (!tableRatePerPerson) {
-    errors.tableRatePerPerson = "Table Rate is required.";
+    errors.tableRatePerPerson = "Table rate is required.";
   } else if (isNaN(tableRatePerPerson) || tableRatePerPerson <= 0) {
     errors.tableRatePerPerson = "Please enter a valid table rate.";
   }

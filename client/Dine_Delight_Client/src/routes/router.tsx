@@ -6,6 +6,7 @@ import ProtectedRoute, {
   SellerProtectedRoute,
 } from "./ProtectedRoutes";
 import PublicRoute from "./PublicRoutes";
+import Loader from "../components/shimmers/Loader";
 
 const AccountPage = lazy(() => import("../pages/user/AccountPage"));
 const Login = lazy(() => import("../pages/user/Login"));
@@ -59,11 +60,10 @@ const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
 export const MainRouter = () => {
   return (
     <>
-      <Suspense fallback={<h1>Loading</h1>}>
+      <Suspense fallback={<Loader />}>
         <Routes>
           {/******************* User routes *****************/}
           <Route path="/" element={<Home />} />
-
           <Route path="/view_restaurant/:id" element={<RestaurantView />} />
           <Route path="" element={<PublicRoute />}>
             <Route path="/user/auth/signup" element={<SignUp />} />

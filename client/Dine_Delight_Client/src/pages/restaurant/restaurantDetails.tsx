@@ -1,5 +1,5 @@
 import { ImSpinner9 } from "react-icons/im";
-import formUtils from "../../utils/restaurantformUtills";
+import formUtils from "../../hooks/useRestaurantform";
 import AutoCompleteInput from "../../components/restaurant/AutoCompleteInput";
 import CustomMap from "../../components/restaurant/Map";
 const ViewRestaurant = () => {
@@ -215,11 +215,11 @@ const ViewRestaurant = () => {
                   Featured image
                 </label>
                 {formData.primaryImage && (
-                  <div className="mt-6">
+                  <div className="mt-6 mb-2">
                     <img
                       src={formData.primaryImage}
                       alt=" Featured Image"
-                      className="h-24 w-auto"
+                      className="h-24 w-auto rounded-md"
                     />
                   </div>
                 )}
@@ -283,14 +283,14 @@ const ViewRestaurant = () => {
                   Additional images
                 </label>
                 {formData.secondaryImages.length > 0 && (
-                  <div className="mt-6">
+                  <div className="mt-6 mb-2">
                     <div className="flex flex-wrap gap-2">
                       {formData.secondaryImages.map((image, index) => (
                         <img
                           key={index}
                           src={image}
                           alt={`Additional Image ${index}`}
-                          className="h-24 w-auto"
+                          className="h-24 w-auto rounded-md"
                         />
                       ))}
                     </div>
