@@ -226,7 +226,6 @@ const restaurantController = (
         bookingRepository,
         userRepository
       );
-      console.log(upda, bookingStatus, userID);
       res
         .status(HttpStatus.OK)
         .json({ success: true, message: "Booking updated successfully" });

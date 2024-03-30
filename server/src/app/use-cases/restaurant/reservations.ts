@@ -33,17 +33,21 @@ export const updateReservationData = async (
       bookingStatus: status,
     }
   );
+  if (bookingDetails && status === "Completed") {
+    const commissionAmount = Math.floor(
+      (bookingDetails.totalAmount * 10) / 100
+    );
+    await bookingRepository.updateBookingDetails(bookingID, {
+      $set: { adminPayment: commissionAmount },
+    });
+  }
   if (bookingDetails && status === "Cancelled") {
     const data: TransactionDataType = {
       newBalance: bookingDetails?.totalAmount,
       type: "Credit",
       description: "Booking cancelled by the seller",
     };
-    const updateWalletDetails = await updateWallet(
-      userID,
-      data,
-      userRepository
-    );
+    await updateWallet(userID, data, userRepository);
     await bookingRepository.updateBookingDetails(bookingID, {
       paymentStatus: "Refunded",
     });

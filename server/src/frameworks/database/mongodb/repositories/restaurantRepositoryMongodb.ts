@@ -67,6 +67,9 @@ export const restaurantRepositoryMongodb = () => {
     updateData: RestaurantInterface
   ) => await Restaurant.findByIdAndUpdate(id, updateData);
 
+  const countRestaurants = async () =>
+    await Restaurant.countDocuments({ isVerified: true });
+
   return {
     getRestaurantById,
     getRestaurantByemail,
@@ -77,6 +80,7 @@ export const restaurantRepositoryMongodb = () => {
     updateRestaurant,
     updateRestaurantStatus,
     getListedRestaurants,
+    countRestaurants,
   };
 };
 

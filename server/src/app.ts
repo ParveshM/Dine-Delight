@@ -1,4 +1,4 @@
-import express, { Application, NextFunction } from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 import expressConfig from "./frameworks/webServer/expressConfig";
 import startServer from "./frameworks/webServer/server";
 import connectDB from "./frameworks/database/mongodb/connection";

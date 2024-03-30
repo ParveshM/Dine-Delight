@@ -12,7 +12,6 @@ export const getAllListedRestaurants = async (
 ) => {
   const filter = {
     isListed: true,
-    // restaurantName: { $regex: new RegExp(searchText, "i") },X
     ...queryFilters,
     ...(userCoordinates &&
       userCoordinates.length === 2 && {

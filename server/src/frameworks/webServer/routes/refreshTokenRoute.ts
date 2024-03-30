@@ -20,7 +20,6 @@ const refreshTokenRoute = () => {
 
   router.get("/accessToken", controller.returnAccessToClient);
   router.post("/refresh_token", controller.getNewAccessToken);
-  router.put("/clear_token", controller.clearToken);
 
   return router;
 };

@@ -95,6 +95,9 @@ export const userRepositoryMongodb = () => {
   const updateUserInfo = async (id: string, updateData: Record<string, any>) =>
     await User.findByIdAndUpdate(id, updateData, { new: true });
 
+  const countUsers = async () =>
+    await User.countDocuments({ isVerified: true });
+
   // exporting the functions
   return {
     getUserbyEmail,
@@ -116,6 +119,7 @@ export const userRepositoryMongodb = () => {
     findVerificationCode,
     findVerificationCodeAndUpdate,
     updateUserInfo,
+    countUsers,
   };
 };
 

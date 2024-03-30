@@ -64,6 +64,11 @@ const tokenContoller = (
 
   const returnAccessToClient = async (req: Request, res: Response) => {
     const { access_token } = req.cookies;
+    if (!access_token)
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ success: false, message: "Access token is required" });
+
     const token: JwtPayload = jwt.decode(access_token) as JwtPayload;
     if (token?.role === "user") {
       const user = await getUserById(token.id, dbRepositoryUser);
@@ -82,12 +87,6 @@ const tokenContoller = (
     return res.status(HttpStatus.OK).json({ success: true, access_token });
   };
 
-  const clearToken = (req: Request, res: Response) => {
-    res.clearCookie("access_token");
-    res.clearCookie("refresh_token");
-    res.json({ success: false, message: "Logout successfull" });
-  };
-
-  return { getNewAccessToken, returnAccessToClient, clearToken };
+  return { getNewAccessToken, returnAccessToClient };
 };
 export default tokenContoller;
