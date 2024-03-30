@@ -75,6 +75,8 @@ export const userDbRepository = (
   const updateProfile = async (userID: string, userData: Record<string, any>) =>
     await repository.updateUserInfo(userID, userData);
 
+  const countUsers = async () => await repository.countUsers();
+
   return {
     getUserbyEmail,
     getUserbyId,
@@ -95,6 +97,7 @@ export const userDbRepository = (
     findVerificationCode,
     verifyAndResetPassword,
     updateProfile,
+    countUsers,
   };
 };
 

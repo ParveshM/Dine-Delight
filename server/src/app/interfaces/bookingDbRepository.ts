@@ -12,12 +12,28 @@ export const bookingDbRepository = (
 
   const updateBookingDetails = async (
     bookingId: string,
-    updatingData: Record<string, any>
+    updatingData: Record<any, any>
   ) => await repository.updateBooking(bookingId, updatingData);
+
+  const paginatedBookings = async (
+    filter: Record<string, any>,
+    skip: number,
+    limit: number
+  ) => await repository.paginatedBookings(filter, skip, limit);
 
   const bookings = async (filter: Record<string, any>) =>
     await repository.bookings(filter);
 
-  return { createBooking, getBookingById, updateBookingDetails, bookings };
+  const countBookings = async () => await repository.countBookings();
+  const calculateProfit = async () => await repository.totalAdminPayment();
+  return {
+    createBooking,
+    getBookingById,
+    updateBookingDetails,
+    paginatedBookings,
+    bookings,
+    countBookings,
+    calculateProfit,
+  };
 };
 export type BookingDbRepositoryInterface = typeof bookingDbRepository;

@@ -7,6 +7,8 @@ import { userDbRepository } from "../../../app/interfaces/userDbRepository";
 import { userRepositoryMongodb } from "../../database/mongodb/repositories/userRepositoryMongodb";
 import { restaurantDbRepository } from "../../../app/interfaces/restaurantDbRepository";
 import { restaurantRepositoryMongodb } from "../../database/mongodb/repositories/restaurantRepositoryMongodb";
+import { bookingDbRepository } from "../../../app/interfaces/bookingDbRepository";
+import { bookingRepositoryMongodb } from "../../database/mongodb/repositories/BookingRepositoryMongodb";
 
 export default () => {
   const router = Router();
@@ -17,15 +19,26 @@ export default () => {
     userDbRepository,
     userRepositoryMongodb,
     restaurantDbRepository,
-    restaurantRepositoryMongodb
+    restaurantRepositoryMongodb,
+    bookingDbRepository,
+    bookingRepositoryMongodb
   );
 
   router.post("/login", controller.adminLogin);
   router.get("/users", authenticateAdmin, controller.getAllUser);
   router.get("/restaurants", authenticateAdmin, controller.getAllRestaurants);
   router.patch("/block_user/:id", authenticateAdmin, controller.userBlock);
-  router.patch("/validate_restaurant/:id", controller.validateRestaurant);
-  router.patch("/list_restaurant/:id", controller.listRestaurant);
+  router.patch(
+    "/validate_restaurant/:id",
+    authenticateAdmin,
+    controller.validateRestaurant
+  );
+  router.patch(
+    "/list_restaurant/:id",
+    authenticateAdmin,
+    controller.listRestaurant
+  );
+  router.get("/dashboard", authenticateAdmin, controller.dashboardDetails);
 
   return router;
 };

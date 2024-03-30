@@ -2,7 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { AuthServiceInterfaceType } from "../app/services-Interface/authServiceInterface";
 import { AuthService } from "../frameworks/services/authService";
 import { loginAdmin } from "../app/use-cases/Admin/adminAuth";
-import { getUsers, getRestaurants } from "../app/use-cases/Admin/adminRead";
+import {
+  getUsers,
+  getRestaurants,
+  getDashBoardData,
+} from "../app/use-cases/Admin/adminRead";
 import { HttpStatus } from "../types/httpStatus";
 import { UserDbInterface } from "../app/interfaces/userDbRepository";
 import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/userRepositoryMongodb";
@@ -14,6 +18,8 @@ import {
   updateRestaurantRejected,
   updateRestaurantListing,
 } from "../app/use-cases/Admin/adminUpdate";
+import { BookingDbRepositoryInterface } from "../app/interfaces/bookingDbRepository";
+import { BookingRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/BookingRepositoryMongodb";
 
 // adminAuthController
 export default (
@@ -22,12 +28,15 @@ export default (
   userDbRepository: UserDbInterface,
   userDbRepositoryImpl: UserRepositoryMongodbType,
   restaurantDbRepository: restaurantDbInterface,
-  restaurantDbRepositoryImpl: restaurantRepositoryMongodbType
+  restaurantDbRepositoryImpl: restaurantRepositoryMongodbType,
+  bookingDbRepository: BookingDbRepositoryInterface,
+  bookingDbRepositoryImpl: BookingRepositoryMongodbType
 ) => {
   const dbUserRepository = userDbRepository(userDbRepositoryImpl());
   const dbResaurantRepository = restaurantDbRepository(
     restaurantDbRepositoryImpl()
   );
+  const bookingRepository = bookingDbRepository(bookingDbRepositoryImpl());
   const authService = authServiceInterface(authServiceImpl());
   /*
    * METHOD:POST
@@ -75,7 +84,6 @@ export default (
   ) => {
     try {
       const users = await getUsers(dbUserRepository);
-      console.log(users, "=====");
       return res.status(HttpStatus.OK).json({ success: true, users });
     } catch (error) {
       next(error);
@@ -169,6 +177,51 @@ export default (
       next(error);
     }
   };
+  /*
+   * METHOD:GET
+   * Admin dashboard details
+   */
+  const dashboardDetails = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const page = parseInt(req.query.page as string) ?? 1;
+      const status = req.query.status as string;
+
+      const limit = 1;
+      const skip = (page - 1) * limit;
+      const {
+        totalUsers,
+        totalBookings,
+        totalRestaurants,
+        totalProfit,
+        bookings,
+        count,
+      } = await getDashBoardData(
+        status,
+        skip,
+        limit,
+        dbUserRepository,
+        dbResaurantRepository,
+        bookingRepository
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        totalUsers,
+        totalBookings,
+        totalRestaurants,
+        totalProfit,
+        bookings,
+        count,
+        limit,
+        message: "Dashboard data fetched successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 
   return {
     adminLogin,
@@ -177,5 +230,6 @@ export default (
     userBlock,
     validateRestaurant,
     listRestaurant,
+    dashboardDetails,
   };
 };

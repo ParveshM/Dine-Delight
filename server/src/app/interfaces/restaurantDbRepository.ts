@@ -40,6 +40,9 @@ export const restaurantDbRepository = (
     skip: number,
     page: number
   ) => await repository.getListedRestaurants(filter, sortBy, skip, page);
+
+  const countRestaurants = async () => await repository.countRestaurants();
+
   return {
     getRestaurantById,
     getRestaurantByemail,
@@ -47,10 +50,10 @@ export const restaurantDbRepository = (
     verifyRestaurant,
     getAllRestaurants,
     getNewRegisteredRestaurants,
-
     updateRestaurant,
     updateRestaurantStatus,
     getListedRestaurants,
+    countRestaurants,
   };
 };
 

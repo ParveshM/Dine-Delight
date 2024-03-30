@@ -1,5 +1,5 @@
 import axios from "axios";
-import { JwtPayload, jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { TOKEN_API } from "../constants";
 import logout from "./logout";
 import { Payload } from "../types/PropsType";
@@ -35,7 +35,7 @@ const getAccessToken = async () => {
 
     return token;
   } catch (error) {
-    console.log(error);
+    console.log(error, "sdfkjhsdhshjfhabsdfkfjh");
   }
 };
 
@@ -43,11 +43,7 @@ axiosJWT.interceptors.request.use(async (config) => {
   let currentDate = new Date();
   let decodedToken;
   try {
-    const accessToken: any = await getAccessToken();
-    if (!accessToken) {
-      logout("Session expired ,please Login");
-      return Promise.reject("Access token not available");
-    }
+    const accessToken: string = await getAccessToken();
 
     decodedToken = await jwtDecode(accessToken);
   } catch (error) {
