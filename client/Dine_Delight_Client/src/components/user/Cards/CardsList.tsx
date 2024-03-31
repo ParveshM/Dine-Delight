@@ -6,24 +6,12 @@ import { convert24HourTime } from "../../../utils/timeConverter";
 import { Rating } from "flowbite-react";
 import getDistance from "../../../Api/getDistance";
 import { useAppSelector } from "../../../redux/store/Store";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useMemo, useState } from "react";
+import { RestaurantInterface } from "../../../types/RestaurantInterface";
 
-type restaurantCardProps = {
-  restaurantName: string;
-  _id: string;
-  address?: string;
-  primaryImage?: string;
-  openingTime?: string;
-  closingTime?: string;
-  location?: {
-    type: string;
-    coordinates: [number, number];
-  };
-  tableRatePerPerson?: number;
-};
 const CardsList: React.ForwardRefRenderFunction<
   HTMLDivElement,
-  restaurantCardProps
+  RestaurantInterface
 > = (
   {
     restaurantName,
@@ -34,6 +22,7 @@ const CardsList: React.ForwardRefRenderFunction<
     closingTime,
     location,
     tableRatePerPerson,
+    rating,
   },
   ref
 ) => {
@@ -54,6 +43,17 @@ const CardsList: React.ForwardRefRenderFunction<
     }
   }, [userLocation.location.coordinates]);
 
+  const calculatedStarRating = useMemo(() => {
+    if (rating?.length) {
+      return (
+        rating.map((rate) => rate.rating).reduce((acc, curr) => acc + curr, 0) /
+        rating.length
+      ).toFixed(1);
+    }
+  }, []);
+  const starRating: string = calculatedStarRating
+    ? calculatedStarRating
+    : "4.5";
   return (
     <div
       ref={ref}
@@ -95,7 +95,7 @@ const CardsList: React.ForwardRefRenderFunction<
           <Rating>
             <Rating.Star className="text-orange-400" />
             <p className="ml-2 text-sm font-bold text-gray-900 dark:text-white">
-              4.95
+              {starRating}
             </p>
           </Rating>
 

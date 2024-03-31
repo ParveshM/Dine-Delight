@@ -10,10 +10,12 @@ interface SearchProps {
   handleSearch: (query: string) => void;
   appliedFilters: FilterType;
   setFilter: (filter: FilterType) => void;
+  handleRemoveFilter: (filter: FilterType) => void;
 }
 const SearchBar: React.FC<SearchProps> = ({
   handleSearch,
   setFilter,
+  handleRemoveFilter,
   appliedFilters,
 }) => {
   const [searchText, setSearchText] = useState<string>("");
@@ -48,7 +50,10 @@ const SearchBar: React.FC<SearchProps> = ({
           </label>
         </div>
       </div>
-      <AppliedFilters filters={appliedFilters} removeFilter={setFilter} />
+      <AppliedFilters
+        filters={appliedFilters}
+        removeFilter={handleRemoveFilter}
+      />
     </div>
   );
 };

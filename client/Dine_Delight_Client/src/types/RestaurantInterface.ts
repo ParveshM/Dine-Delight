@@ -11,11 +11,20 @@ export interface RestaurantInterface {
     type: string;
     coordinates: [number, number];
   };
+  rating?: RatingInterface[];
   openingTime?: string;
   closingTime?: string;
   isListed: boolean;
   primaryImage?: string;
   secondaryImages?: string[];
+}
+
+interface RatingInterface {
+  _id: string;
+  restaurantId: string;
+  userId: string;
+  rating: number;
+  description: string;
 }
 
 export interface newRestaurantInterface {
