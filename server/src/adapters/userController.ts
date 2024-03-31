@@ -32,6 +32,7 @@ import {
   getUserProfile,
   updateUser,
 } from "../app/use-cases/user/read/profile";
+import { addNewRating } from "../app/use-cases/restaurant/ratings";
 // Controller will be passing all the necessaary parameers to the repositories
 
 const userController = (
@@ -379,6 +380,25 @@ const userController = (
       next(error);
     }
   };
+  /**
+   * * METHOD:POST
+   * * Add new rating to the restaurant
+   */
+  const createNewRating = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userId = req.user;
+      await addNewRating(userId, req.body, restaurantRepository);
+      res
+        .status(HttpStatus.OK)
+        .json({ success: true, message: "Rating added successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
 
   return {
     registerUser,
@@ -394,6 +414,7 @@ const userController = (
     userProfile,
     updateUserInfo,
     getTransactions,
+    createNewRating,
   };
 };
 export default userController;

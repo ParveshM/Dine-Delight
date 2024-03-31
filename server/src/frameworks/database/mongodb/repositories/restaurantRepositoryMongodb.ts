@@ -1,6 +1,8 @@
 import { RestaurantEntityType } from "../../../../entities/restaurantEntity";
 import { RestaurantInterface } from "../../../../types/restaurantInterface";
 import Restaurant from "../models/restaurant";
+import Rating from "../models/rating";
+import { RatingEntityType } from "../../../../entities/ratingEntity";
 
 export const restaurantRepositoryMongodb = () => {
   const getRestaurantById = async (id: string) =>
@@ -39,13 +41,36 @@ export const restaurantRepositoryMongodb = () => {
     skip: number,
     page: number
   ) => {
-    return await Restaurant.find(filter)
-      .select(
-        "-password -isApproved -isRejected -isVerified -verificationToken -role"
-      )
-      .sort(sortBy)
-      .skip(skip)
-      .limit(page);
+    return await Restaurant.aggregate([
+      { $match: filter },
+      {
+        $lookup: {
+          from: "ratings",
+          let: { restaurantId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$restaurantId", "$$restaurantId"] },
+              },
+            },
+          ],
+          as: "rating",
+        },
+      },
+      { $sort: sortBy },
+      { $skip: skip },
+      { $limit: page },
+      {
+        $project: {
+          password: 0,
+          isApproved: 0,
+          isRejected: 0,
+          isVerified: 0,
+          verificationToken: 0,
+          role: 0,
+        },
+      },
+    ]);
   };
 
   const getNewRegistrations = async () =>
@@ -70,6 +95,17 @@ export const restaurantRepositoryMongodb = () => {
   const countRestaurants = async () =>
     await Restaurant.countDocuments({ isVerified: true });
 
+  const addRating = async (ratingData: RatingEntityType) =>
+    await Rating.create({
+      userId: ratingData.getUserId(),
+      restaurantId: ratingData.getRestaurantId(),
+      rating: ratingData.getRating(),
+      description: ratingData.getDescription(),
+    });
+
+  const getRatings = async (restaurantId: string) =>
+    await Rating.find({ restaurantId });
+
   return {
     getRestaurantById,
     getRestaurantByemail,
@@ -81,6 +117,8 @@ export const restaurantRepositoryMongodb = () => {
     updateRestaurantStatus,
     getListedRestaurants,
     countRestaurants,
+    addRating,
+    getRatings,
   };
 };
 

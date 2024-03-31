@@ -27,12 +27,25 @@ export const getAllListedRestaurants = async (
         },
       }),
   };
-  return await restaurantRepository.getListedRestaurants(
+  const restaurants = await restaurantRepository.getListedRestaurants(
     filter,
     sortBy,
     skip,
     limit
   );
+  return restaurants;
+  const getRating = async (restaurantId: string) => {
+    const rating = await restaurantRepository.getRatings(restaurantId);
+    return rating || null;
+  };
+  const ratings = Promise.all(
+    restaurants.map(async (restaurant) => {
+      const rating = await getRating(restaurant.id);
+      return { ...restaurant, rating };
+    })
+  );
+  console.log(ratings);
+  return ratings;
 };
 
 export const getSingleRestaurantById = async (

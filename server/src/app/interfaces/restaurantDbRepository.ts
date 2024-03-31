@@ -1,3 +1,4 @@
+import { RatingEntityType } from "../../entities/ratingEntity";
 import { RestaurantEntityType } from "../../entities/restaurantEntity";
 import { restaurantRepositoryMongodbType } from "../../frameworks/database/mongodb/repositories/restaurantRepositoryMongodb";
 import { RestaurantInterface } from "../../types/restaurantInterface";
@@ -43,6 +44,11 @@ export const restaurantDbRepository = (
 
   const countRestaurants = async () => await repository.countRestaurants();
 
+  const addRating = async (ratingData: RatingEntityType) =>
+    await repository.addRating(ratingData);
+  const getRatings = async (restaurantId: string) =>
+    await repository.getRatings(restaurantId);
+
   return {
     getRestaurantById,
     getRestaurantByemail,
@@ -54,6 +60,8 @@ export const restaurantDbRepository = (
     updateRestaurantStatus,
     getListedRestaurants,
     countRestaurants,
+    addRating,
+    getRatings,
   };
 };
 
