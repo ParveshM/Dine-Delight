@@ -1,8 +1,9 @@
 import { TECarousel, TECarouselItem } from "tw-elements-react";
 import Footer from "../../components/user/Footer/Footer";
 import Navbar from "../../components/user/Header/Navbar";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
+  RatingInterface,
   RestaurantInterface,
   TableSlotInterface,
 } from "../../types/RestaurantInterface";
@@ -23,27 +24,43 @@ import { BiSolidNavigation } from "react-icons/bi";
 import { MdEmail } from "react-icons/md";
 import NotFoundPage from "../Error404";
 import { RestaurantViewShimmer } from "../../components/shimmers/RestaurantViewShimmer";
+import StarRating from "../../components/user/Review/StarRating";
 
 const RestaurantView = () => {
   const { id } = useParams();
   const [restaurant, setResturant] = useState<RestaurantInterface>();
   const [tableSlot, setTableSlot] = useState<TableSlotInterface[]>([]);
   const [error, setError] = useState<boolean>(false);
-
+  const [ratings, setRatings] = useState<RatingInterface[]>([]);
   useEffect(() => {
     axios
       .get(USER_API + `/restaurants/${id}`)
       .then(({ data }) => {
-        setTimeout(() => {
-          setResturant(data.restaurant);
-          setTableSlot(data.tableSlots);
-        }, 1000);
+        const { restaurant, tableSlots, ratings } = data;
+        setRatings(ratings);
+        setResturant(restaurant);
+        setTableSlot(tableSlots);
       })
       .catch(() => {
         console.error("Page not found");
         setError(true);
       });
   }, []);
+
+  const calculatedStarRating = useMemo(() => {
+    if (ratings?.length) {
+      return (
+        ratings
+          .map((rate) => rate.rating)
+          .reduce((acc, curr) => acc + curr, 0) / ratings.length
+      ).toFixed(1);
+    }
+  }, [ratings]);
+
+  const starRating: string = calculatedStarRating
+    ? calculatedStarRating
+    : "4.5";
+
   if (error) return <NotFoundPage />;
   return (
     <>
@@ -70,22 +87,22 @@ const RestaurantView = () => {
                     {convert24HourTime(restaurant.closingTime)}
                   </p>
                 </div>
-                <div className=" flex items-center  gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className=" h-5 w-5 text-orange-300"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-                    />
-                  </svg>
-                  <p>4.5</p>
+                <div className="flex items-center gap-2">
+                  <StarRating
+                    value={parseInt(starRating) ?? 4.5}
+                    className="flex"
+                  />
+                  <div className="flex items-center">
+                    <p className="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+                      {starRating}
+                    </p>
+                    <p className="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+                      out of
+                    </p>
+                    <p className="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+                      5
+                    </p>
+                  </div>
                 </div>
                 <hr className="bg-slate-200 h-[2px] " />
                 <div className=" flex flex-col  text-lg mb-2 ">

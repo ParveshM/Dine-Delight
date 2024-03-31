@@ -46,8 +46,9 @@ export const restaurantDbRepository = (
 
   const addRating = async (ratingData: RatingEntityType) =>
     await repository.addRating(ratingData);
-  const getRatings = async (restaurantId: string) =>
-    await repository.getRatings(restaurantId);
+
+  const getRatings = async (filter: Record<string, any>) =>
+    await repository.getRatings(filter);
 
   return {
     getRestaurantById,

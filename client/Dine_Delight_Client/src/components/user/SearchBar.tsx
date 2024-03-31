@@ -1,10 +1,9 @@
-import { Dropdown } from "flowbite-react";
-import { FilterIcon, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { ChangeEvent, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { FilterType } from "../../hooks/useRestaurantList";
-import AppliedFilters from "./AppliedFilter";
-import FilterDropdown from "./FilterDropdown";
+import AppliedFilters from "./Filter/AppliedFilter";
+import FilterDropdown from "./Filter/FilterDropdown";
 
 interface SearchProps {
   handleSearch: (query: string) => void;

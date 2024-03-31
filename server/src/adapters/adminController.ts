@@ -48,6 +48,11 @@ export default (
     next: NextFunction
   ) => {
     try {
+      const { access_token: access, refresh_token: refresh } = req.cookies;
+      if (access || refresh) {
+        res.clearCookie("access_token");
+        res.clearCookie("refresh_token");
+      }
       const { email, password } = req.body;
       const { accessToken, refreshToken } = await loginAdmin(
         email,

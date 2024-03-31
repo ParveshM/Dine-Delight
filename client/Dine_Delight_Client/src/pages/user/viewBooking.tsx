@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 import Button from "../../components/restaurant/Button";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axiosJWT from "../../utils/axiosService";
 import { USER_API } from "../../constants";
 import showToast from "../../utils/toaster";
 import { BookingInterface } from "../../types/BookingInterface";
-import { Building, Calendar, Clock, Users } from "lucide-react";
+import { Building, Calendar, Clock, Hash, Users } from "lucide-react";
 import { MdOutlineTableBar } from "react-icons/md";
 import { MdOutlinePayment } from "react-icons/md";
 import { FaCircleCheck } from "react-icons/fa6";
@@ -13,15 +13,21 @@ import { TbCircleXFilled } from "react-icons/tb";
 import { RiRefund2Line } from "react-icons/ri";
 import { statusTextColor } from "../../utils/util";
 import CancelBookingModal from "../../components/user/Modals/cancelBookingModal";
+import Review from "../../components/user/Review/Review";
+import { RatingInterface } from "../../types/RestaurantInterface";
 
 const ViewBooking: React.FC = () => {
   const { id } = useParams();
   const [booking, setBooking] = useState<BookingInterface | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [reviews, setReviews] = useState<RatingInterface[] | null>(null);
   useEffect(() => {
     axiosJWT
       .get(USER_API + `/bookings/${id}`)
-      .then(({ data }) => setBooking(data.bookingDetails))
+      .then(({ data }) => {
+        setBooking(data.bookingDetails);
+        setReviews(data.reviews);
+      })
       .catch(() => showToast("Oops! Something went wrong", "error"));
   }, []);
 
@@ -39,9 +45,20 @@ const ViewBooking: React.FC = () => {
     setIsOpen(false);
   };
 
+  const isReviewed = useMemo(() => {
+    if (reviews && reviews.length && booking) {
+      const review = reviews.find(
+        (review) =>
+          review.restaurantId === booking.restaurantId._id &&
+          review.userId === booking.userId._id
+      );
+      return review ? true : false;
+    }
+  }, [reviews, booking]);
+
   return (
     <>
-      <div className="container mx-auto px-4 py-8 border rounded-lg shadow-md">
+      <div className="container mx-auto px-4 py-2 border rounded-lg shadow-md">
         <h1 className="text-center mb-4 text-2xl font-semibold">
           Booking Details
         </h1>
@@ -88,6 +105,10 @@ const ViewBooking: React.FC = () => {
           </div>
           <div className="col-span-6 md:col-span-3   p-4 space-y-2 mt-2">
             <div className="flex items-center gap-2">
+              <Hash className="h-5 w-5" />
+              <p className="text-lg font-semibold ">{booking?.bookingId}</p>
+            </div>
+            <div className="flex items-center gap-2">
               <MdOutlinePayment className="h-6 w-6" />
               <p className=" font-medium">{booking?.paymentMethod} Payment</p>
             </div>
@@ -124,7 +145,7 @@ const ViewBooking: React.FC = () => {
             </div>
           </div>
         </div>
-        {booking?.bookingStatus && booking?.bookingStatus !== "Cancelled" && (
+        {booking?.bookingStatus && booking?.bookingStatus === "Confirmed" && (
           <Button
             label="Cancel Booking"
             className="block mx-auto mt-8 bg-red-400 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"
@@ -138,6 +159,15 @@ const ViewBooking: React.FC = () => {
           handleCancellation={handleCancellation}
         />
       )}
+      {!isReviewed &&
+        reviews &&
+        booking &&
+        booking.bookingStatus === "Completed" && (
+          <Review
+            restaurantId={booking?.restaurantId._id}
+            restauranName={booking?.restaurantId.restaurantName}
+          />
+        )}
     </>
   );
 };

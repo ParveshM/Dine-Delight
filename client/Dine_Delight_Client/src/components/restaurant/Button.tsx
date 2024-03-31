@@ -1,5 +1,5 @@
 interface ButtonPropsInterface {
-  handleButtonclick: () => void;
+  handleButtonclick?: () => void;
   label: string;
   className?: string;
   isDisabled?: boolean;

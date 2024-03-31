@@ -11,7 +11,6 @@ const UserSidebar = () => {
 
   const handleItemClick = (index: number) => setActiveItem(index);
   const handleLogout = () => {
-    console.log("slkfdjslkjf");
     logout("Logged out successfully");
     navigate("/");
   };

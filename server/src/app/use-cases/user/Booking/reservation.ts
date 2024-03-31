@@ -15,6 +15,7 @@ import { UserDbInterface } from "../../../interfaces/userDbRepository";
 import CustomError from "../../../../utils/customError";
 import { HttpStatus } from "../../../../types/httpStatus";
 import { Types } from "mongoose";
+import { ObjectId } from "mongoose";
 
 export const reserveATable = async (
   reservationData: createReservationInterface,
@@ -150,4 +151,16 @@ export const getBookings = async (
 export const getBookingByBookingId = async (
   bookingID: string,
   bookingRepository: ReturnType<BookingDbRepositoryInterface>
-) => await bookingRepository.getBookingById(bookingID);
+) => {
+  return await bookingRepository.getBookingById(bookingID);
+};
+
+export const getReviewsByUserId = async (
+  userID: string,
+  restaurantID: Types.ObjectId,
+  restaurantRepository: ReturnType<restaurantDbInterface>
+) =>
+  await restaurantRepository.getRatings({
+    userId: userID,
+    restaurantId: restaurantID,
+  });

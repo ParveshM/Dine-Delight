@@ -18,6 +18,6 @@ export const addNewRating = async (
 };
 
 export const ratings = async (
-  restaurantId: string,
+  restaurantID: string,
   restaurantRepostory: ReturnType<restaurantDbInterface>
-) => await restaurantRepostory.getRatings(restaurantId);
+) => await restaurantRepostory.getRatings({ restaurantId: restaurantID });

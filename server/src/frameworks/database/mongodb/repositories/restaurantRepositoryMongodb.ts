@@ -103,8 +103,8 @@ export const restaurantRepositoryMongodb = () => {
       description: ratingData.getDescription(),
     });
 
-  const getRatings = async (restaurantId: string) =>
-    await Rating.find({ restaurantId });
+  const getRatings = async (filter: Record<string, any>) =>
+    await Rating.find(filter).populate("userId");
 
   return {
     getRestaurantById,

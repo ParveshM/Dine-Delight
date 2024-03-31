@@ -19,7 +19,7 @@ export interface RestaurantInterface {
   secondaryImages?: string[];
 }
 
-interface RatingInterface {
+export interface RatingInterface {
   _id: string;
   restaurantId: string;
   userId: string;

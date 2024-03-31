@@ -8,7 +8,7 @@ import showToast from "../../utils/toaster";
 import axios from "axios";
 import { useAppDispatch } from "../../redux/store/Store";
 import { setUser } from "../../redux/slices/UserSlice";
-
+axios.defaults.withCredentials = true;
 const Login: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
