@@ -1,6 +1,6 @@
 import { Dropdown } from "flowbite-react";
 import { FilterIcon } from "lucide-react";
-import { FilterType } from "../../hooks/useRestaurantList";
+import { FilterType } from "../../../hooks/useRestaurantList";
 
 const FilterDropdown: React.FC<{ setFilter: (filter: FilterType) => void }> = ({
   setFilter,

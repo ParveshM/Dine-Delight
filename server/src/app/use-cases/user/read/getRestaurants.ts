@@ -52,6 +52,9 @@ export const getSingleRestaurantById = async (
     startTime,
     currentDate
   );
+  const ratings = await restaurantRepository.getRatings({
+    restaurantId: restaurantID,
+  });
 
-  return { restaurant, tableSlots };
+  return { restaurant, tableSlots, ratings };
 };

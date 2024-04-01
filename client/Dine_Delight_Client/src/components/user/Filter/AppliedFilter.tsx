@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { FilterType } from "../../hooks/useRestaurantList";
+import { FilterType } from "../../../hooks/useRestaurantList";
 type AppliedFilterType = {
   filters: FilterType;
   removeFilter: (filter: FilterType) => void;

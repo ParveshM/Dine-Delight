@@ -91,6 +91,11 @@ const restaurantController = (
   const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { email, password } = req.body;
+      const { access_token: access, refresh_token: refresh } = req.cookies;
+      if (access || refresh) {
+        res.clearCookie("access_token");
+        res.clearCookie("refresh_token");
+      }
 
       const { accessToken, refreshToken, isEmailExist } = await restaurantLogin(
         email,

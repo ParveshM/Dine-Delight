@@ -1,19 +1,20 @@
-import { Dropdown } from "flowbite-react";
-import { FilterIcon, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { ChangeEvent, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { FilterType } from "../../hooks/useRestaurantList";
-import AppliedFilters from "./AppliedFilter";
-import FilterDropdown from "./FilterDropdown";
+import AppliedFilters from "./Filter/AppliedFilter";
+import FilterDropdown from "./Filter/FilterDropdown";
 
 interface SearchProps {
   handleSearch: (query: string) => void;
   appliedFilters: FilterType;
   setFilter: (filter: FilterType) => void;
+  handleRemoveFilter: (filter: FilterType) => void;
 }
 const SearchBar: React.FC<SearchProps> = ({
   handleSearch,
   setFilter,
+  handleRemoveFilter,
   appliedFilters,
 }) => {
   const [searchText, setSearchText] = useState<string>("");
@@ -48,7 +49,10 @@ const SearchBar: React.FC<SearchProps> = ({
           </label>
         </div>
       </div>
-      <AppliedFilters filters={appliedFilters} removeFilter={setFilter} />
+      <AppliedFilters
+        filters={appliedFilters}
+        removeFilter={handleRemoveFilter}
+      />
     </div>
   );
 };

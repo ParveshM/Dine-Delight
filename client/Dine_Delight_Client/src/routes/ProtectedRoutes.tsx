@@ -24,8 +24,7 @@ export const SellerProtectedRoute: FC = () => {
 
 export const AdminProtectedRoute: FC = () => {
   const { isAuthenticated, role } = useAppSelector((state) => state.UserSlice);
-
-  return isAuthenticated && role === "admin" ? (
+  return isAuthenticated !== null && role === "admin" ? (
     <Outlet />
   ) : (
     <Navigate to={"/admin/auth/login"} replace />

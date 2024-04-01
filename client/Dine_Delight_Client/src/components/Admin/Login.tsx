@@ -7,7 +7,7 @@ import { validateLogin } from "../../utils/validation";
 import { ADMIN_API } from "../../constants";
 import { useAppDispatch } from "../../redux/store/Store";
 import { setUser } from "../../redux/slices/UserSlice";
-
+axios.defaults.withCredentials = true;
 const Login: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<Boolean>(false);
   const navigate = useNavigate();

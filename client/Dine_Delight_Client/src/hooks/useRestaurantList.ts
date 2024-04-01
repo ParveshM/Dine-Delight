@@ -60,6 +60,11 @@ export default function useRestaurantList() {
     setFilter((prev) => ({ ...prev, ...filter }));
   };
 
+  const handleRemoveFilter = (removedFilter: FilterType) => {
+    setFilter((prev) => ({ ...prev, ...removedFilter }));
+    setPage(1);
+  };
+
   return {
     data,
     isLoading,
@@ -68,6 +73,7 @@ export default function useRestaurantList() {
     setPage,
     filter,
     handleFilter,
+    handleRemoveFilter,
     handleSearchQuery,
   };
 }

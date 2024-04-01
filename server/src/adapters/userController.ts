@@ -32,6 +32,7 @@ import {
   getUserProfile,
   updateUser,
 } from "../app/use-cases/user/read/profile";
+import { addNewRating } from "../app/use-cases/restaurant/ratings";
 // Controller will be passing all the necessaary parameers to the repositories
 
 const userController = (
@@ -114,6 +115,11 @@ const userController = (
   const userLogin = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       try {
+        const { access_token: access, refresh_token: refresh } = req.cookies;
+        if (access || refresh) {
+          res.clearCookie("access_token");
+          res.clearCookie("refresh_token");
+        }
         const { accessToken, refreshToken, isEmailExist } = await login(
           req.body,
           dbRepositoryUser,
@@ -150,6 +156,11 @@ const userController = (
     next: NextFunction
   ) => {
     try {
+      const { access_token: access, refresh_token: refresh } = req.cookies;
+      if (access || refresh) {
+        res.clearCookie("access_token");
+        res.clearCookie("refresh_token");
+      }
       const userData: GoogleResponseType = req.body.user;
       const { accessToken, refreshToken, isEmailExist, createdUser } =
         await authenticateGoogleSignInUser(
@@ -280,7 +291,7 @@ const userController = (
       const guest =
         typeof req?.query?.guest === "string" ? parseInt(req.query.guest) : 2;
       const date = req.query.date as string;
-      const { restaurant, tableSlots } = await getSingleRestaurantById(
+      const { restaurant, tableSlots, ratings } = await getSingleRestaurantById(
         restaurantID,
         guest,
         date,
@@ -292,6 +303,7 @@ const userController = (
         message: "Restaurant details fetched successfully",
         restaurant,
         tableSlots,
+        ratings,
       });
     } catch (error) {
       next(error);
@@ -379,6 +391,25 @@ const userController = (
       next(error);
     }
   };
+  /**
+   * * METHOD:POST
+   * * Add new rating to the restaurant
+   */
+  const createNewRating = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userId = req.user;
+      await addNewRating(userId, req.body, restaurantRepository);
+      res
+        .status(HttpStatus.OK)
+        .json({ success: true, message: "Rating added successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
 
   return {
     registerUser,
@@ -394,6 +425,7 @@ const userController = (
     userProfile,
     updateUserInfo,
     getTransactions,
+    createNewRating,
   };
 };
 export default userController;

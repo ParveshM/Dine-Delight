@@ -71,7 +71,7 @@ const Profile: React.FC = () => {
             <input
               type="text"
               placeholder="Email"
-              value={profile?.email}
+              value={profile?.email ?? ""}
               readOnly
               className="border-b-2 border-gray-200  outline-none sm:text-sm p-2.5"
             />

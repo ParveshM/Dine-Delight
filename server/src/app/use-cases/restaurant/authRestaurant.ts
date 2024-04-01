@@ -31,7 +31,6 @@ export const addNewRestaurant = async (
   const createdRestaurant = await restaurantRepository.addRestaurant(
     restaurant
   );
-  console.log(verificationToken, "token");
   //   sent verification mail to restaurant email address
   if (createdRestaurant) {
     const emailSubject = "Seller verification ";

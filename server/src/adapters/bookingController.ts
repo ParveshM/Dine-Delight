@@ -11,19 +11,15 @@ import {
   createPayment,
   getBookingByBookingId,
   getBookings,
+  getReviewsByUserId,
   reserveATable,
   updateBookingStatus,
 } from "../app/use-cases/user/Booking/reservation";
 import { HttpStatus } from "../types/httpStatus";
-import Stripe from "stripe";
-import configKeys from "../config";
 import { getUserById } from "../app/use-cases/user/auth/userAuth";
 import { UserDbInterface } from "../app/interfaces/userDbRepository";
 import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/userRepositoryMongodb";
-import {
-  TableSlotDbInterface,
-  TableSlotDbRepository,
-} from "../app/interfaces/TableSlotdbRepository";
+import { TableSlotDbInterface } from "../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
 import { cancelBookingAndUpdateWallet } from "../app/use-cases/user/Booking/cancellation";
 
@@ -42,7 +38,7 @@ const bookingController = (
   tablSlotDbRepositoryImpl: TableSlotRepositoryMongodbType
 ) => {
   const dbBookingRepository = bookingDbRepository(bookingDbRepositoryImpl());
-  const dbResaurantRepository = restaurantDbRepository(
+  const restaurantRepository = restaurantDbRepository(
     restaurantDbRepositoryImpl()
   );
   const dbTableRepository = tableDbRepository(tableDbRepositoryImpl());
@@ -67,7 +63,7 @@ const bookingController = (
         userId,
         reservationService,
         dbBookingRepository,
-        dbResaurantRepository,
+        restaurantRepository,
         dbTableRepository,
         dbTableSlotRepository,
         userRepository
@@ -157,14 +153,24 @@ const bookingController = (
   ) => {
     try {
       const { bookingID } = req.params;
+      const userID = req.user;
       const bookingDetails = await getBookingByBookingId(
         bookingID,
         dbBookingRepository
       );
+      let reviews = null;
+      if (bookingDetails?.restaurantId) {
+        reviews = await getReviewsByUserId(
+          userID,
+          bookingDetails.restaurantId,
+          restaurantRepository
+        );
+      }
       res.status(HttpStatus.OK).json({
         success: true,
         message: "Bookings details fetched successfully",
         bookingDetails,
+        reviews,
       });
     } catch (error) {
       next(error);
