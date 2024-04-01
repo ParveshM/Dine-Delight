@@ -38,7 +38,7 @@ const TimeSlots = lazy(() => import("../pages/restaurant/Tables/timeSlots"));
 const ViewTable = lazy(
   () => import("../pages/restaurant/Tables/viewTableSlots")
 );
-const RestaurantView = lazy(() => import("../pages/user/RestaurantViewPage"));
+const SingleRestaurant = lazy(() => import("../pages/user/SingleRestaurant"));
 const BookTable = lazy(() => import("../pages/user/BookTable"));
 const PaymentCompleted = lazy(
   () => import("../pages/user/payment/PaymentCompleted")
@@ -64,7 +64,7 @@ export const MainRouter = () => {
         <Routes>
           {/******************* User routes *****************/}
           <Route path="/" element={<Home />} />
-          <Route path="/view_restaurant/:id" element={<RestaurantView />} />
+          <Route path="/view_restaurant/:id" element={<SingleRestaurant />} />
           <Route path="" element={<PublicRoute />}>
             <Route path="/user/auth/signup" element={<SignUp />} />
             <Route path="/user/auth/verify_otp" element={<VerifyOTP />} />

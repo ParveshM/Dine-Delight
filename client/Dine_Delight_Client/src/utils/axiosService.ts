@@ -23,6 +23,7 @@ const getAccessToken = async () => {
     let token;
     let user;
     const { data } = await axios.get(TOKEN_API + "/accessToken");
+
     token = data?.access_token;
     user = data?.user;
 
@@ -35,7 +36,7 @@ const getAccessToken = async () => {
 
     return token;
   } catch (error) {
-    console.log(error, "sdfkjhsdhshjfhabsdfkfjh");
+    console.log(error, "Error in getting token");
   }
 };
 
@@ -44,7 +45,10 @@ axiosJWT.interceptors.request.use(async (config) => {
   let decodedToken;
   try {
     const accessToken: string = await getAccessToken();
-
+    if (!accessToken) {
+      await getNewAccessToken();
+      return config;
+    }
     decodedToken = await jwtDecode(accessToken);
   } catch (error) {
     console.log("error in decodeToken" + error);
