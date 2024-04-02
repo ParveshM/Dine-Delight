@@ -27,9 +27,9 @@ const FilterDropdown: React.FC<{ setFilter: (filter: FilterType) => void }> = ({
       <Dropdown.Item onClick={() => setFilter({ sortType: "restaurantName" })}>
         Name
       </Dropdown.Item>
-      <Dropdown.Item onClick={() => setFilter({ sortType: "rating" })}>
+      {/* <Dropdown.Item onClick={() => setFilter({ sortType: "rating" })}>
         Rating
-      </Dropdown.Item>
+      </Dropdown.Item> */}
     </Dropdown>
   );
 };

@@ -18,7 +18,7 @@ import {
 } from "react-icons/fa6";
 import { IoLocationSharp } from "react-icons/io5";
 import { convert24HourTime } from "../../utils/timeConverter";
-import TableSlotFilter from "../../components/user/RestaurantTableFilter";
+import TableSlotFilter from "../../components/user/slotFilter/RestaurantTableFilter";
 import { BiSolidNavigation } from "react-icons/bi";
 import { MdEmail } from "react-icons/md";
 import NotFoundPage from "../Error404";
@@ -30,16 +30,18 @@ const SingleRestaurant = () => {
   const { id } = useParams();
   const [restaurant, setResturant] = useState<RestaurantInterface>();
   const [tableSlot, setTableSlot] = useState<TableSlotInterface[]>([]);
+  const [dateSlots, setDateSlots] = useState<TableSlotInterface[]>([]);
   const [error, setError] = useState<boolean>(false);
   const [ratings, setRatings] = useState<ReviewInterface[]>([]);
   useEffect(() => {
     axios
       .get(USER_API + `/restaurants/${id}`)
       .then(({ data }) => {
-        const { restaurant, tableSlots, ratings } = data;
+        const { restaurant, tableSlots, ratings, dateSlots } = data;
         setRatings(ratings);
         setResturant(restaurant);
         setTableSlot(tableSlots);
+        setDateSlots(dateSlots);
       })
       .catch(() => {
         console.error("Page not found");

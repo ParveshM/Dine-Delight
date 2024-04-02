@@ -44,9 +44,18 @@ export const getSingleRestaurantById = async (
 ) => {
   const capacity = guest ?? 2;
   const startTime = "$startTime";
-  const currentDate = date ?? new Date();
+  let currentDate, endDate;
+  currentDate = endDate = date ?? new Date();
+
   const restaurant = await restaurantRepository.getRestaurantById(restaurantID);
   const tableSlots = await tableSlotRepository.getAvailableTableSlotsByFilter(
+    restaurantID,
+    capacity,
+    startTime,
+    currentDate,
+    endDate
+  );
+  const allSlots = await tableSlotRepository.getAvailableTableSlotsByFilter(
     restaurantID,
     capacity,
     startTime,
@@ -56,5 +65,5 @@ export const getSingleRestaurantById = async (
     restaurantId: restaurantID,
   });
 
-  return { restaurant, tableSlots, ratings };
+  return { restaurant, tableSlots, ratings, allSlots };
 };

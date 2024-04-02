@@ -11,10 +11,8 @@ axios.defaults.withCredentials = true;
 const getNewAccessToken = async () => {
   try {
     await axios.post(TOKEN_API + "/refresh_token");
-  } catch (error: any) {
+  } catch (err) {
     logout("Session expired ,please Login");
-    console.log("Error in refreshing token" + error, error.status);
-    throw new Error("refresh token expired");
   }
 };
 
