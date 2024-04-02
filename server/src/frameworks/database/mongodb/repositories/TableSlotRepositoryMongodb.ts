@@ -1,4 +1,5 @@
 import { ReserveSlotEntityType } from "../../../../entities/reserveSlotEntity";
+import { MatchStageInterface } from "../../../../types/tableInterface";
 import TableSlot from "../models/Tableslots";
 import mongoose from "mongoose";
 
@@ -31,14 +32,28 @@ export const TableSlotRepositoryMongodb = () => {
     restaurantID: string,
     capacity: number,
     startTime: string | "$startTime", //type '$startTime' that is matched by whole dataset startTime else the given time
-    currentDate: string
+    currentDate: string,
+    endDate?: string
   ) => {
     const startOfDay = new Date(currentDate);
     startOfDay.setHours(0, 0, 0);
     const endOfDay = new Date(currentDate);
     endOfDay.setHours(23, 59, 59);
+
     const objectIdRestaurantID = new mongoose.Types.ObjectId(restaurantID);
 
+    const matchStage: MatchStageInterface = {
+      "tableInfo.restaurantId": objectIdRestaurantID,
+      "tableInfo.capacity": capacity,
+      isAvailable: true,
+      slotDate: { $gte: startOfDay },
+    };
+
+    if (endDate) {
+      const endOfDay = new Date(endDate);
+      endOfDay.setHours(23, 59, 59);
+      matchStage.slotDate.$lt = endOfDay;
+    }
     return await TableSlot.aggregate([
       {
         $lookup: {
@@ -49,15 +64,7 @@ export const TableSlotRepositoryMongodb = () => {
         },
       },
       {
-        $match: {
-          "tableInfo.restaurantId": objectIdRestaurantID,
-          "tableInfo.capacity": capacity,
-          isAvailable: true,
-          slotDate: {
-            $gte: startOfDay,
-            $lt: endOfDay,
-          },
-        },
+        $match: matchStage,
       },
       {
         $project: {

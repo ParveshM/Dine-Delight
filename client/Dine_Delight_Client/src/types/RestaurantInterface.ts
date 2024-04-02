@@ -26,7 +26,17 @@ export interface RatingInterface {
   rating: number;
   description: string;
 }
-
+export interface ReviewInterface {
+  _id: string;
+  userId: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  rating: number;
+  description: string;
+  createdAt: Date;
+}
 export interface newRestaurantInterface {
   _id: string;
   restaurantName: string;

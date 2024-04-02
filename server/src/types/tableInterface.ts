@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export interface NewTableInterface {
   tableNumber: string;
   capacity: number;
@@ -14,4 +16,14 @@ export interface allotTableSlotInterface {
 export interface TimeSlotDataInterface {
   startTime: string;
   endTime: string;
+}
+
+export interface MatchStageInterface {
+  "tableInfo.restaurantId": Types.ObjectId;
+  "tableInfo.capacity": number;
+  isAvailable: boolean;
+  slotDate: {
+    $gte: Date;
+    $lt?: Date;
+  };
 }

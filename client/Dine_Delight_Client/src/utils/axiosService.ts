@@ -11,10 +11,8 @@ axios.defaults.withCredentials = true;
 const getNewAccessToken = async () => {
   try {
     await axios.post(TOKEN_API + "/refresh_token");
-  } catch (error: any) {
+  } catch (err) {
     logout("Session expired ,please Login");
-    console.log("Error in refreshing token" + error, error.status);
-    throw new Error("refresh token expired");
   }
 };
 
@@ -23,6 +21,7 @@ const getAccessToken = async () => {
     let token;
     let user;
     const { data } = await axios.get(TOKEN_API + "/accessToken");
+
     token = data?.access_token;
     user = data?.user;
 
@@ -35,7 +34,7 @@ const getAccessToken = async () => {
 
     return token;
   } catch (error) {
-    console.log(error, "sdfkjhsdhshjfhabsdfkfjh");
+    console.log(error, "Error in getting token");
   }
 };
 
@@ -44,7 +43,10 @@ axiosJWT.interceptors.request.use(async (config) => {
   let decodedToken;
   try {
     const accessToken: string = await getAccessToken();
-
+    if (!accessToken) {
+      await getNewAccessToken();
+      return config;
+    }
     decodedToken = await jwtDecode(accessToken);
   } catch (error) {
     console.log("error in decodeToken" + error);

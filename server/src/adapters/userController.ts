@@ -291,7 +291,12 @@ const userController = (
       const guest =
         typeof req?.query?.guest === "string" ? parseInt(req.query.guest) : 2;
       const date = req.query.date as string;
-      const { restaurant, tableSlots, ratings } = await getSingleRestaurantById(
+      const {
+        restaurant,
+        tableSlots,
+        ratings,
+        allSlots: dateSlots,
+      } = await getSingleRestaurantById(
         restaurantID,
         guest,
         date,
@@ -303,6 +308,7 @@ const userController = (
         message: "Restaurant details fetched successfully",
         restaurant,
         tableSlots,
+        dateSlots,
         ratings,
       });
     } catch (error) {
