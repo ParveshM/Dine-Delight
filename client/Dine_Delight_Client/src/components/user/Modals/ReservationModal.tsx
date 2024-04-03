@@ -38,7 +38,6 @@ const ReservationModal: React.FC<ReserveModalProps> = ({
 
   const handleConfirmReservation = () => {
     if (selectedSlot) {
-      console.log(selectedSlot, "lskjfdlk");
       dispatch(setTableSlot(selectedSlot));
       navigate("/reserve_table");
     }

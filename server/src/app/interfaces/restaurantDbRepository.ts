@@ -39,8 +39,16 @@ export const restaurantDbRepository = (
     filter: Record<string, any>,
     sortBy: Record<string, any>,
     skip: number,
-    page: number
-  ) => await repository.getListedRestaurants(filter, sortBy, skip, page);
+    page: number,
+    coordinates?: [number, number] | null
+  ) =>
+    await repository.getListedRestaurants(
+      filter,
+      sortBy,
+      skip,
+      page,
+      coordinates
+    );
 
   const countRestaurants = async () => await repository.countRestaurants();
 

@@ -243,7 +243,7 @@ const userController = (
   ) => {
     try {
       const q = req.query.q as string;
-      const location = req.query.location as (string | number)[];
+      const location = req.query.location as unknown as [number, number];
       const page = parseInt(req.query.page as string);
       const cost = parseInt(req.query.cost as string);
       // const rating = req.query.rating as string;

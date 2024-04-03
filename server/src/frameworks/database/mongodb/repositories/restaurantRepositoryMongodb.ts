@@ -39,9 +39,27 @@ export const restaurantRepositoryMongodb = () => {
     filter: Record<string, any>,
     sortBy: Record<string, any>,
     skip: number,
-    page: number
+    page: number,
+    userCooordinates?: [number, number] | null
   ) => {
+    const areaToCover =
+      userCooordinates && userCooordinates.length === 2 ? 10000 : Infinity;
+
+    const location: [number, number] =
+      userCooordinates && userCooordinates?.length === 2
+        ? userCooordinates
+        : [0, 0];
+
     return await Restaurant.aggregate([
+      {
+        $geoNear: {
+          near: { type: "Point", coordinates: location },
+          distanceField: "distance",
+          maxDistance: areaToCover,
+          spherical: true,
+        },
+      },
+      { $sort: sortBy },
       { $match: filter },
       {
         $lookup: {
@@ -57,7 +75,6 @@ export const restaurantRepositoryMongodb = () => {
           as: "rating",
         },
       },
-      { $sort: sortBy },
       { $skip: skip },
       { $limit: page },
       {

@@ -39,12 +39,13 @@ const BookTable: React.FC = () => {
     tableSlotId: tableSlot._id ?? "",
     paymentMethod: "Online",
   });
-  const hasPageBeenRendered = useRef(false);
+  const hasPageBeenRendered = useRef(true);
   const dispatch = useAppDispatch();
   const id = useAppSelector((state) => state.UserSlice.id);
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("useEffect");
     if (hasPageBeenRendered.current) {
       axios
         .get(USER_API + `/tables/${tableSlot.tableId}?userId=${id}`)
@@ -61,9 +62,10 @@ const BookTable: React.FC = () => {
         dispatch(clearTableSlot());
       };
     } else {
-      hasPageBeenRendered.current = true;
+      hasPageBeenRendered.current = false;
     }
-  }, []);
+  }, [hasPageBeenRendered]);
+
   const formattedDate = tableSlot?.slotDate
     ? new Date(tableSlot.slotDate).toLocaleDateString("en-us", {
         weekday: "long",
