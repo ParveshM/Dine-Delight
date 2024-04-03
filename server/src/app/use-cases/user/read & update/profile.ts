@@ -27,3 +27,19 @@ export const WalletTransactions = async (
   const walletId = user?.wallet as unknown as Types.ObjectId;
   return await userRepository.getTransactions(walletId);
 };
+
+export const addOrRemoveBookmarks = async (
+  userId: string,
+  action: string,
+  restaurantId: string,
+  userRepository: ReturnType<UserDbInterface>
+) => {
+  const bookmarkData: Record<string, any> = {};
+  if (action && action === "addToBookmarks") {
+    bookmarkData.$push = { bookmarks: restaurantId };
+  } else {
+    bookmarkData.$pull = { bookmarks: restaurantId };
+  }
+
+  return await userRepository.updateBookmarks(userId, bookmarkData);
+};

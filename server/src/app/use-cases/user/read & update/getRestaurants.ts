@@ -7,31 +7,24 @@ export const getAllListedRestaurants = async (
   sortBy: Record<string, any>,
   skip: number,
   limit: number,
-  userCoordinates: (string | number)[],
+  userCoordinates: [number, number],
   restaurantRepository: ReturnType<restaurantDbInterface>
 ) => {
   const filter = {
     isListed: true,
     ...queryFilters,
-    ...(userCoordinates &&
-      userCoordinates.length === 2 && {
-        location: {
-          $near: {
-            $geometry: {
-              type: "Point",
-              coordinates: userCoordinates,
-            },
-            $minDistance: 0,
-            $maxDistance: 10000,
-          },
-        },
-      }),
   };
+  const long_lat = userCoordinates && userCoordinates.map(Number);
+  const coordinates: [number, number] | null = userCoordinates
+    ? [long_lat[0], long_lat[1]]
+    : null;
+
   return await restaurantRepository.getListedRestaurants(
     filter,
     sortBy,
     skip,
-    limit
+    limit,
+    coordinates
   );
 };
 
