@@ -65,6 +65,7 @@ const userRoute = () => {
   router.get("/restaurants/:restaurantID", controller.getSingleRestaurant);
   router.get("/tables/:tableID", controller.tableDetails);
   router.post("/review/add", authenticateUser, controller.createNewRating);
+  router.patch("/bookmarks", authenticateUser, controller.updateBookmarks);
 
   /****************Booking Routes ********************/
   router.get("/bookings", authenticateUser, _bookingController.getAllbookings);

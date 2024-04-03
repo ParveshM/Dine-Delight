@@ -28,6 +28,7 @@ export const reserveATable = async (
   userRepository: ReturnType<UserDbInterface>
 ) => {
   const { restaurantId, tableId, tableSlotId, paymentMethod } = reservationData;
+  console.log(reservationData);
   const restaurantDetails = await restaurantDbRepository.getRestaurantById(
     restaurantId
   );

@@ -30,8 +30,8 @@ const BookTable: React.FC = () => {
   const [tableData, setTableData] = useState<RestaurantTableInterface | null>(
     null
   );
-  const [wallet , setWallet] = useState<UserWalletInterface|null>(null)
-  const [error,setError] = useState<string | null>(null)
+  const [wallet, setWallet] = useState<UserWalletInterface | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     restaurantId: tableData?.restaurantId._id ?? "",
@@ -41,8 +41,8 @@ const BookTable: React.FC = () => {
   });
   const hasPageBeenRendered = useRef(false);
   const dispatch = useAppDispatch();
-  const id = useAppSelector(state=>state.UserSlice.id)
-  const navigate = useNavigate()
+  const id = useAppSelector((state) => state.UserSlice.id);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (hasPageBeenRendered.current) {
@@ -54,7 +54,7 @@ const BookTable: React.FC = () => {
             ...prev,
             restaurantId: data.tableData.restaurantId._id,
           }));
-          setWallet(data.user.wallet)
+          setWallet(data.user.wallet);
         })
         .catch(() => console.log("Error"));
       return () => {
@@ -73,20 +73,22 @@ const BookTable: React.FC = () => {
       })
     : "";
 
-
-    const handleInputChange = (method:"Wallet"|"Online")=>{
-      if(method === "Wallet"){
-      const total =  calculateTotalAmount(tableData?.capacity,tableData?.restaurantId.tableRatePerPerson)
-      if(total>( wallet?.balance ??0)) return setError('Insufficient balance')
-      else setError(null)             
-  }
-  if(method==='Online') setError(null)
-  setFormData((prev) => ({
-    ...prev,
-    paymentMethod: method,
-  }))
-      }
-    
+  const handleInputChange = (method: "Wallet" | "Online") => {
+    if (method === "Wallet") {
+      const total = calculateTotalAmount(
+        tableData?.capacity,
+        tableData?.restaurantId.tableRatePerPerson
+      );
+      if (total > (wallet?.balance ?? 0))
+        return setError("Insufficient balance");
+      else setError(null);
+    }
+    if (method === "Online") setError(null);
+    setFormData((prev) => ({
+      ...prev,
+      paymentMethod: method,
+    }));
+  };
 
   const handlePaynowButton = async () => {
     const stripe = await loadStripe(
@@ -102,8 +104,8 @@ const BookTable: React.FC = () => {
           });
           if (result?.error) console.error(result.error);
         }
-        const bookingId = data.booking.bookingId
-        navigate(`/payment_status/${bookingId}?success=true`)
+        const bookingId = data.booking.bookingId;
+        navigate(`/payment_status/${bookingId}?success=true`);
       })
       .catch((error) => {
         console.log("Error in creating order" + error);
@@ -187,9 +189,7 @@ const BookTable: React.FC = () => {
                     id="inlineRadio2"
                     value="Online"
                     defaultChecked
-                    onChange={() =>
-                    handleInputChange('Online')
-                    }
+                    onChange={() => handleInputChange("Online")}
                   />
                   <label
                     className="mt-px inline-block pl-[0.15rem] hover:cursor-pointer"
@@ -205,8 +205,7 @@ const BookTable: React.FC = () => {
                     name="paymentMethod"
                     id="inlineRadio1"
                     value="Wallet"
-                    onChange={() =>handleInputChange('Wallet')
-                    }
+                    onChange={() => handleInputChange("Wallet")}
                   />
                   <label
                     className="mt-px inline-block pl-[0.15rem] hover:cursor-pointer"
@@ -214,8 +213,8 @@ const BookTable: React.FC = () => {
                   >
                     Wallet
                   </label>
-                  
-                  {error&& <p className="text-red-500 ml-2">{error}</p>}
+
+                  {error && <p className="text-red-500 ml-2">{error}</p>}
                 </div>
               </div>
             </div>

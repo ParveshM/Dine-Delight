@@ -21,17 +21,18 @@ import { restaurantDbInterface } from "../app/interfaces/restaurantDbRepository"
 import {
   getAllListedRestaurants,
   getSingleRestaurantById,
-} from "../app/use-cases/user/read/getRestaurants";
+} from "../app/use-cases/user/read & update/getRestaurants";
 import { TableSlotDbInterface } from "../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
 import { TableDbInterface } from "../app/interfaces/tableDbRepository";
 import { TableRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/tableRepositoryMongoDb";
-import { getTableDetails } from "../app/use-cases/user/read/getTable";
+import { getTableDetails } from "../app/use-cases/user/read & update/getTable";
 import {
   WalletTransactions,
+  addOrRemoveBookmarks,
   getUserProfile,
   updateUser,
-} from "../app/use-cases/user/read/profile";
+} from "../app/use-cases/user/read & update/profile";
 import { addNewRating } from "../app/use-cases/restaurant/ratings";
 // Controller will be passing all the necessaary parameers to the repositories
 
@@ -416,6 +417,35 @@ const userController = (
       next(error);
     }
   };
+  /**
+   * * METHOD:PATCH
+   * * Update bookmarks
+   */
+  const updateBookmarks = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userId = req.user;
+      const action = req.query.action as string;
+      const { restaurantId } = req.body;
+      await addOrRemoveBookmarks(
+        userId,
+        action,
+        restaurantId,
+        dbRepositoryUser
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: `${
+          action === "addToBookmarks" ? "Added to " : "Removed from "
+        } Bookmarks`,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 
   return {
     registerUser,
@@ -432,6 +462,7 @@ const userController = (
     updateUserInfo,
     getTransactions,
     createNewRating,
+    updateBookmarks,
   };
 };
 export default userController;

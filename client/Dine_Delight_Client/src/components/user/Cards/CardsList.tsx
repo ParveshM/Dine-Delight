@@ -1,13 +1,15 @@
 import { BiSolidNavigation } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa6";
-import { defaultImageCardImage } from "../../../constants";
+import { USER_API, defaultImageCardImage } from "../../../constants";
 import { convert24HourTime } from "../../../utils/timeConverter";
 import { Rating } from "flowbite-react";
 import getDistance from "../../../Api/getDistance";
 import { useAppSelector } from "../../../redux/store/Store";
 import { forwardRef, useEffect, useMemo, useState } from "react";
 import { RestaurantInterface } from "../../../types/RestaurantInterface";
+import axiosJWT from "../../../utils/axiosService";
+import showToast from "../../../utils/toaster";
 
 const CardsList: React.ForwardRefRenderFunction<
   HTMLDivElement,
@@ -28,6 +30,8 @@ const CardsList: React.ForwardRefRenderFunction<
 ) => {
   const [distance, setDistance] = useState<string | null>(null);
   const userLocation = useAppSelector((state) => state.LocationSlice);
+  const user = useAppSelector((state) => state.UserSlice);
+  const [isBookmarked, setIsbookmarked] = useState<boolean>(false);
 
   useEffect(() => {
     if (userLocation.location.coordinates[0] && location) {
@@ -43,6 +47,21 @@ const CardsList: React.ForwardRefRenderFunction<
     }
   }, [userLocation.location.coordinates]);
 
+  const handleBookmark = async () => {
+    const action = isBookmarked ? "removeFromBookmarks" : "addToBookmarks";
+    axiosJWT
+      .patch(`${USER_API}/bookmarks?action=${action}`, {
+        restaurantId: _id,
+      })
+      .then(({ data }) => {
+        showToast(data.message);
+        setIsbookmarked(!isBookmarked);
+      })
+      .catch(() => {
+        showToast("sorry,we couldn't complete that action.", "error");
+      });
+  };
+
   const calculatedStarRating = useMemo(() => {
     if (rating?.length) {
       return (
@@ -54,6 +73,7 @@ const CardsList: React.ForwardRefRenderFunction<
   const starRating: string = calculatedStarRating
     ? calculatedStarRating
     : "4.5";
+
   return (
     <div
       ref={ref}
@@ -68,11 +88,16 @@ const CardsList: React.ForwardRefRenderFunction<
           />
         </Link>
         <figcaption className="p-4 relative ">
-          {/* <FaBookmark /> */}
-          <FaRegBookmark
-            className="absolute top-2 right-3 text-xl text-black  cursor-pointer"
-            onClick={() => console.log("cliked")}
-          />
+          {user.isAuthenticated && user.role === "user" && (
+            <>
+              <p
+                className="absolute top-2 right-3 text-xl text-black  cursor-pointer"
+                onClick={handleBookmark}
+              >
+                {isBookmarked ? <FaBookmark /> : <FaRegBookmark />}
+              </p>
+            </>
+          )}
           {userLocation.location.coordinates[0] && distance && (
             <p className="absolute bottom-0 right-3 inline-flex gap-2 items-center text-sm">
               {<BiSolidNavigation />}
