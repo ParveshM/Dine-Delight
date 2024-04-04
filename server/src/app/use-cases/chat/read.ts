@@ -5,5 +5,5 @@ export const getChats = async (
   userID: string,
   chatRepository: ReturnType<ChatDbRepositoryInterace>
 ) => {
-  return await chatRepository.getAllChats({ user: userID });
+  return await chatRepository.getAllConversations(userID);
 };

@@ -68,7 +68,7 @@ const ViewBooking: React.FC = () => {
           <div className="col-span-6 md:col-span-3 p-4 space-y-3 mt-3">
             <div className="flex items-center gap-2">
               <Building />
-              <p className="text-lg font-semibold ">
+              <p className="text-lg font-semibold font-display ">
                 {booking?.restaurantId.restaurantName}
               </p>
             </div>
@@ -100,7 +100,7 @@ const ViewBooking: React.FC = () => {
             </div>
             <div className="flex items-center gap-2">
               <Users />
-              <p className="text-sm">{booking?.tableId.capacity} Guests</p>
+              <p className="text-sm ">{booking?.tableId.capacity} Guests</p>
             </div>
           </div>
           <div className="col-span-6 md:col-span-3   p-4 space-y-2 mt-2">
@@ -137,7 +137,7 @@ const ViewBooking: React.FC = () => {
             </div>
             <div className="flex items-center gap-2">
               <p className="text-lg font-medium ">GST:</p>
-              <p className="text-sm">18%</p>
+              <p className="text-sm ">18%</p>
             </div>
             <div className="flex items-center gap-2">
               <p className="text-lg font-semibold ">Amount Paid</p>

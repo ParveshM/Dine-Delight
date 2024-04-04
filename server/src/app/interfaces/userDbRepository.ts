@@ -77,11 +77,6 @@ export const userDbRepository = (
 
   const countUsers = async () => await repository.countUsers();
 
-  const updateBookmarks = async (
-    userID: string,
-    bookmarksData: Record<string, any>
-  ) => await repository.updateBookmarks(userID, bookmarksData);
-
   return {
     getUserbyEmail,
     getUserbyId,
@@ -103,7 +98,6 @@ export const userDbRepository = (
     verifyAndResetPassword,
     updateProfile,
     countUsers,
-    updateBookmarks,
   };
 };
 

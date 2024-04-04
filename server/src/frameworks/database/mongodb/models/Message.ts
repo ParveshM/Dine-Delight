@@ -3,18 +3,12 @@ const Schema = mongoose.Schema;
 
 const messageSchema = new Schema(
   {
-    sender: { type: String, required: true },
-    content: {
-      type: String,
-      trim: true,
-    },
-    chat: { type: Schema.Types.ObjectId, ref: "Chat" },
+    conversationId: { type: String },
+    senderId: { type: String },
+    text: { type: String },
   },
   {
-    timestamps: {
-      createdAt: true,
-      updatedAt: false,
-    },
+    timestamps: true,
   }
 );
 
