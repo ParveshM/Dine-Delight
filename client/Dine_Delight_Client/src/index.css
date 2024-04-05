@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer {
+  .custom-vh {
+    height: calc(100vh - 64px);
+  }
+}

@@ -7,9 +7,7 @@ const messageSchema = new Schema(
     senderId: { type: String },
     text: { type: String },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 export default mongoose.model("Message", messageSchema);

@@ -1,5 +1,5 @@
 export interface newMessageInterface {
   conversationId: string;
-  sender: string;
+  senderId: string;
   text: string;
 }

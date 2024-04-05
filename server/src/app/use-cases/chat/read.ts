@@ -7,3 +7,8 @@ export const getChats = async (
 ) => {
   return await chatRepository.getAllConversations(userID);
 };
+
+export const getMessages = async (
+  memberId: string,
+  chatRepository: ReturnType<ChatDbRepositoryInterace>
+) => await chatRepository.getMessagesByConversationId(memberId);

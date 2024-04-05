@@ -14,13 +14,13 @@ import { RiRefund2Line } from "react-icons/ri";
 import { statusTextColor } from "../../utils/util";
 import CancelBookingModal from "../../components/user/Modals/cancelBookingModal";
 import Review from "../../components/user/Review/Review";
-import { RatingInterface } from "../../types/RestaurantInterface";
+import { ReviewInterface } from "../../types/RestaurantInterface";
 
 const ViewBooking: React.FC = () => {
   const { id } = useParams();
   const [booking, setBooking] = useState<BookingInterface | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [reviews, setReviews] = useState<RatingInterface[] | null>(null);
+  const [reviews, setReviews] = useState<ReviewInterface[] | null>(null);
   useEffect(() => {
     axiosJWT
       .get(USER_API + `/bookings/${id}`)
@@ -50,8 +50,9 @@ const ViewBooking: React.FC = () => {
       const review = reviews.find(
         (review) =>
           review.restaurantId === booking.restaurantId._id &&
-          review.userId === booking.userId._id
+          review.userId._id === booking.userId._id
       );
+      console.log(review, "reviews of user", reviews);
       return review ? true : false;
     }
   }, [reviews, booking]);

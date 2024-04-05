@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { ChatDbRepositoryInterace } from "../app/interfaces/chatDbRepository";
 import { ChatRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/chatRepositoryMongodb";
-import { addNewChat, getMessages, newMessage } from "../app/use-cases/chat/add";
+import { addNewChat, newMessage } from "../app/use-cases/chat/add";
 import { HttpStatus } from "../types/httpStatus";
-import { getChats } from "../app/use-cases/chat/read";
+import { getChats, getMessages } from "../app/use-cases/chat/read";
 
 const chatController = (
   chatDbRepository: ChatDbRepositoryInterace,
@@ -40,7 +40,7 @@ const chatController = (
     try {
       const { id } = req.params;
       const chats = await getChats(id, chatRepository);
-      res.json(chats);
+      res.status(HttpStatus.OK).json(chats);
     } catch (error) {
       next(error);
     }
@@ -56,7 +56,7 @@ const chatController = (
   ) => {
     try {
       const message = await newMessage(req.body, chatRepository);
-      res.json(message);
+      res.status(HttpStatus.OK).json(message);
     } catch (error) {
       next(error);
     }
@@ -73,7 +73,7 @@ const chatController = (
     try {
       const { conversationId } = req.params;
       const chats = await getMessages(conversationId, chatRepository);
-      res.json(chats);
+      res.status(HttpStatus.OK).json(chats);
     } catch (error) {
       next(error);
     }

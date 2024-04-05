@@ -17,14 +17,14 @@ export default function chatDbRepository(
   const addNewMessage = async (newMessageData: newMessageInterface) =>
     await repository.addNewMessage(newMessageData);
 
-  const getAllmessagesByconversationId = async (conversationId: string) =>
-    await repository.messages(conversationId);
+  const getMessagesByConversationId = async (id: string) =>
+    await repository.messages(id);
 
   return {
     createNewChat,
     getAllConversations,
     addNewMessage,
-    getAllmessagesByconversationId,
+    getMessagesByConversationId,
     isChatExists,
   };
 }

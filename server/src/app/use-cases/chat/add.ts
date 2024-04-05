@@ -13,8 +13,3 @@ export const newMessage = async (
   newMessageData: newMessageInterface,
   chatRepository: ReturnType<ChatDbRepositoryInterace>
 ) => await chatRepository.addNewMessage(newMessageData);
-
-export const getMessages = async (
-  conversationId: string,
-  chatRepository: ReturnType<ChatDbRepositoryInterace>
-) => await chatRepository.getAllmessagesByconversationId(conversationId);
