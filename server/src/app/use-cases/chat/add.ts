@@ -1,24 +1,17 @@
+import { newMessageInterface } from "../../../types/chat";
 import { ChatDbRepositoryInterace } from "../../interfaces/chatDbRepository";
 
 export const addNewChat = async (
-  userID: string,
-  restaurantID: string,
+  senderId: string,
+  recieverId: string,
   chatRepository: ReturnType<ChatDbRepositoryInterace>
 ) => {
-  const isChat = await chatRepository.isChatExists({
-    user: userID,
-    restaurant: restaurantID,
-  });
-
-  if (isChat.length > 0) {
-    return isChat[0];
-  } else {
-    const createdChat = await chatRepository.createNewChat({
-      user: userID,
-      restaurant: restaurantID,
-    });
-    return await chatRepository.getAllChats(createdChat._id);
-  }
-
-  return;
+  const isChatExist = await chatRepository.isChatExists(senderId, recieverId);
+  if (isChatExist) return isChatExist;
+  return await chatRepository.createNewChat([senderId, recieverId]);
 };
+
+export const newMessage = async (
+  newMessageData: newMessageInterface,
+  chatRepository: ReturnType<ChatDbRepositoryInterace>
+) => await chatRepository.addNewMessage(newMessageData);

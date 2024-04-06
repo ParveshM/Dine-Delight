@@ -1,19 +1,35 @@
-import { Types } from "mongoose";
-import Chat from "../models/chat";
+import { newMessageInterface } from "../../../../types/chat";
+import Conversation from "../models/Conversation";
+import Message from "../models/Message";
 
 export const chatRepositoryMongodb = () => {
-  const isChatExists = async (filter: Record<string, any>) =>
-    await Chat.find(filter).populate(["user", "restaurant", "latestMessage"]);
+  const isChatExists = async (senderId: string, recieverId: string) =>
+    await Conversation.findOne({ members: { $all: [senderId, recieverId] } });
 
-  const addNewChat = async (newChatData: Record<string, any>) =>
-    await Chat.create(newChatData);
+  const getConversationById = async (id: string) =>
+    await Conversation.findById(id);
 
-  const allChats = async (filter: Record<string, any>) =>
-    await Chat.find(filter)
-      .populate(["user", "restaurant", "latestMessage"])
-      .sort({ createAt: -1 });
+  const addNewChat = async (members: string[]) => {
+    return await Conversation.create({ members });
+  };
 
-  return { addNewChat, allChats, isChatExists };
+  const getChatsByMembers = async (id: string) =>
+    await Conversation.find({ members: { $in: [id] } });
+
+  const addNewMessage = async (newMessageData: newMessageInterface) =>
+    await Message.create(newMessageData);
+
+  const messages = async (conversationId: string) =>
+    await Message.find({ conversationId });
+
+  return {
+    addNewChat,
+    getChatsByMembers,
+    getConversationById,
+    isChatExists,
+    addNewMessage,
+    messages,
+  };
 };
 
 export type ChatRepositoryMongodbType = typeof chatRepositoryMongodb;

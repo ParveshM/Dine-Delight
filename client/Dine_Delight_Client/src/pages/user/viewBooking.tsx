@@ -1,8 +1,8 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/restaurant/Button";
 import { useEffect, useMemo, useState } from "react";
 import axiosJWT from "../../utils/axiosService";
-import { USER_API } from "../../constants";
+import { CHAT_API, USER_API } from "../../constants";
 import showToast from "../../utils/toaster";
 import { BookingInterface } from "../../types/BookingInterface";
 import { Building, Calendar, Clock, Hash, Users } from "lucide-react";
@@ -14,13 +14,18 @@ import { RiRefund2Line } from "react-icons/ri";
 import { statusTextColor } from "../../utils/util";
 import CancelBookingModal from "../../components/user/Modals/cancelBookingModal";
 import Review from "../../components/user/Review/Review";
-import { RatingInterface } from "../../types/RestaurantInterface";
+import { ReviewInterface } from "../../types/RestaurantInterface";
+import { useAppSelector } from "../../redux/store/Store";
+import axios from "axios";
 
 const ViewBooking: React.FC = () => {
   const { id } = useParams();
   const [booking, setBooking] = useState<BookingInterface | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [reviews, setReviews] = useState<RatingInterface[] | null>(null);
+  const [reviews, setReviews] = useState<ReviewInterface[] | null>(null);
+  const user = useAppSelector((state) => state.UserSlice);
+  const navigate = useNavigate();
+
   useEffect(() => {
     axiosJWT
       .get(USER_API + `/bookings/${id}`)
@@ -30,6 +35,21 @@ const ViewBooking: React.FC = () => {
       })
       .catch(() => showToast("Oops! Something went wrong", "error"));
   }, []);
+
+  const handleChat = () => {
+    axios
+      .post(CHAT_API + `/conversations`, {
+        senderId: user.id,
+        recieverId: booking?.restaurantId?._id,
+      })
+      .then(({ data }) => {
+        const chatID: string = data.chats._id;
+        navigate(`/chat?conversation=${chatID}`);
+      })
+      .catch(() => {
+        console.log("error in sending chat");
+      });
+  };
 
   const handleCancellation = () => {
     axiosJWT
@@ -50,7 +70,7 @@ const ViewBooking: React.FC = () => {
       const review = reviews.find(
         (review) =>
           review.restaurantId === booking.restaurantId._id &&
-          review.userId === booking.userId._id
+          review.userId._id === booking.userId._id
       );
       return review ? true : false;
     }
@@ -68,7 +88,7 @@ const ViewBooking: React.FC = () => {
           <div className="col-span-6 md:col-span-3 p-4 space-y-3 mt-3">
             <div className="flex items-center gap-2">
               <Building />
-              <p className="text-lg font-semibold ">
+              <p className="text-lg font-semibold font-display ">
                 {booking?.restaurantId.restaurantName}
               </p>
             </div>
@@ -100,7 +120,7 @@ const ViewBooking: React.FC = () => {
             </div>
             <div className="flex items-center gap-2">
               <Users />
-              <p className="text-sm">{booking?.tableId.capacity} Guests</p>
+              <p className="text-sm ">{booking?.tableId.capacity} Guests</p>
             </div>
           </div>
           <div className="col-span-6 md:col-span-3   p-4 space-y-2 mt-2">
@@ -137,7 +157,7 @@ const ViewBooking: React.FC = () => {
             </div>
             <div className="flex items-center gap-2">
               <p className="text-lg font-medium ">GST:</p>
-              <p className="text-sm">18%</p>
+              <p className="text-sm ">18%</p>
             </div>
             <div className="flex items-center gap-2">
               <p className="text-lg font-semibold ">Amount Paid</p>
@@ -145,6 +165,11 @@ const ViewBooking: React.FC = () => {
             </div>
           </div>
         </div>
+        <Button
+          label={`Chat with ${booking?.restaurantId?.restaurantName}`}
+          className="block mx-auto mt-8 bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"
+          handleButtonclick={handleChat}
+        />
         {booking?.bookingStatus && booking?.bookingStatus === "Confirmed" && (
           <Button
             label="Cancel Booking"

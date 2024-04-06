@@ -2,6 +2,7 @@ import { Camera } from "lucide-react";
 import { IoWallet } from "react-icons/io5";
 import useProfile from "../../hooks/useProfile";
 import { Link } from "react-router-dom";
+import { dummyUserImg } from "../../assets/images";
 
 const Profile: React.FC = () => {
   const {
@@ -26,7 +27,7 @@ const Profile: React.FC = () => {
                 src={
                   imagePreview
                     ? imagePreview
-                    : profile?.profilePicture ?? "https://picsum.photos/200/"
+                    : profile?.profilePicture ?? dummyUserImg
                 }
                 alt="Profile"
                 className="w-full h-full object-cover"

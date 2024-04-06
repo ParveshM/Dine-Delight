@@ -53,6 +53,7 @@ const Profile = lazy(() => import("../pages/user/Profile"));
 const TransactionHistory = lazy(
   () => import("../pages/user/TransactionHistory")
 );
+const Chat = lazy(() => import("../pages/user/Chat"));
 
 const Home = lazy(() => import("../pages/Home"));
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
@@ -99,6 +100,7 @@ export const MainRouter = () => {
               path="/transaction_history"
               element={<AccountPage children={<TransactionHistory />} />}
             />
+            <Route path="/chat" element={<Chat />} />
           </Route>
 
           {/******************* Restaurant routes *****************/}
@@ -145,6 +147,7 @@ export const MainRouter = () => {
               path="view"
               element={<SellerPage children={<ViewRestaurant />} />}
             />
+            <Route path="chat" element={<SellerPage children={<Chat />} />} />
           </Route>
 
           {/******************* Admin routes *****************/}

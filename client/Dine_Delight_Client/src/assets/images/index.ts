@@ -5,6 +5,8 @@ import restSignupVector from "./resSignupPage.avif";
 import logo from "./logo_copy.png";
 import dineinVector from "./10085382.png";
 import paymentFailedImg from "./credit-card.png";
+import chatBackground from "./Gemini_Generated_Image_kbdbmkbdbmkbdbmk.jpg";
+import dummyUserImg from "./dummyUserImg.png";
 export {
   vector,
   logo,
@@ -13,4 +15,6 @@ export {
   restSignupVector,
   dineinVector,
   paymentFailedImg,
+  chatBackground,
+  dummyUserImg,
 };

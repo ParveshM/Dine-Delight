@@ -360,6 +360,19 @@ const userController = (
     }
   };
   /**
+   * * METHOD :GET
+   * * Retrieve  user Info
+   * */
+  const userInfo = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const { user } = await getUserProfile(id, dbRepositoryUser);
+      res.status(200).json({ success: true, user });
+    } catch (error) {
+      next(error);
+    }
+  };
+  /**
    * * METHOD :PATCH
    * * update user profile
    */
@@ -458,6 +471,7 @@ const userController = (
     getRestaurants,
     getSingleRestaurant,
     tableDetails,
+    userInfo,
     userProfile,
     updateUserInfo,
     getTransactions,

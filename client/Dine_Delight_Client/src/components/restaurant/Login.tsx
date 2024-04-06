@@ -24,9 +24,9 @@ const Login: React.FC = () => {
       axios
         .post(RESTAURANT_API + "/login", { email, password })
         .then(({ data }) => {
-          const { restaurantName: name, role } = data.restaurant;
+          const { restaurantName: name, role, _id } = data.restaurant;
           showToast(data.message, "success");
-          dispatch(setUser({ isAuthenticated: true, name, role }));
+          dispatch(setUser({ isAuthenticated: true, name, role, id: _id }));
           setTimeout(() => {
             navigate("/restaurant/dashboard");
           }, 1000);

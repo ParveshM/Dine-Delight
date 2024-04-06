@@ -10,8 +10,12 @@ const chatRoute = () => {
     chatRepositoryMongodb
   );
 
-  router.post("/newChat", _chatController.createNewChat);
-  router.get("/messages", _chatController.fetchChats);
+  router.get("/conversation/:id", _chatController.getConversation);
+  router.get("/conversations/:senderId", _chatController.fetchChats);
+  router.post("/conversations", _chatController.createNewChat);
+
+  router.post("/messages", _chatController.createNewMessage);
+  router.get("/messages/:conversationId", _chatController.fetchMessages);
 
   return router;
 };

@@ -41,5 +41,5 @@ export const addOrRemoveBookmarks = async (
     bookmarkData.$pull = { bookmarks: restaurantId };
   }
 
-  return await userRepository.updateBookmarks(userId, bookmarkData);
+  return await userRepository.updateProfile(userId, bookmarkData);
 };

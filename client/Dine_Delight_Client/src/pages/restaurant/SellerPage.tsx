@@ -60,7 +60,9 @@ const SellerPage: React.FC<childrenProps> = ({ children }) => {
       <div>
         <SellerSideBar handleLogout={handleLogout} showSidebar={showSidebar} />
         <div
-          className={`p-5  mt-16 ${showSidebar ? "ml-20" : "ml-2"} md:ml-20`}
+          className={`p-5  mt-16 custom-vh ${
+            showSidebar ? "ml-20" : "ml-2"
+          } md:ml-20`}
         >
           {children} {/** children nodes are rendered here dynamically*/}
         </div>

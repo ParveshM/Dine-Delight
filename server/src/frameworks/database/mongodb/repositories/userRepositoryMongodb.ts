@@ -98,11 +98,6 @@ export const userRepositoryMongodb = () => {
   const countUsers = async () =>
     await User.countDocuments({ isVerified: true });
 
-  const updateBookmarks = async (
-    userId: string,
-    bookmarkData: Record<string, any>
-  ) => await User.findByIdAndUpdate(userId, bookmarkData, { new: true });
-
   // exporting the functions
   return {
     getUserbyEmail,
@@ -125,7 +120,6 @@ export const userRepositoryMongodb = () => {
     findVerificationCodeAndUpdate,
     updateUserInfo,
     countUsers,
-    updateBookmarks,
   };
 };
 

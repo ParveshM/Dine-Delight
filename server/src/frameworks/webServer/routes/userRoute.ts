@@ -57,6 +57,7 @@ const userRoute = () => {
   router.post("/forgot_password", controller.forgotPassword);
   router.post("/reset_password/:token", controller.resetPassword);
 
+  router.get("/users/:id", controller.userInfo);
   router.get("/profile", authenticateUser, controller.userProfile);
   router.patch("/profile/edit", authenticateUser, controller.updateUserInfo);
   router.get("/transactions", authenticateUser, controller.getTransactions);
