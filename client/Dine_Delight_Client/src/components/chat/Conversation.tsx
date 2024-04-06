@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { USER_API, randomImg } from "../../constants";
+import { USER_API } from "../../constants";
 import { ChatInterface } from "../../types/ChatInterface";
 import { RestaurantInterface } from "../../types/RestaurantInterface";
 import axios from "axios";
 import { UserInterface } from "../../types/UserInterface";
 import { useAppSelector } from "../../redux/store/Store";
+import { dummyUserImg } from "../../assets/images";
 
 interface ConversationProps extends ChatInterface {
   userId: string | null | undefined;
@@ -34,8 +35,8 @@ const Conversation: React.FC<ConversationProps> = ({ members, userId }) => {
       <img
         src={
           role === "user"
-            ? restaurant?.primaryImage ?? randomImg
-            : userinfo?.profilePicture ?? randomImg
+            ? restaurant?.primaryImage ?? dummyUserImg
+            : userinfo?.profilePicture ?? dummyUserImg
         }
         alt="User image"
         className="h-10 w-10 rounded-full object-cover"

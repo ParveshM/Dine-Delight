@@ -7,8 +7,8 @@ import {
   ReviewInterface,
   TableSlotInterface,
 } from "../../types/RestaurantInterface";
-import { USER_API, defaultImageCardImage } from "../../constants";
-import { Link, useParams } from "react-router-dom";
+import { CHAT_API, USER_API, defaultImageCardImage } from "../../constants";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import {
   FaCircleChevronLeft,
@@ -25,6 +25,8 @@ import NotFoundPage from "../Error404";
 import { RestaurantViewShimmer } from "../../components/shimmers/RestaurantViewShimmer";
 import StarRating from "../../components/user/Review/StarRating";
 import ReviewSlider from "../../components/user/Review/ReviewSlider";
+import { MessageCircleMore } from "lucide-react";
+import { useAppSelector } from "../../redux/store/Store";
 
 const SingleRestaurant = () => {
   const { id } = useParams();
@@ -33,6 +35,10 @@ const SingleRestaurant = () => {
   const [dateSlots, setDateSlots] = useState<TableSlotInterface[]>([]);
   const [error, setError] = useState<boolean>(false);
   const [ratings, setRatings] = useState<ReviewInterface[]>([]);
+  const [showTooltip, setTooltip] = useState<boolean>(false);
+  const user = useAppSelector((state) => state.UserSlice);
+  const navigate = useNavigate();
+
   useEffect(() => {
     axios
       .get(USER_API + `/restaurants/${id}`)
@@ -48,6 +54,21 @@ const SingleRestaurant = () => {
         setError(true);
       });
   }, []);
+
+  const handleChatClick = () => {
+    axios
+      .post(CHAT_API + `/conversations`, {
+        senderId: user.id,
+        recieverId: id,
+      })
+      .then(({ data }) => {
+        const chatID: string = data.chats._id;
+        navigate(`/chat?conversation=${chatID}`);
+      })
+      .catch(() => {
+        console.log("error in sending chat");
+      });
+  };
 
   const calculatedStarRating = useMemo(() => {
     if (ratings?.length) {
@@ -100,11 +121,23 @@ const SingleRestaurant = () => {
                         {starRating}
                       </p>
                       <p className="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">
-                        out of
+                        out of 5{" "}
                       </p>
-                      <p className="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">
-                        5
-                      </p>
+                    </div>
+                  </div>
+                  <div className="flex justify-end items-center">
+                    <div
+                      className=" relative p-2 bg-blue-100 rounded-full"
+                      onClick={handleChatClick}
+                      onMouseEnter={() => setTooltip(true)}
+                      onMouseLeave={() => setTooltip(false)}
+                    >
+                      <MessageCircleMore className="w-5 h-5 text-blue-500 cursor-pointer" />
+                      {showTooltip && (
+                        <div className="absolute bottom-12 right-4 bg-black text-white p-2 rounded-md ">
+                          Chat with Restaurant
+                        </div>
+                      )}
                     </div>
                   </div>
                   <hr className="bg-slate-200 h-[2px] " />

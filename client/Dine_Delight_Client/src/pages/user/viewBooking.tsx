@@ -1,8 +1,8 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/restaurant/Button";
 import { useEffect, useMemo, useState } from "react";
 import axiosJWT from "../../utils/axiosService";
-import { USER_API } from "../../constants";
+import { CHAT_API, USER_API } from "../../constants";
 import showToast from "../../utils/toaster";
 import { BookingInterface } from "../../types/BookingInterface";
 import { Building, Calendar, Clock, Hash, Users } from "lucide-react";
@@ -15,12 +15,17 @@ import { statusTextColor } from "../../utils/util";
 import CancelBookingModal from "../../components/user/Modals/cancelBookingModal";
 import Review from "../../components/user/Review/Review";
 import { ReviewInterface } from "../../types/RestaurantInterface";
+import { useAppSelector } from "../../redux/store/Store";
+import axios from "axios";
 
 const ViewBooking: React.FC = () => {
   const { id } = useParams();
   const [booking, setBooking] = useState<BookingInterface | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [reviews, setReviews] = useState<ReviewInterface[] | null>(null);
+  const user = useAppSelector((state) => state.UserSlice);
+  const navigate = useNavigate();
+
   useEffect(() => {
     axiosJWT
       .get(USER_API + `/bookings/${id}`)
@@ -30,6 +35,21 @@ const ViewBooking: React.FC = () => {
       })
       .catch(() => showToast("Oops! Something went wrong", "error"));
   }, []);
+
+  const handleChat = () => {
+    axios
+      .post(CHAT_API + `/conversations`, {
+        senderId: user.id,
+        recieverId: booking?.restaurantId?._id,
+      })
+      .then(({ data }) => {
+        const chatID: string = data.chats._id;
+        navigate(`/chat?conversation=${chatID}`);
+      })
+      .catch(() => {
+        console.log("error in sending chat");
+      });
+  };
 
   const handleCancellation = () => {
     axiosJWT
@@ -52,7 +72,6 @@ const ViewBooking: React.FC = () => {
           review.restaurantId === booking.restaurantId._id &&
           review.userId._id === booking.userId._id
       );
-      console.log(review, "reviews of user", reviews);
       return review ? true : false;
     }
   }, [reviews, booking]);
@@ -146,6 +165,11 @@ const ViewBooking: React.FC = () => {
             </div>
           </div>
         </div>
+        <Button
+          label={`Chat with ${booking?.restaurantId?.restaurantName}`}
+          className="block mx-auto mt-8 bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"
+          handleButtonclick={handleChat}
+        />
         {booking?.bookingStatus && booking?.bookingStatus === "Confirmed" && (
           <Button
             label="Cancel Booking"

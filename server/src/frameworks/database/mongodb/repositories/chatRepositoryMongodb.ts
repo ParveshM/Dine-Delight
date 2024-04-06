@@ -3,12 +3,11 @@ import Conversation from "../models/Conversation";
 import Message from "../models/Message";
 
 export const chatRepositoryMongodb = () => {
-  const isChatExists = async (filter: Record<string, any>) =>
-    await Conversation.find(filter).populate([
-      "user",
-      "restaurant",
-      "latestMessage",
-    ]);
+  const isChatExists = async (senderId: string, recieverId: string) =>
+    await Conversation.findOne({ members: { $all: [senderId, recieverId] } });
+
+  const getConversationById = async (id: string) =>
+    await Conversation.findById(id);
 
   const addNewChat = async (members: string[]) => {
     return await Conversation.create({ members });
@@ -26,6 +25,7 @@ export const chatRepositoryMongodb = () => {
   return {
     addNewChat,
     getChatsByMembers,
+    getConversationById,
     isChatExists,
     addNewMessage,
     messages,

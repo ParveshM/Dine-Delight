@@ -3,7 +3,8 @@ import { ChatDbRepositoryInterace } from "../app/interfaces/chatDbRepository";
 import { ChatRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/chatRepositoryMongodb";
 import { addNewChat, newMessage } from "../app/use-cases/chat/add";
 import { HttpStatus } from "../types/httpStatus";
-import { getChats, getMessages } from "../app/use-cases/chat/read";
+import { getChatById, getChats, getMessages } from "../app/use-cases/chat/read";
+import { get } from "mongoose";
 
 const chatController = (
   chatDbRepository: ChatDbRepositoryInterace,
@@ -38,8 +39,25 @@ const chatController = (
     next: NextFunction
   ) => {
     try {
+      const { senderId } = req.params;
+      const chats = await getChats(senderId, chatRepository);
+      res.status(HttpStatus.OK).json(chats);
+    } catch (error) {
+      next(error);
+    }
+  };
+  /*
+   * METHOD:GET
+   * Retrive  the conversations by conversation ID
+   */
+  const getConversation = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
       const { id } = req.params;
-      const chats = await getChats(id, chatRepository);
+      const chats = await getChatById(id, chatRepository);
       res.status(HttpStatus.OK).json(chats);
     } catch (error) {
       next(error);
@@ -82,6 +100,7 @@ const chatController = (
   return {
     createNewChat,
     fetchChats,
+    getConversation,
     createNewMessage,
     fetchMessages,
   };

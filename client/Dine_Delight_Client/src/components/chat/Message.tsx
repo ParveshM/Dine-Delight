@@ -24,9 +24,7 @@ const Message: React.FC<MessageInterface> = ({ createdAt, text, own }) => {
           </p>
         </div>
         <span
-          className={`text-sm ${
-            own && "text-end"
-          } font-normal text-gray-500 dark:text-gray-400`}
+          className={`text-sm text-end font-normal text-gray-500 dark:text-gray-400`}
         >
           {createdAt && convertTimeFormat(time)}
         </span>

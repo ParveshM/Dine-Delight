@@ -5,8 +5,11 @@ import { newMessageInterface } from "../../types/chat";
 export default function chatDbRepository(
   repository: ReturnType<ChatRepositoryMongodbType>
 ) {
-  const isChatExists = async (filter: Record<string, any>) =>
-    repository.isChatExists(filter);
+  const isChatExists = async (senderId: string, recieverId: string) =>
+    repository.isChatExists(senderId, recieverId);
+
+  const getConversationById = async (id: string) =>
+    repository.getConversationById(id);
 
   const createNewChat = async (members: string[]) =>
     await repository.addNewChat(members);
@@ -22,10 +25,11 @@ export default function chatDbRepository(
 
   return {
     createNewChat,
-    getAllConversations,
     addNewMessage,
-    getMessagesByConversationId,
     isChatExists,
+    getConversationById,
+    getAllConversations,
+    getMessagesByConversationId,
   };
 }
 

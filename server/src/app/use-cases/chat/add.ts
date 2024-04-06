@@ -6,6 +6,8 @@ export const addNewChat = async (
   recieverId: string,
   chatRepository: ReturnType<ChatDbRepositoryInterace>
 ) => {
+  const isChatExist = await chatRepository.isChatExists(senderId, recieverId);
+  if (isChatExist) return isChatExist;
   return await chatRepository.createNewChat([senderId, recieverId]);
 };
 

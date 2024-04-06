@@ -1,11 +1,16 @@
-import { Types } from "mongoose";
 import { ChatDbRepositoryInterace } from "../../interfaces/chatDbRepository";
 
 export const getChats = async (
-  userID: string,
+  senderId: string,
   chatRepository: ReturnType<ChatDbRepositoryInterace>
 ) => {
-  return await chatRepository.getAllConversations(userID);
+  return await chatRepository.getAllConversations(senderId);
+};
+export const getChatById = async (
+  id: string,
+  chatRepository: ReturnType<ChatDbRepositoryInterace>
+) => {
+  return await chatRepository.getConversationById(id);
 };
 
 export const getMessages = async (

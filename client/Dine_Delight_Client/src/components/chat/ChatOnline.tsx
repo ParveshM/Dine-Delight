@@ -1,11 +1,11 @@
-import { randomImg } from "../../constants";
+import { dummyUserImg } from "../../assets/images";
 
 const ChatOnline = () => {
   return (
     <div className="flex items-center gap-2 font-semibold cursor-pointer">
       <div className="relative h-10 w-10 rounded-full border border-white">
         <img
-          src={randomImg}
+          src={dummyUserImg}
           alt=""
           className="w-full rounded-full object-cover"
         />
