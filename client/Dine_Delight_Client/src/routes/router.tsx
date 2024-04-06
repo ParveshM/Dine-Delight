@@ -147,6 +147,7 @@ export const MainRouter = () => {
               path="view"
               element={<SellerPage children={<ViewRestaurant />} />}
             />
+            <Route path="chat" element={<SellerPage children={<Chat />} />} />
           </Route>
 
           {/******************* Admin routes *****************/}

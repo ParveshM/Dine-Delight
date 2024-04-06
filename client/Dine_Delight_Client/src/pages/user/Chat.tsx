@@ -1,53 +1,28 @@
-import { useEffect, useState } from "react";
 import ChatOnline from "../../components/chat/ChatOnline";
 import Conversation from "../../components/chat/Conversation";
 import Message from "../../components/chat/Message";
 import Navbar from "../../components/user/Header/Navbar";
-import { useAppSelector } from "../../redux/store/Store";
-import axios from "axios";
-import { CHAT_API } from "../../constants";
-import { ChatInterface, MessageInterface } from "../../types/ChatInterface";
-import { current } from "@reduxjs/toolkit";
+import useChats from "../../hooks/useChats";
 
 const Chat: React.FC = () => {
-  const user = useAppSelector((state) => state.UserSlice);
-  const [chats, setChats] = useState<ChatInterface[]>([]);
-  const [currentChat, setCurrentChat] = useState<ChatInterface | null>(null);
-  const [messages, setMessages] = useState<MessageInterface[]>([]);
-  const [sendMessage, setSendMessage] = useState<string>("");
-
-  useEffect(() => {
-    axios
-      .get(CHAT_API + `/conversations/${user.id}`)
-      .then(({ data }) => setChats(data))
-      .catch((error) => console.log(error));
-  }, [user.id]);
-
-  useEffect(() => {
-    axios
-      .get(CHAT_API + `/messages/${currentChat?._id}`)
-      .then(({ data }) => setMessages(data))
-      .catch((error) => console.log(error));
-  }, [currentChat]);
-
-  const handleSumbit = () => {
-    axios
-      .post(CHAT_API + `/messages`, {
-        conversationId: currentChat?._id,
-        senderId: user.id,
-        text: sendMessage.trim(),
-      })
-      .then(({ data }) => {
-        setMessages((prev) => [...prev, data]);
-        setSendMessage("");
-      })
-      .catch((error) => console.log(error));
-  };
+  const {
+    user,
+    chats,
+    currentChat,
+    setCurrentChat,
+    messages,
+    newMessage,
+    scrollRef,
+    setNewMessage,
+    handleSumbit,
+  } = useChats();
 
   return (
     <>
-      <Navbar />
-      <div className="flex mt-[70px] p-6 custom-vh">
+      {user.role === "user" && <Navbar />}
+      <div
+        className={`flex ${user.role === "user" && "mt-[70px]"}  p-6 custom-vh`}
+      >
         {/* Chat Menu */}
         <div className="w-1/4 p-2">
           <div>
@@ -58,8 +33,8 @@ const Chat: React.FC = () => {
               className="border-b border-black py-2 focus:outline-none"
             />
             {chats.map((chat) => (
-              <div onClick={() => setCurrentChat(chat)}>
-                <Conversation {...chat} userId={user?.id} key={chat._id} />
+              <div onClick={() => setCurrentChat(chat)} key={chat._id}>
+                <Conversation {...chat} userId={user?.id} />
               </div>
             ))}
           </div>
@@ -72,11 +47,12 @@ const Chat: React.FC = () => {
               <div className="relative pr-4 overflow-y-auto">
                 {messages.length ? (
                   messages.map((message) => (
-                    <Message
-                      {...message}
-                      own={message.senderId === user.id}
-                      key={message._id}
-                    />
+                    <div key={message._id ?? message.senderId} ref={scrollRef}>
+                      <Message
+                        {...message}
+                        own={message.senderId === user.id}
+                      />
+                    </div>
                   ))
                 ) : (
                   <h1 className="absolute top-[30%] text-xl text-gray-400 cursor-default">
@@ -85,17 +61,17 @@ const Chat: React.FC = () => {
                 )}
               </div>
               <div className="flex items-center py-2 px-3 bg-gray-50 rounded-lg dark:bg-gray-700 ">
-                <input
+                <textarea
                   name="message"
-                  onChange={(e) => setSendMessage(e.target.value)}
-                  value={sendMessage}
-                  type="text"
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  value={newMessage}
+                  rows={2}
                   className="block mx-4 p-2.5 focus:outline-none w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 resize-none"
                   placeholder="Your message..."
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleSumbit();
                   }}
-                />
+                ></textarea>
                 <button
                   type="submit"
                   className="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600 transition ease-out"

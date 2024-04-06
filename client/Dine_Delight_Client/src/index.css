@@ -3,6 +3,26 @@
 @tailwind utilities;
 @layer {
   .custom-vh {
-    height: calc(100vh - 64px);
+    height: calc(100vh - 80px);
   }
+}
+/* Width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f4f4f4;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

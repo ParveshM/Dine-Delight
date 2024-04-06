@@ -4,8 +4,8 @@ export interface ChatInterface {
   createdAt: Date;
 }
 export interface MessageInterface {
-  _id: string;
-  conversationId: string;
+  _id?: string;
+  conversationId?: string;
   senderId: string;
   text: string;
   createdAt: Date;

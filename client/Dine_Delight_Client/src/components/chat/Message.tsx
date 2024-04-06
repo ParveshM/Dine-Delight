@@ -17,7 +17,7 @@ const Message: React.FC<MessageInterface> = ({ createdAt, text, own }) => {
             own
               ? "bg-indigo-100 rounded-s-xl rounded-ee-xl"
               : "bg-gray-100 rounded-e-xl rounded-es-xl"
-          }  dark:bg-gray-700`}
+          }  dark:bg-gray-700 break-words  `}
         >
           <p className="text-sm font-normal text-gray-900 dark:text-white">
             {text}
