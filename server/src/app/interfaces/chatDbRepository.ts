@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { ChatRepositoryMongodbType } from "../../frameworks/database/mongodb/repositories/chatRepositoryMongodb";
 import { newMessageInterface } from "../../types/chat";
 

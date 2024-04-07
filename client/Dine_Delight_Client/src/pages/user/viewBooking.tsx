@@ -12,7 +12,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { TbCircleXFilled } from "react-icons/tb";
 import { RiRefund2Line } from "react-icons/ri";
 import { statusTextColor } from "../../utils/util";
-import CancelBookingModal from "../../components/user/Modals/cancelBookingModal";
+import ConfirmationModal from "../../components/user/Modals/ConfirmationModal";
 import Review from "../../components/user/Review/Review";
 import { ReviewInterface } from "../../types/RestaurantInterface";
 import { useAppSelector } from "../../redux/store/Store";
@@ -181,9 +181,10 @@ const ViewBooking: React.FC = () => {
         </div>
       </div>
       {isOpen && (
-        <CancelBookingModal
+        <ConfirmationModal
           setIsOpen={setIsOpen}
-          handleCancellation={handleCancellation}
+          handleConfirmation={handleCancellation}
+          action="cancelBooking"
         />
       )}
       {!isReviewed &&

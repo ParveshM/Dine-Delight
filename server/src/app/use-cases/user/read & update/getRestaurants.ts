@@ -1,4 +1,3 @@
-import { paginateFilter } from "../../../../types/restaurantInterface";
 import { TableSlotDbInterface } from "../../../interfaces/TableSlotdbRepository";
 import { restaurantDbInterface } from "../../../interfaces/restaurantDbRepository";
 

@@ -5,7 +5,6 @@ import {
 } from "../../entities/userEntity";
 import { TransactionEntityType } from "../../entities/transactionEntity";
 import { Types } from "mongoose";
-import { UserInterface } from "../../types/userInterface";
 
 // Interface for the database repository that we need to use
 /*

@@ -16,6 +16,9 @@ import { bookingDbRepository } from "../../../app/interfaces/bookingDbRepository
 import { bookingRepositoryMongodb } from "../../database/mongodb/repositories/BookingRepositoryMongodb";
 import { userDbRepository } from "../../../app/interfaces/userDbRepository";
 import { userRepositoryMongodb } from "../../database/mongodb/repositories/userRepositoryMongodb";
+import menuController from "../../../adapters/menuController";
+import { MenuRepositoryMongodb } from "../../database/mongodb/repositories/MenuRepositoryMongodb";
+import { menuDbRepository } from "../../../app/interfaces/menuDbRepository";
 
 const restaurantRoute = () => {
   const router = express.Router();
@@ -41,6 +44,11 @@ const restaurantRoute = () => {
     timeSlotRepositoryMongodb
   );
 
+  const _menuController = menuController(
+    menuDbRepository,
+    MenuRepositoryMongodb
+  );
+
   router.post("/signup", controller.signup);
   router.post("/verify_token/:token", controller.verifyToken);
   router.post("/login", controller.login);
@@ -48,7 +56,6 @@ const restaurantRoute = () => {
   router.put("/info", authenticateSeller, controller.updateRestaurantDetails);
 
   /************* Reservations *************** */
-
   router.get("/bookings", authenticateSeller, controller.reservations);
   router.get(
     "/bookings/:bookingID",
@@ -61,9 +68,7 @@ const restaurantRoute = () => {
     controller.updateReservations
   );
 
-  /********************************************/
-
-  /**** Table routes ******/
+  /******** Table routes ********/
   router.post("/table/new", authenticateSeller, _tableController.addTable);
   router.post(
     "/table_slots/allot",
@@ -92,7 +97,20 @@ const restaurantRoute = () => {
     _tableController.addTimeSlots //create new time slot
   );
   router.delete("/time_slots/:timeSlotId", _tableController.removeTimeSlot);
-  /*********************************/
+
+  /******** Menu routes **********/
+  router.get("/menu", authenticateSeller, _menuController.getMenu);
+  router.post("/menu/add", authenticateSeller, _menuController.addMenuItem);
+  router.put(
+    "/menu/edit/:menuItemID",
+    authenticateSeller,
+    _menuController.editMenuItem
+  );
+  router.delete(
+    "/menu/delete/:menuItemID",
+    authenticateSeller,
+    _menuController.deleteMenuItem
+  );
 
   return router;
 };

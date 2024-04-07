@@ -2,6 +2,8 @@ import { ImSpinner9 } from "react-icons/im";
 import formUtils from "../../hooks/useRestaurantform";
 import AutoCompleteInput from "../../components/restaurant/AutoCompleteInput";
 import CustomMap from "../../components/restaurant/Map";
+import { RxCrossCircled } from "react-icons/rx";
+import ConfirmationModal from "../../components/user/Modals/ConfirmationModal";
 const ViewRestaurant = () => {
   const {
     formData,
@@ -17,6 +19,10 @@ const ViewRestaurant = () => {
     uploadImages,
     handleSubmit,
     updateCoordinates,
+    setImageToRemove,
+    isModalOpen,
+    setIsModalOpen,
+    handleImageRemove,
   } = formUtils();
 
   return (
@@ -284,14 +290,23 @@ const ViewRestaurant = () => {
                 </label>
                 {formData.secondaryImages.length > 0 && (
                   <div className="mt-6 mb-2">
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 ">
                       {formData.secondaryImages.map((image, index) => (
-                        <img
-                          key={index}
-                          src={image}
-                          alt={`Additional Image ${index}`}
-                          className="h-24 w-auto rounded-md"
-                        />
+                        <div className="relative h-24 w-auto rounded-md">
+                          <img
+                            key={index}
+                            src={image}
+                            alt={`Additional Image ${index}`}
+                            className="h-full rounded-md"
+                          />
+                          <RxCrossCircled
+                            className="absolute top-0 right-0 cursor-pointer w-5 h-5 text-black"
+                            onClick={() => {
+                              setImageToRemove(image);
+                              setIsModalOpen(true);
+                            }}
+                          />
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -362,6 +377,13 @@ const ViewRestaurant = () => {
           </div>
         </form>
       </div>
+      {isModalOpen && (
+        <ConfirmationModal
+          setIsOpen={(isOpen) => setIsModalOpen(isOpen)}
+          handleConfirmation={handleImageRemove}
+          action="delete image"
+        />
+      )}
     </div>
   );
 };

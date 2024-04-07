@@ -57,6 +57,8 @@ const formUtils = () => {
   );
   const [isFeauredUploading, setIsFeauredUploading] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [imageToRemove, setImageToRemove] = useState<string | null>(null);
 
   useEffect(() => {
     axiosJWT
@@ -183,6 +185,22 @@ const formUtils = () => {
     }));
   };
 
+  const handleImageRemove = () => {
+    if (imageToRemove) {
+      const filteredImages = formData.secondaryImages.filter(
+        (image) => image !== imageToRemove
+      );
+      setFormData((prev) => ({ ...prev, secondaryImages: filteredImages }));
+      setIsModalOpen(false);
+      axiosJWT
+        .put(RESTAURANT_API + "/info", { secondaryImages: filteredImages })
+        .then(() => {
+          showToast("Image removed successfully");
+        })
+        .catch((error) => console.log(error));
+    }
+  };
+
   return {
     formData,
     setFormData,
@@ -197,6 +215,10 @@ const formUtils = () => {
     isUploading,
     updateCoordinates,
     errors,
+    isModalOpen,
+    setIsModalOpen,
+    setImageToRemove,
+    handleImageRemove,
   };
 };
 export default formUtils;

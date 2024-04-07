@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export interface CreateRestaurantInterface {
   restaurantName: string;
   email: string;
@@ -31,8 +33,10 @@ export interface RestaurantInterface {
   secondaryImage?: string[];
 }
 
-export type paginateFilter = {
-  limit?: number;
-  skip?: number;
-  sortBy?: Record<string, "asc" | "desc">;
-};
+export interface MenuItemInterface {
+  name: string;
+  price: number;
+  category: "starters" | "mainCourse" | "drinks" | "dessert";
+  isVegetarian: boolean;
+  restaurantId: Types.ObjectId;
+}
