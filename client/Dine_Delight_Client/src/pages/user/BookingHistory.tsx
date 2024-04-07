@@ -15,7 +15,7 @@ const BookingHistory: React.FC = () => {
   }, []);
 
   return (
-    <div className="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
+    <div className="pt-10 md:py-0   px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
       <h1 className="text-xl dark:text-white lg:text-2xl font-semibold leading-7 lg:leading-9 text-gray-800">
         Hisory & Recent bookings
       </h1>

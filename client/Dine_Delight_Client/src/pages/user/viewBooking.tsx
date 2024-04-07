@@ -165,18 +165,20 @@ const ViewBooking: React.FC = () => {
             </div>
           </div>
         </div>
-        <Button
-          label={`Chat with ${booking?.restaurantId?.restaurantName}`}
-          className="block mx-auto mt-8 bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"
-          handleButtonclick={handleChat}
-        />
-        {booking?.bookingStatus && booking?.bookingStatus === "Confirmed" && (
+        <div className="flex flex-col gap-2 md:flex-row items-center justify-center mt-8">
           <Button
-            label="Cancel Booking"
-            className="block mx-auto mt-8 bg-red-400 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"
-            handleButtonclick={() => setIsOpen(true)}
+            label={`Chat with ${booking?.restaurantId?.restaurantName}`}
+            className="block  bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"
+            handleButtonclick={handleChat}
           />
-        )}
+          {booking?.bookingStatus && booking?.bookingStatus === "Confirmed" && (
+            <Button
+              label="Cancel Booking"
+              className="block  bg-red-400 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"
+              handleButtonclick={() => setIsOpen(true)}
+            />
+          )}
+        </div>
       </div>
       {isOpen && (
         <CancelBookingModal
