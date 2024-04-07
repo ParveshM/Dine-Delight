@@ -4,7 +4,7 @@ import Conversation from "../../components/chat/Conversation";
 import Message from "../../components/chat/Message";
 import Navbar from "../../components/user/Header/Navbar";
 import useChats from "../../hooks/useChats";
-import ChatSidebar from "../../components/chat/ChatSidbar";
+import ChatSidebar from "../../components/chat/ChatSidebar";
 import { ChevronLeft, PanelRightClose, PanelRightOpen, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { chatBackground } from "../../assets/images";
