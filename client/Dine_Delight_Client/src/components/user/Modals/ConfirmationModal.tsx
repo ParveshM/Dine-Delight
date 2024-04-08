@@ -1,10 +1,12 @@
 interface ModalProps {
   setIsOpen: (isOpen: boolean) => void;
-  handleCancellation: () => void;
+  action: string;
+  handleConfirmation: () => void;
 }
-const CancelBookingModal: React.FC<ModalProps> = ({
+const ConfirmationModal: React.FC<ModalProps> = ({
   setIsOpen,
-  handleCancellation,
+  action,
+  handleConfirmation,
 }) => {
   return (
     <div
@@ -52,7 +54,13 @@ const CancelBookingModal: React.FC<ModalProps> = ({
               />
             </svg>
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Are you sure you want to cancel this reservation?
+              Are you sure you want to{" "}
+              {action === "cancelBooking"
+                ? "cancel this reseravtion"
+                : action === "deleteMenuItem"
+                ? "delete this item"
+                : "delete this image."}
+              ?
             </h3>
             <button
               type="button"
@@ -62,7 +70,7 @@ const CancelBookingModal: React.FC<ModalProps> = ({
               No, cancel
             </button>
             <button
-              onClick={handleCancellation}
+              onClick={handleConfirmation}
               type="button"
               className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
             >
@@ -75,4 +83,4 @@ const CancelBookingModal: React.FC<ModalProps> = ({
   );
 };
 
-export default CancelBookingModal;
+export default ConfirmationModal;

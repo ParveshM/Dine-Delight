@@ -63,3 +63,12 @@ export interface TableSlotInterface {
   endTime: string | null;
   isAvailable: boolean | null;
 }
+export interface MenuItemInterface {
+  _id: string;
+  name: string;
+  price: number;
+  category: "starters" | "main course" | "drinks" | "dessert";
+  isVegetarian: boolean;
+  restaurantId: string;
+}
+export type MenuCategory = "starters" | "main course" | "drinks" | "dessert";

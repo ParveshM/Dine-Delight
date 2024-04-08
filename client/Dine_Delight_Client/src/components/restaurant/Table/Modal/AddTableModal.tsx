@@ -141,7 +141,7 @@ const AddTableModal: React.FC<AddTableModalProps> = ({
                     className="mt-px inline-block pl-[0.15rem] hover:cursor-pointer"
                     htmlFor="inlineRadio1"
                   >
-                    In
+                    Indoor
                   </label>
                 </div>
                 <div className="mb-[0.125rem] mr-4 inline-block min-h-[1.5rem] pl-[1.5rem]">
@@ -158,7 +158,7 @@ const AddTableModal: React.FC<AddTableModalProps> = ({
                     className="mt-px inline-block pl-[0.15rem] hover:cursor-pointer"
                     htmlFor="inlineRadio2"
                   >
-                    Out
+                    Outdoor
                   </label>
                 </div>
               </div>

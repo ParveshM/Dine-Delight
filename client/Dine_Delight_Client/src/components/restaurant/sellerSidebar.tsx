@@ -10,7 +10,7 @@ const SellerSideBar: FC<SidebarProps> = ({ showSidebar, handleLogout }) => {
   return (
     <aside
       id="logo-sidebar"
-      className={`fixed top-0 left-0 w-20 h-screen pt-20 transition-transform bg-white border-r border-gray-200 ${
+      className={`fixed top-0 left-0 z-10 w-20 h-screen pt-20 transition-transform bg-white border-r border-gray-200 ${
         showSidebar ? "translate-x-0" : "sm:-translate-x-0 -translate-x-full"
       } sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
       aria-label="Sidebar"
