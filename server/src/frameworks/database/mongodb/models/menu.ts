@@ -11,7 +11,7 @@ const menuSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ["starters", "mainCourse", "drinks", "dessert"],
+    enum: ["starters", "main course", "drinks", "dessert"],
   },
   isVegetarian: {
     type: Boolean,

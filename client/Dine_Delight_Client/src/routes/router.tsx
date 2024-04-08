@@ -48,13 +48,13 @@ const Reservations = lazy(() => import("../pages/restaurant/Reservations"));
 const ViewReservation = lazy(
   () => import("../pages/restaurant/viewReservation")
 );
+const Menu = lazy(() => import("../pages/restaurant/Menu"));
 const ViewBooking = lazy(() => import("../pages/user/viewBooking"));
 const Profile = lazy(() => import("../pages/user/Profile"));
 const TransactionHistory = lazy(
   () => import("../pages/user/TransactionHistory")
 );
 const Chat = lazy(() => import("../pages/user/Chat"));
-
 const Home = lazy(() => import("../pages/Home"));
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
 
@@ -139,10 +139,7 @@ export const MainRouter = () => {
               path="time_slots"
               element={<SellerPage children={<TimeSlots />} />}
             />
-            <Route
-              path="menu"
-              element={<SellerPage children={<div>Food menu</div>} />}
-            />
+            <Route path="menu" element={<SellerPage children={<Menu />} />} />
             <Route
               path="view"
               element={<SellerPage children={<ViewRestaurant />} />}

@@ -15,7 +15,7 @@ const SellerPage: React.FC<childrenProps> = ({ children }) => {
     logout("Logout success");
     navigate("/restaurant/auth/login");
   };
-  const [showSidebar, setShowSidebar] = useState<boolean>(true);
+  const [showSidebar, setShowSidebar] = useState<boolean>(false);
   const name = useAppSelector((state) => state.UserSlice.name);
 
   return (
@@ -60,9 +60,7 @@ const SellerPage: React.FC<childrenProps> = ({ children }) => {
       <div>
         <SellerSideBar handleLogout={handleLogout} showSidebar={showSidebar} />
         <div
-          className={`p-5  mt-16 custom-vh ${
-            showSidebar ? "ml-20" : "ml-2"
-          } md:ml-20`}
+          className={`p-5  mt-16 custom-vh ${showSidebar ? "" : ""} md:ml-20`}
         >
           {children} {/** children nodes are rendered here dynamically*/}
         </div>

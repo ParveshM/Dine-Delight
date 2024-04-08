@@ -1,14 +1,10 @@
 import { Edit, Trash } from "lucide-react";
+import { TableSlotInterface } from "../../../types/RestaurantInterface";
 
-type TableSlotDataaPropsType = {
-  sl_no: number;
-  _id: string;
-  slotDate: Date;
-  startTime: string;
-  endTime: string;
-  isAvailable: boolean;
+interface TableSlotDataaPropsType extends TableSlotInterface {
+  sl_no: number | null;
   handleDeleteSlot: (_id: string) => void;
-};
+}
 
 const TableSlotsData: React.FC<TableSlotDataaPropsType> = ({
   sl_no,
@@ -28,11 +24,12 @@ const TableSlotsData: React.FC<TableSlotDataaPropsType> = ({
         {sl_no}
       </td>
       <td className="px-6 py-4">
-        {new Date(slotDate).toLocaleDateString("en-us", {
-          day: "numeric",
-          month: "numeric",
-          year: "numeric",
-        })}
+        {slotDate &&
+          new Date(slotDate).toLocaleDateString("en-us", {
+            day: "numeric",
+            month: "numeric",
+            year: "numeric",
+          })}
       </td>
       <td className="px-6 py-4">
         {startTime} - {endTime}
@@ -50,7 +47,7 @@ const TableSlotsData: React.FC<TableSlotDataaPropsType> = ({
             </button> */}
             <button
               className="p-1 rounded-md bg-red-400 text-white font-semibold hover:bg-red-500 transition duration-150"
-              onClick={() => handleDeleteSlot(_id)}
+              onClick={() => handleDeleteSlot(_id ?? "")}
             >
               <Trash />
             </button>

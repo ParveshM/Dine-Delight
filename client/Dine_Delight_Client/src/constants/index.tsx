@@ -98,3 +98,10 @@ export const reservationTableColomns = [
   { label: "Status", key: "status" },
   { label: "Action", key: "action" },
 ];
+
+export const menuCategories = [
+  "starters",
+  "main course",
+  "drinks",
+  "dessert",
+] as const;

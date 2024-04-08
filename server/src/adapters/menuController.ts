@@ -91,11 +91,21 @@ const menuController = (
   const getMenu = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const restaurantId = req.seller;
-      const page = parseInt(req.query.page as string, 10);
+      const page = parseInt(req.query.page as string, 10) || 1;
+      const q = req.query.q as string;
+      const isVegetarian = req.query.isVegetarian;
+      const category = req.query.category;
+
+      const filters: Record<string, any> = {
+        restaurantId,
+      };
+      if (q) filters.name = new RegExp(q ?? "", "i");
+      if (isVegetarian) filters.isVegetarian = isVegetarian;
+      if (category) filters.category = category;
       const limit = 10;
       const skip = (page - 1) * limit;
       const menu = await getMenuByRestaurant(
-        restaurantId,
+        filters,
         limit,
         skip,
         menuRepository

@@ -36,7 +36,7 @@ export interface RestaurantInterface {
 export interface MenuItemInterface {
   name: string;
   price: number;
-  category: "starters" | "mainCourse" | "drinks" | "dessert";
+  category: "starters" | "main course" | "drinks" | "dessert";
   isVegetarian: boolean;
   restaurantId: Types.ObjectId;
 }
