@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../redux/store/Store";
-import { useMemo } from "react";
 
 const ChatIcon = () => {
   const { role, isAuthenticated } = useAppSelector((state) => state.UserSlice);
@@ -9,12 +8,12 @@ const ChatIcon = () => {
   const location = useLocation();
   const path =
     location.pathname === "/chat" || location.pathname === "/restaurant/chat";
-
-  if (!isAuthenticated || path) return null;
+  const isCartRoute = location.pathname.startsWith("/cart");
+  if (!isAuthenticated || path || isCartRoute) return null;
   return (
     <button
-      className="fixed z-40 right-2 bottom-11 flex h-[60px] w-[60px] items-center 
-    justify-center rounded-full bg-[#6A64F1] text-white hover:bg-indigo-600 transition ease-out"
+      className={`fixed z-40 right-2 bottom-11 flex h-[60px] w-[60px] items-center 
+    justify-center rounded-full bg-[#6A64F1] text-white hover:bg-indigo-600 transition ease-out`}
       onClick={() => {
         const to: string = role === "user" ? "/chat" : "/restaurant/chat";
         navigate(to);

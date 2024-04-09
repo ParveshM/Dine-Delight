@@ -16,6 +16,9 @@ import { bookingDbRepository } from "../../../app/interfaces/bookingDbRepository
 import { bookingRepositoryMongodb } from "../../database/mongodb/repositories/BookingRepositoryMongodb";
 import { tableDbRepository } from "../../../app/interfaces/tableDbRepository";
 import { tableRepositoryMongodb } from "../../database/mongodb/repositories/tableRepositoryMongoDb";
+import menuController from "../../../adapters/menuController";
+import { menuDbRepository } from "../../../app/interfaces/menuDbRepository";
+import { MenuRepositoryMongodb } from "../../database/mongodb/repositories/MenuRepositoryMongodb";
 
 const userRoute = () => {
   const router = express.Router();
@@ -46,6 +49,13 @@ const userRoute = () => {
     userRepositoryMongodb,
     TableSlotDbRepository,
     TableSlotRepositoryMongodb
+  );
+
+  const _menuController = menuController(
+    menuDbRepository,
+    MenuRepositoryMongodb,
+    bookingDbRepository,
+    bookingRepositoryMongodb
   );
 
   /******** user authentication Routes ********/
@@ -91,6 +101,9 @@ const userRoute = () => {
     authenticateUser,
     _bookingController.cancelBooking
   );
+  router.post("/booking/preOrder", _bookingController.updatePreOrderedFood);
+
+  router.get("/menu/:bookingID", authenticateUser, _menuController.getMenu);
 
   return router;
 };

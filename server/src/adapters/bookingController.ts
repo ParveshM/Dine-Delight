@@ -22,6 +22,7 @@ import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/reposi
 import { TableSlotDbInterface } from "../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
 import { cancelBookingAndUpdateWallet } from "../app/use-cases/user/Booking/cancellation";
+import { createPreOrderForBooking } from "../app/use-cases/user/Booking/preorderFood";
 
 const bookingController = (
   reservationServiceInterface: ReservationServiceInterface,
@@ -207,12 +208,34 @@ const bookingController = (
     }
   };
 
+  /*
+   * * METHOD :PATCH
+   * * Update preorder
+   */
+  const updatePreOrderedFood = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { bookingId, cartItems } = req.body;
+      await createPreOrderForBooking(bookingId, cartItems, dbBookingRepository);
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Preorder placed successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     reserveTable,
     updatePaymentStatus,
     getAllbookings,
     cancelBooking,
     getBookingDetails,
+    updatePreOrderedFood,
   };
 };
 

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import { BookingInterface } from "../../types/BookingInterface";
-import { statusTextColor, timeAgo } from "../../utils/util";
+import { BookingInterface } from "../../../types/BookingInterface";
+import { statusTextColor, timeAgo } from "../../../utils/util";
 import { Calendar, Users } from "lucide-react";
 
 const BookingHistoryList: React.FC<BookingInterface> = ({

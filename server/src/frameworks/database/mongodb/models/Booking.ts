@@ -48,6 +48,10 @@ const bookingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    foodStatus: {
+      type: String,
+      enum: ["Accepted", "Preparing", "Ready", "Served", "Delayed"],
+    },
     adminPayment: Number,
   },
   { timestamps: true }

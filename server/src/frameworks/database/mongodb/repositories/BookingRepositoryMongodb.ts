@@ -1,5 +1,7 @@
 import { BookingEntityType } from "../../../../entities/bookingEntity";
+import { CartItemInterface } from "../../../../types/BookingInterface";
 import Booking from "../models/Booking";
+import Preorder from "../models/Preorder";
 
 export const bookingRepositoryMongodb = () => {
   const createBooking = async (reservationData: BookingEntityType) =>
@@ -86,6 +88,14 @@ export const bookingRepositoryMongodb = () => {
     return result[0].totalProfit;
   };
 
+  const createPreorderedFood = async (
+    bookingId: string,
+    predorderData: CartItemInterface
+  ) => {
+    const { _id, price, quantity } = predorderData;
+    return await Preorder.create({ bookingId, itemId: _id, price, quantity });
+  };
+
   return {
     createBooking,
     getBookingById,
@@ -95,6 +105,7 @@ export const bookingRepositoryMongodb = () => {
     countBookings,
     paginatedBookings,
     totalAdminPayment,
+    createPreorderedFood,
   };
 };
 export type BookingRepositoryMongodbType = typeof bookingRepositoryMongodb;

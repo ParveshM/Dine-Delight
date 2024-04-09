@@ -39,17 +39,19 @@ const ViewTable = lazy(
   () => import("../pages/restaurant/Tables/viewTableSlots")
 );
 const SingleRestaurant = lazy(() => import("../pages/user/SingleRestaurant"));
-const BookTable = lazy(() => import("../pages/user/BookTable"));
+const BookTable = lazy(() => import("../pages/user/Booking/BookTable"));
 const PaymentCompleted = lazy(
   () => import("../pages/user/payment/PaymentCompleted")
 );
-const BookingHistory = lazy(() => import("../pages/user/BookingHistory"));
+const BookingHistory = lazy(
+  () => import("../pages/user/Booking/BookingHistory")
+);
 const Reservations = lazy(() => import("../pages/restaurant/Reservations"));
 const ViewReservation = lazy(
   () => import("../pages/restaurant/viewReservation")
 );
 const Menu = lazy(() => import("../pages/restaurant/Menu"));
-const ViewBooking = lazy(() => import("../pages/user/viewBooking"));
+const ViewBooking = lazy(() => import("../pages/user/Booking/viewBooking"));
 const Profile = lazy(() => import("../pages/user/Profile"));
 const TransactionHistory = lazy(
   () => import("../pages/user/TransactionHistory")
@@ -57,6 +59,7 @@ const TransactionHistory = lazy(
 const Chat = lazy(() => import("../pages/user/Chat"));
 const Home = lazy(() => import("../pages/Home"));
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
+const Cart = lazy(() => import("../pages/user/Booking/Cart"));
 
 export const MainRouter = () => {
   return (
@@ -93,9 +96,10 @@ export const MainRouter = () => {
               element={<AccountPage children={<BookingHistory />} />}
             />
             <Route
-              path="booking/view/:id"
+              path="/booking/view/:id"
               element={<AccountPage children={<ViewBooking />} />}
             />
+            <Route path="/cart/:id" element={<Cart />} />
             <Route
               path="/transaction_history"
               element={<AccountPage children={<TransactionHistory />} />}
