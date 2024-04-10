@@ -22,6 +22,7 @@ import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/reposi
 import { TableSlotDbInterface } from "../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
 import { cancelBookingAndUpdateWallet } from "../app/use-cases/user/Booking/cancellation";
+import { createPreOrderForBooking } from "../app/use-cases/user/Booking/preorderFood";
 
 const bookingController = (
   reservationServiceInterface: ReservationServiceInterface,
@@ -154,12 +155,12 @@ const bookingController = (
     try {
       const { bookingID } = req.params;
       const userID = req.user;
-      const bookingDetails = await getBookingByBookingId(
+      const { bookingDetails, preOrder } = await getBookingByBookingId(
         bookingID,
         dbBookingRepository
       );
       let reviews = null;
-      if (bookingDetails?.restaurantId) {
+      if (bookingDetails?.restaurantId && userID) {
         reviews = await getReviewsByUserId(
           userID,
           bookingDetails.restaurantId,
@@ -171,6 +172,7 @@ const bookingController = (
         message: "Bookings details fetched successfully",
         bookingDetails,
         reviews,
+        preOrder,
       });
     } catch (error) {
       next(error);
@@ -207,12 +209,34 @@ const bookingController = (
     }
   };
 
+  /*
+   * * METHOD :PATCH
+   * * Update preorder
+   */
+  const updatePreOrderedFood = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { bookingId, cartItems } = req.body;
+      await createPreOrderForBooking(bookingId, cartItems, dbBookingRepository);
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Preorder placed successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     reserveTable,
     updatePaymentStatus,
     getAllbookings,
     cancelBooking,
     getBookingDetails,
+    updatePreOrderedFood,
   };
 };
 

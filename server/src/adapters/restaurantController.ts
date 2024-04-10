@@ -189,7 +189,7 @@ const restaurantController = (
 
   /*
    * METHOD: GET
-   * Retriving all the reservations to the restaurant
+   * view booking details
    */
   const getReservationbybookingId = async (
     req: Request,
@@ -198,7 +198,7 @@ const restaurantController = (
   ) => {
     try {
       const { bookingID } = req.params;
-      const bookingDetails = await getBookingByBookingId(
+      const { bookingDetails, preOrder } = await getBookingByBookingId(
         bookingID,
         bookingRepository
       );
@@ -206,6 +206,7 @@ const restaurantController = (
         success: true,
         message: "bookingDetails fetched successfully",
         bookingDetails,
+        preOrder,
       });
     } catch (error) {
       next(error);
@@ -222,11 +223,12 @@ const restaurantController = (
     next: NextFunction
   ) => {
     try {
-      const { bookingStatus, userID } = req.body;
+      const { bookingStatus, userID, foodStatus } = req.body;
       const { bookingID } = req.params;
       const upda = await updateReservationData(
         bookingID,
         bookingStatus,
+        foodStatus,
         userID,
         bookingRepository,
         userRepository

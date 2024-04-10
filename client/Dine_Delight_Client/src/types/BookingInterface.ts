@@ -32,6 +32,7 @@ export interface BookingInterface {
     | "Checked-in"
     | "No-show"
     | "Completed";
+  foodStatus?: "Accepted" | "Preparing" | "Ready" | "Served" | "Delayed";
   gstAmount: number;
   totalAmount: number;
   createdAt: Date;

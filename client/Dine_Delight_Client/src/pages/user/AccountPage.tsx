@@ -5,7 +5,7 @@ import { useState } from "react";
 import { PanelRightClose } from "lucide-react";
 
 const AccountPage: React.FC<childrenProps> = ({ children }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   return (
     <>
       <Navbar />
@@ -15,9 +15,9 @@ const AccountPage: React.FC<childrenProps> = ({ children }) => {
           setIsSidebarOpen={setIsSidebarOpen}
         />
 
-        <div className="relative p-4 mt-10 sm:mt-20 sm:ml-64">
+        <div className="relative p-4 mt-24  sm:ml-64">
           <PanelRightClose
-            className="absolute top-10 md:hidden left-1 focus:outline-none cursor-pointer"
+            className="absolute top-10 -mt-12 md:hidden left-1 focus:outline-none cursor-pointer"
             onClick={() => setIsSidebarOpen(true)}
           />
 

@@ -36,7 +36,6 @@ const Menu: React.FC = () => {
   const observer = useRef<IntersectionObserver>();
   const lastMenuItem = useCallback(
     (node: HTMLDivElement | null) => {
-      console.log(node);
       if (isLoading || isLoadingMore) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {

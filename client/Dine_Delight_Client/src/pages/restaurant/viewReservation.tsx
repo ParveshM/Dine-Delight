@@ -4,18 +4,21 @@ import { RiRefund2Line } from "react-icons/ri";
 import Button from "../../components/restaurant/Button";
 import { Calendar, ChevronDown, Users } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import axiosJWT from "../../utils/axiosService";
-import { RESTAURANT_API } from "../../constants";
+import { RESTAURANT_API, cookingStatuses } from "../../constants";
 import { BookingInterface } from "../../types/BookingInterface";
 import { MdOutlineTableBar } from "react-icons/md";
 import showToast from "../../utils/toaster";
 import ViewReservationShimmer from "../../components/shimmers/viewReservationsShimmer";
+import { PreorderInterface } from "../../types/RestaurantInterface";
 
 const ViewReservation: React.FC = () => {
   const { id } = useParams();
   const [booking, setBooking] = useState<BookingInterface | null>(null);
+  const [preOrder, setPreOrder] = useState<PreorderInterface[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("Pending");
+  const [cookingStatus, setCookingStatus] = useState<string>("Accepted");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
@@ -23,9 +26,12 @@ const ViewReservation: React.FC = () => {
     axiosJWT
       .get(RESTAURANT_API + `/bookings/${id}`)
       .then(({ data }) => {
-        setBooking(data.bookingDetails);
+        const { bookingDetails, preOrder } = data;
+        setBooking(bookingDetails);
+        setPreOrder(preOrder);
         setIsLoading(false);
-        setSelectedStatus(data.bookingDetails.bookingStatus);
+        setSelectedStatus(bookingDetails.bookingStatus);
+        setCookingStatus(bookingDetails.foodStatus);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -36,6 +42,7 @@ const ViewReservation: React.FC = () => {
       .patch(RESTAURANT_API + `/booking/edit/${id}`, {
         bookingStatus: selectedStatus,
         userID: booking?.userId._id,
+        foodStatus: cookingStatus,
       })
       .then(({ data }) => {
         showToast(data.message);
@@ -46,6 +53,15 @@ const ViewReservation: React.FC = () => {
         navigate("/restaurant/reservations");
       });
   };
+
+  const preOrderTotal = useMemo(() => {
+    if (preOrder && preOrder.length) {
+      return preOrder.reduce((acc, curr) => {
+        return (acc += curr.price);
+      }, 0);
+    }
+  }, [preOrder]);
+
   return (
     <div className="flex flex-col items-center justify-center w-full  dark:bg-gray-900">
       <div className="w-full max-w-2xl">
@@ -67,11 +83,11 @@ const ViewReservation: React.FC = () => {
                     <div className="space-y-2">
                       <div className="">
                         <p className="text-sm font-semibold">Name:</p>
-                        <p className="text-sm">{booking?.userId.name}</p>
+                        <p className="text-sm">{booking?.userId?.name}</p>
                       </div>
                       <div className="">
                         <p className="text-sm font-semibold">Email:</p>
-                        <p className="text-sm">{booking?.userId.email}</p>
+                        <p className="text-sm">{booking?.userId?.email}</p>
                       </div>
                       <div className=" flex items-center gap-2">
                         <p className="text-2xl">
@@ -177,6 +193,62 @@ const ViewReservation: React.FC = () => {
                     </div>
                   )}
                 </div>
+                {/* preOrders */}
+                {booking?.foodStatus && (
+                  <div className="bg-white dark:bg-gray-800 -mt-10 p-6 ">
+                    <h3 className="text-lg font-semibold mb-4">Pre Orders</h3>
+                    {isLoading ? (
+                      <ViewReservationShimmer />
+                    ) : (
+                      <ul className="flex flex-col  whitespace-nowrap">
+                        {preOrder.map((item) => (
+                          <li
+                            key={item._id}
+                            className="w-full flex items-center gap-2  bg-white rounded-md"
+                          >
+                            <p className="text-sm font-medium text-gray-900 w-36">
+                              {item.itemId.name}
+                            </p>
+                            <span className="px-2 text-gray-800 font-semibold">
+                              x {item.quantity}
+                            </span>
+                            <p className="text-sm text-gray-900 ">
+                              ₹ {item.price * item.quantity}
+                            </p>
+                          </li>
+                        ))}
+                        <p className="self-end font-semibold text-lg my-3">
+                          Total: ₹ {preOrderTotal}
+                        </p>
+                        <div className="flex items-center">
+                          <p className="text-sm font-semibold mr-2">
+                            Cooking Status:
+                          </p>
+                          <div className="relative">
+                            <select
+                              className="block appearance-none bg-white border border-gray-300 text-sm py-1 px-2 pr-8 rounded-md focus:outline-none focus:border-blue-500"
+                              value={cookingStatus}
+                              onChange={(e) => setCookingStatus(e.target.value)}
+                            >
+                              {booking?.foodStatus === "Served" ? (
+                                <option value="Served">Served</option>
+                              ) : (
+                                <>
+                                  {cookingStatuses.map((status) => (
+                                    <option value={status}>{status}</option>
+                                  ))}
+                                </>
+                              )}
+                            </select>
+                            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                              <ChevronDown />
+                            </div>
+                          </div>
+                        </div>
+                      </ul>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             <div className="p-2  flex justify-end border-t ">

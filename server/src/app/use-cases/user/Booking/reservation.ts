@@ -153,7 +153,9 @@ export const getBookingByBookingId = async (
   bookingID: string,
   bookingRepository: ReturnType<BookingDbRepositoryInterface>
 ) => {
-  return await bookingRepository.getBookingById(bookingID);
+  const bookingDetails = await bookingRepository.getBookingById(bookingID);
+  const preOrder = await bookingRepository.getPreoOrderbyBookingId(bookingID);
+  return { bookingDetails, preOrder };
 };
 
 export const getReviewsByUserId = async (

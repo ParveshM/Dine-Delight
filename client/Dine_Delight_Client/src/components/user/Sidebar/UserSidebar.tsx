@@ -15,7 +15,10 @@ const UserSidebar: React.FC<UserSidbarProps> = ({
   const [activeItem, setActiveItem] = useState<number | null>(null);
   const navigate = useNavigate();
 
-  const handleItemClick = (index: number) => setActiveItem(index);
+  const handleItemClick = (index: number) => {
+    setActiveItem(index);
+    setIsSidebarOpen(false);
+  };
   const handleLogout = () => {
     logout("Logged out successfully");
     navigate("/");

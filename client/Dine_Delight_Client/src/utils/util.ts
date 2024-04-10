@@ -73,3 +73,34 @@ export function calculateTotalAmount(
 
   return parseInt(totalAmount);
 }
+
+export const getStatusColor = (status: string) => {
+  let color, width;
+  switch (status) {
+    case "Accepted":
+      color = "green";
+      width = "20%";
+      break;
+    case "Preparing":
+      color = "orange";
+      width = "40%";
+      break;
+    case "Ready":
+      color = "blue";
+      width = "60%";
+      break;
+    case "Served":
+      color = "indigo";
+      width = "100%";
+      break;
+    case "Delayed":
+      color = "red";
+      width = "40%";
+      break;
+    default:
+      color = "gray";
+      width = "0%";
+  }
+
+  return { color, width };
+};

@@ -1,28 +1,40 @@
 import { useNavigate, useParams } from "react-router-dom";
-import Button from "../../components/restaurant/Button";
+import Button from "../../../components/restaurant/Button";
 import { useEffect, useMemo, useState } from "react";
-import axiosJWT from "../../utils/axiosService";
-import { CHAT_API, USER_API } from "../../constants";
-import showToast from "../../utils/toaster";
-import { BookingInterface } from "../../types/BookingInterface";
-import { Building, Calendar, Clock, Hash, Users } from "lucide-react";
+import axiosJWT from "../../../utils/axiosService";
+import { CHAT_API, USER_API } from "../../../constants";
+import showToast from "../../../utils/toaster";
+import { BookingInterface } from "../../../types/BookingInterface";
+import {
+  Building,
+  Calendar,
+  Clock,
+  CookingPot,
+  Hash,
+  Users,
+} from "lucide-react";
 import { MdOutlineTableBar } from "react-icons/md";
 import { MdOutlinePayment } from "react-icons/md";
 import { FaCircleCheck } from "react-icons/fa6";
 import { TbCircleXFilled } from "react-icons/tb";
 import { RiRefund2Line } from "react-icons/ri";
-import { statusTextColor } from "../../utils/util";
-import ConfirmationModal from "../../components/user/Modals/ConfirmationModal";
-import Review from "../../components/user/Review/Review";
-import { ReviewInterface } from "../../types/RestaurantInterface";
-import { useAppSelector } from "../../redux/store/Store";
+import { statusTextColor } from "../../../utils/util";
+import ConfirmationModal from "../../../components/user/Modals/ConfirmationModal";
+import Review from "../../../components/user/Review/Review";
+import {
+  PreorderInterface,
+  ReviewInterface,
+} from "../../../types/RestaurantInterface";
+import { useAppSelector } from "../../../redux/store/Store";
 import axios from "axios";
+import ProgerssBar from "../../../components/user/Booking/ProgerssBar";
 
 const ViewBooking: React.FC = () => {
   const { id } = useParams();
   const [booking, setBooking] = useState<BookingInterface | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [reviews, setReviews] = useState<ReviewInterface[] | null>(null);
+  const [preOrder, setPreOrder] = useState<PreorderInterface[]>([]);
   const user = useAppSelector((state) => state.UserSlice);
   const navigate = useNavigate();
 
@@ -30,8 +42,10 @@ const ViewBooking: React.FC = () => {
     axiosJWT
       .get(USER_API + `/bookings/${id}`)
       .then(({ data }) => {
-        setBooking(data.bookingDetails);
-        setReviews(data.reviews);
+        const { bookingDetails, reviews, preOrder } = data;
+        setBooking(bookingDetails);
+        setReviews(reviews);
+        setPreOrder(preOrder);
       })
       .catch(() => showToast("Oops! Something went wrong", "error"));
   }, []);
@@ -75,10 +89,23 @@ const ViewBooking: React.FC = () => {
       return review ? true : false;
     }
   }, [reviews, booking]);
+  const preOrderTotal = useMemo(() => {
+    if (preOrder && preOrder.length) {
+      return preOrder.reduce((acc, curr) => {
+        return (acc += curr.price);
+      }, 0);
+    }
+  }, [preOrder]);
+  const bookingstatus: string[] = [
+    "Cancelled",
+    "Checked-in",
+    "No-show",
+    "Completed",
+  ];
 
   return (
     <>
-      <div className="container mx-auto px-4 py-2 border rounded-lg shadow-md">
+      <div className="container mx-auto px-4 py-2 border rounded-lg shadow-md   mt:10 sm:mt-0">
         <h1 className="text-center mb-4 text-2xl font-semibold">
           Booking Details
         </h1>
@@ -164,20 +191,64 @@ const ViewBooking: React.FC = () => {
               <p className="text-base">₹{booking?.totalAmount}</p>
             </div>
           </div>
+
+          {/* pre order  */}
+          {booking?.foodStatus && (
+            <div className="col-span-6 space-y-3">
+              <h1 className="text-xl font-semibold  border-b">Pre orders</h1>
+              <ul className="grid grid-rows-4  whitespace-nowrap">
+                {preOrder.map((item) => (
+                  <li
+                    key={item._id}
+                    className="w-full flex items-center gap-2  bg-white rounded-md"
+                  >
+                    <p className="text-sm font-medium text-gray-900 w-36">
+                      {item.itemId.name}
+                    </p>
+                    <span className="px-2 text-gray-800 font-semibold">
+                      x {item.quantity}
+                    </span>
+                    <p className="text-sm text-gray-900 ">
+                      ₹ {item.price * item.quantity}
+                    </p>
+                  </li>
+                ))}
+                <p className="font-semibold text-lg">
+                  Total: ₹ {preOrderTotal}
+                </p>
+              </ul>
+              <ProgerssBar cookingStatus={booking.foodStatus} />
+            </div>
+          )}
         </div>
+
         <div className="flex flex-col gap-2 md:flex-row items-center justify-center mt-8">
           <Button
             label={`Chat with ${booking?.restaurantId?.restaurantName}`}
             className="block  bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"
             handleButtonclick={handleChat}
           />
-          {booking?.bookingStatus && booking?.bookingStatus === "Confirmed" && (
-            <Button
-              label="Cancel Booking"
-              className="block  bg-red-400 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"
-              handleButtonclick={() => setIsOpen(true)}
-            />
-          )}
+          {booking?.bookingStatus &&
+            !bookingstatus.includes(booking?.bookingStatus ?? "") &&
+            !booking?.foodStatus && (
+              <button
+                className="bg-teal-400 hover:bg-teal-500  inline-flex gap-1 items-center
+              text-white font-semibold py-2 px-4 rounded-lg 
+              "
+                onClick={() => navigate(`/cart/${id}`)}
+              >
+                Have something on mind ? <CookingPot className="h-4 w-4" />
+              </button>
+            )}
+          {booking?.bookingStatus &&
+            booking?.bookingStatus === "Confirmed" &&
+            !booking.foodStatus && (
+              <Button
+                label="Cancel Booking"
+                className="block  bg-red-400 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"
+                handleButtonclick={() => setIsOpen(true)}
+              />
+            )}
         </div>
       </div>
       {isOpen && (

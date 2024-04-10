@@ -1,16 +1,15 @@
-import { useAppDispatch, useAppSelector } from "../../redux/store/Store";
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../redux/store/Store";
+import React, { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { clearTableSlot } from "../../redux/slices/BookingSlice";
-import { USER_API } from "../../constants";
+import { clearTableSlot } from "../../../redux/slices/BookingSlice";
+import { USER_API } from "../../../constants";
 import axios from "axios";
-import Navbar from "../../components/user/Header/Navbar";
+import Navbar from "../../../components/user/Header/Navbar";
 import { CalendarCheck2, Clock, Users } from "lucide-react";
-import axiosJWT from "../../utils/axiosService";
+import axiosJWT from "../../../utils/axiosService";
 import { loadStripe } from "@stripe/stripe-js";
-import { UserWalletInterface } from "../../types/UserInterface";
-import { calculateTotalAmount } from "../../utils/util";
-import RestaurantData from "../../components/Admin/restaurantData";
+import { UserWalletInterface } from "../../../types/UserInterface";
+import { calculateTotalAmount } from "../../../utils/util";
 
 interface RestaurantTableInterface {
   _id: string;
@@ -45,7 +44,6 @@ const BookTable: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("useEffect");
     if (hasPageBeenRendered.current) {
       axios
         .get(USER_API + `/tables/${tableSlot.tableId}?userId=${id}`)
@@ -153,8 +151,8 @@ const BookTable: React.FC = () => {
           <div className="bg-white  ">
             <h3 className="text-lg font-semibold ">Total Charges</h3>
             <p className="">
-              <span className="font-semibold">Price Per Slot:</span> ₹
-              {tableData?.restaurantId?.tableRatePerPerson} per person
+              <span className="font-semibold">Price Per person:</span> ₹
+              {tableData?.restaurantId?.tableRatePerPerson}
             </p>
             <p className="">
               <span className="font-semibold">GST (18%):</span> ₹
@@ -174,6 +172,7 @@ const BookTable: React.FC = () => {
                   (tableData?.restaurantId?.tableRatePerPerson ?? 0)
               ).toFixed(2)}
             </p>
+            <p className="font-semibold">Wallet :{wallet?.balance}</p>
 
             <div className="p-2">
               <label

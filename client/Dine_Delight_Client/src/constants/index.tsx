@@ -105,3 +105,11 @@ export const menuCategories = [
   "drinks",
   "dessert",
 ] as const;
+
+export const cookingStatuses: string[] = [
+  "Accepted",
+  "Preparing",
+  "Ready",
+  "Served",
+  "Delayed",
+];

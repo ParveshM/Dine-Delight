@@ -48,3 +48,9 @@ export interface BookingInterface {
   totalAmount: number;
   createdAt: Date;
 }
+export interface CartItemInterface {
+  _id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}

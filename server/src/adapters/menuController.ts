@@ -8,12 +8,20 @@ import {
   updateMenuItem,
 } from "../app/use-cases/restaurant/menu/update&delete";
 import { getMenuByRestaurant } from "../app/use-cases/restaurant/menu/read";
+import { BookingDbRepositoryInterface } from "../app/interfaces/bookingDbRepository";
+import { BookingRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/BookingRepositoryMongodb";
 
 const menuController = (
   menuDbRepository: MenuDbRepositoryInterface,
-  menuDbRepositoryImpl: MenuRepositoryMongodbType
+  menuDbRepositoryImpl: MenuRepositoryMongodbType,
+  bookingDbRepository?: BookingDbRepositoryInterface,
+  bookingDbRepositoryImpl?: BookingRepositoryMongodbType
 ) => {
   const menuRepository = menuDbRepository(menuDbRepositoryImpl());
+  let bookingRepository =
+    bookingDbRepository &&
+    bookingDbRepositoryImpl &&
+    bookingDbRepository(bookingDbRepositoryImpl());
 
   /*
    * METHOD:POST
@@ -90,11 +98,18 @@ const menuController = (
    */
   const getMenu = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const restaurantId = req.seller;
+      let restaurantId = req.seller;
       const page = parseInt(req.query.page as string, 10) || 1;
       const q = req.query.q as string;
       const isVegetarian = req.query.isVegetarian;
       const category = req.query.category;
+
+      if (req.params.bookingID) {
+        const booking = await bookingRepository?.getBookingById(
+          req.params.bookingID
+        );
+        restaurantId = booking?.restaurantId;
+      }
 
       const filters: Record<string, any> = {
         restaurantId,
