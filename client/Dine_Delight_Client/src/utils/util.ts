@@ -82,7 +82,7 @@ export const getStatusColor = (status: string) => {
       width = "20%";
       break;
     case "Preparing":
-      color = "yellow";
+      color = "orange";
       width = "40%";
       break;
     case "Ready":
@@ -90,16 +90,17 @@ export const getStatusColor = (status: string) => {
       width = "60%";
       break;
     case "Served":
-      color = "purple";
-      width = "80%";
+      color = "indigo";
+      width = "100%";
       break;
     case "Delayed":
       color = "red";
-      width = "100%";
+      width = "40%";
       break;
     default:
       color = "gray";
       width = "0%";
   }
+
   return { color, width };
 };

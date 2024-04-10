@@ -9,7 +9,7 @@ import CartSidebar from "../../../components/user/Booking/CartSidebar";
 import { IoIosCart } from "react-icons/io";
 import { useAppSelector } from "../../../redux/store/Store";
 
-const Cart = () => {
+const Cart: React.FC = () => {
   const {
     booking,
     menuItems,

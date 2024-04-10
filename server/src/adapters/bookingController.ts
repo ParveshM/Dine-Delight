@@ -160,7 +160,7 @@ const bookingController = (
         dbBookingRepository
       );
       let reviews = null;
-      if (bookingDetails?.restaurantId) {
+      if (bookingDetails?.restaurantId && userID) {
         reviews = await getReviewsByUserId(
           userID,
           bookingDetails.restaurantId,

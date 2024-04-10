@@ -17,6 +17,7 @@ export const getRestaurantReservations = async (
 export const updateReservationData = async (
   bookingID: string,
   status: string,
+  newFoodStatus: string,
   userID: string,
   bookingRepository: ReturnType<BookingDbRepositoryInterface>,
   userRepository: ReturnType<UserDbInterface>
@@ -31,6 +32,7 @@ export const updateReservationData = async (
     bookingID,
     {
       bookingStatus: status,
+      foodStatus: newFoodStatus,
     }
   );
   if (bookingDetails && status === "Completed") {

@@ -20,7 +20,7 @@ const ProgerssBar: React.FC<{ cookingStatus: string }> = ({
       <div className="max-w-2xl bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
         <div
           className={`bg-${color}-600 h-2.5 rounded-full`}
-          style={{ width }}
+          style={{ width, backgroundColor: color }}
         ></div>
       </div>
     </div>

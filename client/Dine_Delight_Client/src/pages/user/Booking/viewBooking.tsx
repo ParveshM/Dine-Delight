@@ -22,7 +22,6 @@ import { statusTextColor } from "../../../utils/util";
 import ConfirmationModal from "../../../components/user/Modals/ConfirmationModal";
 import Review from "../../../components/user/Review/Review";
 import {
-  MenuItemInterface,
   PreorderInterface,
   ReviewInterface,
 } from "../../../types/RestaurantInterface";
@@ -90,6 +89,13 @@ const ViewBooking: React.FC = () => {
       return review ? true : false;
     }
   }, [reviews, booking]);
+  const preOrderTotal = useMemo(() => {
+    if (preOrder && preOrder.length) {
+      return preOrder.reduce((acc, curr) => {
+        return (acc += curr.price);
+      }, 0);
+    }
+  }, [preOrder]);
   const bookingstatus: string[] = [
     "Cancelled",
     "Checked-in",
@@ -207,7 +213,9 @@ const ViewBooking: React.FC = () => {
                     </p>
                   </li>
                 ))}
-                <p className="font-semibold text-lg">Total: ₹100</p>
+                <p className="font-semibold text-lg">
+                  Total: ₹ {preOrderTotal}
+                </p>
               </ul>
               <ProgerssBar cookingStatus={booking.foodStatus} />
             </div>
