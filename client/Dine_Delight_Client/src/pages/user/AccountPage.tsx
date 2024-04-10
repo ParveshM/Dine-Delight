@@ -5,7 +5,7 @@ import { useState } from "react";
 import { PanelRightClose } from "lucide-react";
 
 const AccountPage: React.FC<childrenProps> = ({ children }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   return (
     <>
       <Navbar />

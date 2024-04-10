@@ -33,6 +33,9 @@ export const bookingDbRepository = (
     preOrderData: CartItemInterface
   ) => await repository.createPreorderedFood(bookingId, preOrderData);
 
+  const getPreoOrderbyBookingId = async (bookingId: string) =>
+    await repository.getPreOrder(bookingId);
+
   return {
     createBooking,
     getBookingById,
@@ -42,6 +45,7 @@ export const bookingDbRepository = (
     countBookings,
     calculateProfit,
     createPreOrder,
+    getPreoOrderbyBookingId,
   };
 };
 export type BookingDbRepositoryInterface = typeof bookingDbRepository;

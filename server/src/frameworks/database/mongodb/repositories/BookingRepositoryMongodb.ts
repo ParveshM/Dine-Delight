@@ -96,6 +96,9 @@ export const bookingRepositoryMongodb = () => {
     return await Preorder.create({ bookingId, itemId: _id, price, quantity });
   };
 
+  const getPreOrder = async (bookingId: string) =>
+    await Preorder.find({ bookingId }).populate("itemId");
+
   return {
     createBooking,
     getBookingById,
@@ -106,6 +109,7 @@ export const bookingRepositoryMongodb = () => {
     paginatedBookings,
     totalAdminPayment,
     createPreorderedFood,
+    getPreOrder,
   };
 };
 export type BookingRepositoryMongodbType = typeof bookingRepositoryMongodb;

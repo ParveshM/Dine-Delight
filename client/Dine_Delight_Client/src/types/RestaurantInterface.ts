@@ -72,3 +72,11 @@ export interface MenuItemInterface {
   restaurantId: string;
 }
 export type MenuCategory = "starters" | "main course" | "drinks" | "dessert";
+
+export interface PreorderInterface {
+  _id: string;
+  bookingId: string;
+  itemId: MenuItemInterface;
+  quantity: number;
+  price: number;
+}

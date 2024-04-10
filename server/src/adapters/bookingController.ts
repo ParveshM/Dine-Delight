@@ -155,7 +155,7 @@ const bookingController = (
     try {
       const { bookingID } = req.params;
       const userID = req.user;
-      const bookingDetails = await getBookingByBookingId(
+      const { bookingDetails, preOrder } = await getBookingByBookingId(
         bookingID,
         dbBookingRepository
       );
@@ -172,6 +172,7 @@ const bookingController = (
         message: "Bookings details fetched successfully",
         bookingDetails,
         reviews,
+        preOrder,
       });
     } catch (error) {
       next(error);

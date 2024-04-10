@@ -21,15 +21,21 @@ import { RiRefund2Line } from "react-icons/ri";
 import { statusTextColor } from "../../../utils/util";
 import ConfirmationModal from "../../../components/user/Modals/ConfirmationModal";
 import Review from "../../../components/user/Review/Review";
-import { ReviewInterface } from "../../../types/RestaurantInterface";
+import {
+  MenuItemInterface,
+  PreorderInterface,
+  ReviewInterface,
+} from "../../../types/RestaurantInterface";
 import { useAppSelector } from "../../../redux/store/Store";
 import axios from "axios";
+import ProgerssBar from "../../../components/user/Booking/ProgerssBar";
 
 const ViewBooking: React.FC = () => {
   const { id } = useParams();
   const [booking, setBooking] = useState<BookingInterface | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [reviews, setReviews] = useState<ReviewInterface[] | null>(null);
+  const [preOrder, setPreOrder] = useState<PreorderInterface[]>([]);
   const user = useAppSelector((state) => state.UserSlice);
   const navigate = useNavigate();
 
@@ -37,8 +43,10 @@ const ViewBooking: React.FC = () => {
     axiosJWT
       .get(USER_API + `/bookings/${id}`)
       .then(({ data }) => {
-        setBooking(data.bookingDetails);
-        setReviews(data.reviews);
+        const { bookingDetails, reviews, preOrder } = data;
+        setBooking(bookingDetails);
+        setReviews(reviews);
+        setPreOrder(preOrder);
       })
       .catch(() => showToast("Oops! Something went wrong", "error"));
   }, []);
@@ -91,7 +99,7 @@ const ViewBooking: React.FC = () => {
 
   return (
     <>
-      <div className="container mx-auto px-4 py-2 border rounded-lg shadow-md mt-10 md:mt-0">
+      <div className="container mx-auto px-4 py-2 border rounded-lg shadow-md   mt:10 sm:mt-0">
         <h1 className="text-center mb-4 text-2xl font-semibold">
           Booking Details
         </h1>
@@ -177,7 +185,35 @@ const ViewBooking: React.FC = () => {
               <p className="text-base">₹{booking?.totalAmount}</p>
             </div>
           </div>
+
+          {/* pre order  */}
+          {booking?.foodStatus && (
+            <div className="col-span-6 space-y-3">
+              <h1 className="text-xl font-semibold  border-b">Pre orders</h1>
+              <ul className="grid grid-rows-4  whitespace-nowrap">
+                {preOrder.map((item) => (
+                  <li
+                    key={item._id}
+                    className="w-full flex items-center gap-2  bg-white rounded-md"
+                  >
+                    <p className="text-sm font-medium text-gray-900 w-36">
+                      {item.itemId.name}
+                    </p>
+                    <span className="px-2 text-gray-800 font-semibold">
+                      x {item.quantity}
+                    </span>
+                    <p className="text-sm text-gray-900 ">
+                      ₹ {item.price * item.quantity}
+                    </p>
+                  </li>
+                ))}
+                <p className="font-semibold text-lg">Total: ₹100</p>
+              </ul>
+              <ProgerssBar cookingStatus={booking.foodStatus} />
+            </div>
+          )}
         </div>
+
         <div className="flex flex-col gap-2 md:flex-row items-center justify-center mt-8">
           <Button
             label={`Chat with ${booking?.restaurantId?.restaurantName}`}
