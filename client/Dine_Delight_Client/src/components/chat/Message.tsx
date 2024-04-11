@@ -1,7 +1,13 @@
 import { MessageInterface } from "../../types/ChatInterface";
 import { convertTimeFormat } from "../../utils/timeConverter";
+import LoadingAnimation from "../user/LoadingAnimation";
 
-const Message: React.FC<MessageInterface> = ({ createdAt, text, own }) => {
+const Message: React.FC<MessageInterface> = ({
+  createdAt,
+  text,
+  own,
+  isTyping,
+}) => {
   let time = new Date(createdAt).getHours().toString();
   time += `: ${new Date(createdAt).getMinutes()}`;
   return (
@@ -19,9 +25,13 @@ const Message: React.FC<MessageInterface> = ({ createdAt, text, own }) => {
               : "bg-gray-100 rounded-e-xl rounded-es-xl"
           }  dark:bg-gray-700 break-words  `}
         >
-          <p className="text-sm font-normal text-gray-900 dark:text-white">
-            {text}
-          </p>
+          {isTyping ? (
+            <LoadingAnimation className="flex " />
+          ) : (
+            <p className="text-sm font-normal text-gray-900 dark:text-white">
+              {text}
+            </p>
+          )}
         </div>
         <span
           className={`text-sm text-end font-normal text-gray-500 dark:text-gray-400`}

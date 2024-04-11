@@ -10,4 +10,5 @@ export interface MessageInterface {
   text: string;
   createdAt: Date;
   own?: boolean;
+  isTyping?: boolean;
 }

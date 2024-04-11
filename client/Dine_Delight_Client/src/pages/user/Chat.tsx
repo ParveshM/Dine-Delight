@@ -7,7 +7,6 @@ import useChats from "../../hooks/useChats";
 import ChatSidebar from "../../components/chat/ChatSidebar";
 import { ChevronLeft, PanelRightClose, PanelRightOpen, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { chatBackground } from "../../assets/images";
 
 const Chat: React.FC = () => {
   const {
@@ -15,12 +14,14 @@ const Chat: React.FC = () => {
     chats,
     error,
     messages,
+    isTyping,
     scrollRef,
     newMessage,
     currentChat,
     handleChange,
     handleSumbit,
     setCurrentChat,
+    arrivalMessage,
     showChatsidebar,
     setShowChatSidebar,
     handleCurrentChatClick,
@@ -44,13 +45,15 @@ const Chat: React.FC = () => {
             handleCurrentChatClick={handleCurrentChatClick}
           />
         ) : (
-          <div className="md:w-1/4   border rounded-md h-[33rem]">
+          <div className="md:w-1/4   border rounded-md h-[33rem] ">
             <h1 className="text-center font-semibold text-lg">Users</h1>
             <hr className="mt-2" />
-            {chats.map((chat) => (
+            {chats.map((chat, index) => (
               <div onClick={() => setCurrentChat(chat)} key={chat._id}>
                 <Conversation {...chat} userId={user?.id} />
-                {Conversation.length > 1 && <hr className="mt-2" />}
+                {chats.length > 1 && index !== chats.length - 1 && (
+                  <hr className="mt-2" />
+                )}
               </div>
             ))}
           </div>
@@ -107,6 +110,17 @@ const Chat: React.FC = () => {
                           {...message}
                           own={message.senderId === user.id}
                         />
+                        {isTyping &&
+                          index === messages.length - 1 &&
+                          !arrivalMessage && (
+                            <Message
+                              {...message}
+                              own={false}
+                              isTyping={
+                                isTyping && index === messages.length - 1
+                              }
+                            />
+                          )}
                       </div>
                     ))
                   ) : (

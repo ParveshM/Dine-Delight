@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useAppSelector } from "../redux/store/Store";
 import axios from "axios";
 import { CHAT_API, SERVER_URL } from "../constants";
@@ -17,9 +17,10 @@ export default function useChats() {
   const [arrivalMessage, setArrivalMessage] = useState<MessageInterface | null>(
     null
   );
+  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [params] = useSearchParams();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const socket = useRef<Socket>();
-  const [params] = useSearchParams();
 
   useEffect(() => {
     const socketInstance = io(SERVER_URL); //Initialize socket connection on component load
@@ -35,19 +36,25 @@ export default function useChats() {
   }, []);
 
   useEffect(() => {
+    // get the chats by user and restaurant , load the data when user coming from other pages rather than chat page
     const conversationId = params.get("conversation");
-
-    axios
-      .get(CHAT_API + `/conversation/${conversationId}`)
-      .then(({ data }) => setCurrentChat(data))
-      .catch((error) => console.log(error));
+    conversationId &&
+      axios
+        .get(CHAT_API + `/conversation/${conversationId}`)
+        .then(({ data }) => setCurrentChat(data))
+        .catch((error) => console.log(error));
   }, [params]);
 
   useEffect(() => {
     arrivalMessage &&
       currentChat?.members.includes(arrivalMessage.senderId) &&
       setMessages((prev) => [...prev, arrivalMessage]);
+    setArrivalMessage(null);
   }, [arrivalMessage, currentChat]);
+
+  const recieverId = useMemo(() => {
+    return currentChat?.members.find((member) => member !== user.id);
+  }, [currentChat]);
 
   useEffect(() => {
     // emit and take events from server
@@ -57,22 +64,30 @@ export default function useChats() {
         // console.log(users);
       });
       socket.current?.on("getMessage", (data) => {
+        setIsTyping(false);
         setArrivalMessage({
           senderId: data.senderId,
           text: data.text,
           createdAt: new Date(),
         });
       });
+      socket.current?.on("senderTyping", (text) => {
+        text.length ? setIsTyping(true) : setIsTyping(false);
+      });
+      socket.current?.on("disconnect", () => {
+        console.log("socket disconnected");
+      });
     }
   }, []);
 
   // get chat done by user
   useEffect(() => {
-    axios
-      .get(CHAT_API + `/conversations/${user.id}`)
-      .then(({ data }) => setChats(data))
-      .catch((error) => console.log(error));
-  }, [user.id]);
+    user.id &&
+      axios
+        .get(CHAT_API + `/conversations/${user.id}`)
+        .then(({ data }) => setChats(data))
+        .catch((error) => console.log(error));
+  }, []);
 
   // get messages in a chat by user with chat id
   useEffect(() => {
@@ -82,12 +97,23 @@ export default function useChats() {
         .then(({ data }) => setMessages(data))
         .catch((error) => console.log(error));
     setError(null);
+    setIsTyping(false);
   }, [currentChat]);
 
   // scroll to the bottom when the messages are verflowing
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      socket.current?.emit("typing", {
+        recieverId,
+        text: newMessage,
+      });
+    }, 500);
+    return () => clearTimeout(delay);
+  }, [newMessage]);
 
   const handleCurrentChatClick = (chat: ChatInterface) => {
     setCurrentChat(chat);
@@ -101,6 +127,10 @@ export default function useChats() {
     } else {
       setError(null);
     }
+    socket.current?.emit("typing", {
+      recieverId,
+      text: newMessage,
+    });
     setNewMessage(value);
   };
   // handle newMessage submit in input
@@ -111,9 +141,6 @@ export default function useChats() {
       setError(null);
     }
 
-    const recieverId = currentChat?.members.find(
-      (member) => member !== user.id
-    );
     socket.current?.emit("sendMessage", {
       senderId: user.id,
       recieverId,
@@ -136,6 +163,7 @@ export default function useChats() {
     chats,
     error,
     messages,
+    isTyping,
     scrollRef,
     newMessage,
     currentChat,
@@ -143,6 +171,7 @@ export default function useChats() {
     handleSumbit,
     setNewMessage,
     setCurrentChat,
+    arrivalMessage,
     showChatsidebar,
     setShowChatSidebar,
     handleCurrentChatClick,

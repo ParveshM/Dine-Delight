@@ -35,8 +35,15 @@ const socketConfig = (io: Server) => {
       io.to(user?.socketId ?? "").emit("getMessage", { senderId, text });
     });
 
+    // when user is typing
+    socket.on("typing", ({ recieverId, text }) => {
+      const user = getUser(recieverId);
+      io.to(user?.socketId ?? "").emit("senderTyping", text);
+    });
+
     // when disconnection
     socket.on("disconnect", () => {
+      io.to(socket.id ?? "").emit("senderTyping", "");
       removeUser(socket.id);
       console.log("A user has been disconnected");
       io.emit("getUsers", users);
