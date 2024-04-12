@@ -24,6 +24,7 @@ const Chat: React.FC = () => {
     arrivalMessage,
     showChatsidebar,
     setShowChatSidebar,
+    handleTypingStatus,
     handleCurrentChatClick,
   } = useChats();
   const navigate = useNavigate();
@@ -148,6 +149,8 @@ const Chat: React.FC = () => {
                         onKeyDown={(e) => {
                           if (e.key === "Enter") handleSumbit();
                         }}
+                        onBlur={() => handleTypingStatus("blur")}
+                        onFocus={() => handleTypingStatus("focus")}
                       />
                       <button
                         type="submit"

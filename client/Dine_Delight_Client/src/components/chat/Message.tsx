@@ -14,7 +14,7 @@ const Message: React.FC<MessageInterface> = ({
     <div
       className={`flex items-start  ${
         own ? "justify-end" : "justify-start"
-      } gap-2.5`}
+      } gap-2.5  `}
     >
       <div className="flex flex-col gap-1 w-full max-w-[320px]">
         <div className="flex items-center space-x-2 rtl:space-x-reverse"></div>

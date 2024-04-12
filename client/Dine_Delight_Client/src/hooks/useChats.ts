@@ -71,11 +71,9 @@ export default function useChats() {
           createdAt: new Date(),
         });
       });
-      socket.current?.on("senderTyping", (text) => {
-        text.length ? setIsTyping(true) : setIsTyping(false);
-      });
-      socket.current?.on("disconnect", () => {
-        console.log("socket disconnected");
+      socket.current?.on("senderTyping", (isTyping) => {
+        console.log(isTyping);
+        isTyping ? setIsTyping(true) : setIsTyping(false);
       });
     }
   }, []);
@@ -98,22 +96,27 @@ export default function useChats() {
         .catch((error) => console.log(error));
     setError(null);
     setIsTyping(false);
+    setNewMessage("");
   }, [currentChat]);
 
   // scroll to the bottom when the messages are verflowing
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isTyping]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
-      socket.current?.emit("typing", {
-        recieverId,
-        text: newMessage,
-      });
+      newMessage.length ? emitTypingStatus(true) : emitTypingStatus(false);
     }, 500);
     return () => clearTimeout(delay);
   }, [newMessage]);
+
+  const emitTypingStatus = (isTyping: boolean) => {
+    socket.current?.emit("typing", {
+      recieverId,
+      isTyping,
+    });
+  };
 
   const handleCurrentChatClick = (chat: ChatInterface) => {
     setCurrentChat(chat);
@@ -127,19 +130,22 @@ export default function useChats() {
     } else {
       setError(null);
     }
-    socket.current?.emit("typing", {
-      recieverId,
-      text: newMessage,
-    });
     setNewMessage(value);
+  };
+
+  const handleTypingStatus = (action: "focus" | "blur") => {
+    console.log("action", action);
+    action === "focus" ? emitTypingStatus(true) : emitTypingStatus(false);
   };
   // handle newMessage submit in input
   const handleSumbit = () => {
     if (!newMessage.trim().length) {
+      emitTypingStatus(false);
       return setError("Please enter a message");
     } else {
       setError(null);
     }
+    emitTypingStatus(false);
 
     socket.current?.emit("sendMessage", {
       senderId: user.id,
@@ -174,6 +180,7 @@ export default function useChats() {
     arrivalMessage,
     showChatsidebar,
     setShowChatSidebar,
+    handleTypingStatus,
     handleCurrentChatClick,
   };
 }

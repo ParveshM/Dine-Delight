@@ -36,9 +36,9 @@ const socketConfig = (io: Server) => {
     });
 
     // when user is typing
-    socket.on("typing", ({ recieverId, text }) => {
+    socket.on("typing", ({ recieverId, isTyping }) => {
       const user = getUser(recieverId);
-      io.to(user?.socketId ?? "").emit("senderTyping", text);
+      io.to(user?.socketId ?? "").emit("senderTyping", isTyping);
     });
 
     // when disconnection
