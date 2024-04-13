@@ -17,7 +17,9 @@ export const userRepositoryMongodb = () => {
   };
 
   const getUserbyId = async (id: string) =>
-    await User.findById(id).populate("wallet").select(["-password"]);
+    await User.findById(id)
+      .populate(["wallet", "bookmarks"])
+      .select(["-password"]);
 
   const updateUserBlock = async (id: string, status: boolean) =>
     await User.findByIdAndUpdate(id, { isBlocked: status });

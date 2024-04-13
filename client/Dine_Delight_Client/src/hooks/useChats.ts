@@ -36,7 +36,7 @@ export default function useChats() {
   }, []);
 
   useEffect(() => {
-    // get the chats by user and restaurant , load the data when user coming from other pages rather than chat page
+    // get the chats by user and restaurant , load the data when user coming from other pages instead of chat page
     const conversationId = params.get("conversation");
     conversationId &&
       axios
@@ -72,7 +72,6 @@ export default function useChats() {
         });
       });
       socket.current?.on("senderTyping", (isTyping) => {
-        console.log(isTyping);
         isTyping ? setIsTyping(true) : setIsTyping(false);
       });
     }

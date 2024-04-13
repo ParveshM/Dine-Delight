@@ -10,10 +10,12 @@ import { forwardRef, useEffect, useMemo, useState } from "react";
 import { RestaurantInterface } from "../../../types/RestaurantInterface";
 import axiosJWT from "../../../utils/axiosService";
 import showToast from "../../../utils/toaster";
-
+interface CardListProps extends RestaurantInterface {
+  isBookmarkedByUser: boolean;
+}
 const CardsList: React.ForwardRefRenderFunction<
   HTMLDivElement,
-  RestaurantInterface
+  CardListProps
 > = (
   {
     restaurantName,
@@ -25,14 +27,17 @@ const CardsList: React.ForwardRefRenderFunction<
     location,
     tableRatePerPerson,
     rating,
+    isBookmarkedByUser,
   },
   ref
 ) => {
   const [distance, setDistance] = useState<string | null>(null);
   const userLocation = useAppSelector((state) => state.LocationSlice);
   const user = useAppSelector((state) => state.UserSlice);
-  const [isBookmarked, setIsbookmarked] = useState<boolean>(false);
-
+  const [isBookmarked, setIsbookmarked] = useState<boolean>(
+    isBookmarkedByUser ?? false
+  );
+  console.log(isBookmarkedByUser);
   useEffect(() => {
     if (userLocation.location.coordinates[0] && location) {
       const fetchDistance = async () => {

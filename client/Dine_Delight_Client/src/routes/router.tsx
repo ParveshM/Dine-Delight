@@ -60,6 +60,7 @@ const Chat = lazy(() => import("../pages/user/Chat"));
 const Home = lazy(() => import("../pages/Home"));
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
 const Cart = lazy(() => import("../pages/user/Booking/Cart"));
+const Bookmarks = lazy(() => import("../pages/user/Bookmarks"));
 
 export const MainRouter = () => {
   return (
@@ -98,6 +99,10 @@ export const MainRouter = () => {
             <Route
               path="/booking/view/:id"
               element={<AccountPage children={<ViewBooking />} />}
+            />
+            <Route
+              path="/bookmarks"
+              element={<AccountPage children={<Bookmarks />} />}
             />
             <Route path="/cart/:id" element={<Cart />} />
             <Route
