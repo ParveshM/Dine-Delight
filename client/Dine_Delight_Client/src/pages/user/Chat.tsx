@@ -1,5 +1,3 @@
-import { useEffect, useRef } from "react";
-import ChatOnline from "../../components/chat/ChatOnline";
 import Conversation from "../../components/chat/Conversation";
 import Message from "../../components/chat/Message";
 import Navbar from "../../components/user/Header/Navbar";
@@ -43,15 +41,20 @@ const Chat: React.FC = () => {
             chats={chats}
             showChatsidebar={showChatsidebar}
             setShowChatSidebar={setShowChatSidebar}
+            currentChat={currentChat}
             handleCurrentChatClick={handleCurrentChatClick}
           />
         ) : (
-          <div className="md:w-1/4   border rounded-md h-[33rem] ">
+          <div className="md:w-1/4   border rounded-md h-[33rem]">
             <h1 className="text-center font-semibold text-lg">Users</h1>
             <hr className="mt-2" />
             {chats.map((chat, index) => (
-              <div onClick={() => setCurrentChat(chat)} key={chat._id}>
-                <Conversation {...chat} userId={user?.id} />
+              <div onClick={() => handleCurrentChatClick(chat)} key={chat._id}>
+                <Conversation
+                  {...chat}
+                  userId={user?.id ?? ""}
+                  currentChat={currentChat}
+                />
                 {chats.length > 1 && index !== chats.length - 1 && (
                   <hr className="mt-2" />
                 )}

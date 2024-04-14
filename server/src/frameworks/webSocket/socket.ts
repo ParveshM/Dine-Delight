@@ -3,6 +3,7 @@ interface SocketUserInterface {
   userId: string;
   socketId: string;
 }
+
 const socketConfig = (io: Server) => {
   let users: SocketUserInterface[] = [];
 
@@ -21,7 +22,7 @@ const socketConfig = (io: Server) => {
 
   io.on("connection", (socket) => {
     // when connection established
-    console.log(`user connected with id ${socket.id}`);
+    console.log(`user connected with id ${socket.id} 😃`);
 
     socket.on("addUser", (userId) => {
       // take userid and socketId from user
@@ -30,9 +31,14 @@ const socketConfig = (io: Server) => {
     });
 
     // send and get message
-    socket.on("sendMessage", ({ senderId, recieverId, text }) => {
+    socket.on("sendMessage", ({ senderId, recieverId, text, chatId }) => {
       const user = getUser(recieverId);
       io.to(user?.socketId ?? "").emit("getMessage", { senderId, text });
+      io.to(user?.socketId ?? "").emit("notification", {
+        count: 1,
+        senderId,
+        chatId,
+      });
     });
 
     // when user is typing
@@ -43,9 +49,8 @@ const socketConfig = (io: Server) => {
 
     // when disconnection
     socket.on("disconnect", () => {
-      io.to(socket.id ?? "").emit("senderTyping", "");
       removeUser(socket.id);
-      console.log("A user has been disconnected");
+      console.log("A user has been disconnected 😒");
       io.emit("getUsers", users);
     });
   });

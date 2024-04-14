@@ -2,16 +2,18 @@ import { PanelRightOpen } from "lucide-react";
 import { useAppSelector } from "../../redux/store/Store";
 import { ChatInterface } from "../../types/ChatInterface";
 import Conversation from "./Conversation";
-
+import { memo } from "react";
 interface ChatSidebarProps {
   chats: ChatInterface[];
   showChatsidebar: boolean;
   setShowChatSidebar: (isOpen: boolean) => void;
   handleCurrentChatClick: (chat: ChatInterface) => void;
+  currentChat: ChatInterface | null;
 }
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({
   chats,
+  currentChat,
   showChatsidebar,
   setShowChatSidebar,
   handleCurrentChatClick,
@@ -38,7 +40,11 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
           <ul className="space-y-2 font-medium">
             {chats.map((chat) => (
               <li onClick={() => handleCurrentChatClick(chat)} key={chat._id}>
-                <Conversation {...chat} userId={user?.id} />
+                <Conversation
+                  {...chat}
+                  userId={user?.id ?? ""}
+                  currentChat={currentChat}
+                />
                 {chats.length > 1 && <hr className="mt-2" />}
               </li>
             ))}
@@ -49,4 +55,4 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   );
 };
 
-export default ChatSidebar;
+export default memo(ChatSidebar);

@@ -1,11 +1,19 @@
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useAppSelector } from "../redux/store/Store";
 import axios from "axios";
-import { CHAT_API, SERVER_URL } from "../constants";
+import { CHAT_API } from "../constants";
 import { ChatInterface, MessageInterface } from "../types/ChatInterface";
-import { io, Socket } from "socket.io-client";
 import { useSearchParams } from "react-router-dom";
-
+import getConversations from "../Api/getConversations";
+import { useSocket } from "../pages/contextProvider";
+// import { useSocket } from "./useSocket";
 export default function useChats() {
   const user = useAppSelector((state) => state.UserSlice);
   const [showChatsidebar, setShowChatSidebar] = useState<boolean>(true);
@@ -18,31 +26,31 @@ export default function useChats() {
     null
   );
   const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const socket = useRef<Socket>();
+  const socket = useSocket();
 
-  useEffect(() => {
-    const socketInstance = io(SERVER_URL); //Initialize socket connection on component load
-    socket.current = socketInstance;
-    socketInstance.on("connect", () => {
-      console.log("Connected to server💬");
-    });
-    return () => {
-      if (socketInstance) {
-        socketInstance.disconnect();
-      }
-    };
-  }, []);
+  const recieverId = useMemo(() => {
+    return currentChat?.members.find((member) => member !== user.id);
+  }, [currentChat]);
 
   useEffect(() => {
     // get the chats by user and restaurant , load the data when user coming from other pages instead of chat page
-    const conversationId = params.get("conversation");
-    conversationId &&
-      axios
-        .get(CHAT_API + `/conversation/${conversationId}`)
-        .then(({ data }) => setCurrentChat(data))
-        .catch((error) => console.log(error));
+    async function getChats() {
+      const conversation = params.get("conversation");
+      if (conversation) {
+        const data = await getConversations(
+          conversation ?? "",
+          recieverId ?? "",
+          user.id ?? ""
+        );
+        setCurrentChat(data);
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        urlSearchParams.delete("conversation");
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    }
+    getChats();
   }, [params]);
 
   useEffect(() => {
@@ -52,18 +60,14 @@ export default function useChats() {
     setArrivalMessage(null);
   }, [arrivalMessage, currentChat]);
 
-  const recieverId = useMemo(() => {
-    return currentChat?.members.find((member) => member !== user.id);
-  }, [currentChat]);
-
   useEffect(() => {
     // emit and take events from server
     if (socket) {
-      socket.current?.emit("addUser", user.id);
-      socket.current?.on("getUsers", (users) => {
-        // console.log(users);
+      socket.on("connect", () => {
+        console.log("connneced to socket");
       });
-      socket.current?.on("getMessage", (data) => {
+      socket?.emit("addUser", user.id);
+      socket?.on("getMessage", (data) => {
         setIsTyping(false);
         setArrivalMessage({
           senderId: data.senderId,
@@ -71,7 +75,8 @@ export default function useChats() {
           createdAt: new Date(),
         });
       });
-      socket.current?.on("senderTyping", (isTyping) => {
+
+      socket?.on("senderTyping", (isTyping) => {
         isTyping ? setIsTyping(true) : setIsTyping(false);
       });
     }
@@ -82,7 +87,9 @@ export default function useChats() {
     user.id &&
       axios
         .get(CHAT_API + `/conversations/${user.id}`)
-        .then(({ data }) => setChats(data))
+        .then(({ data }) => {
+          setChats(data);
+        })
         .catch((error) => console.log(error));
   }, []);
 
@@ -91,7 +98,7 @@ export default function useChats() {
     currentChat?._id &&
       axios
         .get(CHAT_API + `/messages/${currentChat?._id}`)
-        .then(({ data }) => setMessages(data))
+        .then(({ data }) => setMessages(data.messages))
         .catch((error) => console.log(error));
     setError(null);
     setIsTyping(false);
@@ -99,9 +106,9 @@ export default function useChats() {
   }, [currentChat]);
 
   // scroll to the bottom when the messages are verflowing
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isTyping]);
+  // useEffect(() => {
+  //   scrollRef?.scrollIntoView({ behavior: "smooth" });
+  // }, [messages, isTyping]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -111,16 +118,17 @@ export default function useChats() {
   }, [newMessage]);
 
   const emitTypingStatus = (isTyping: boolean) => {
-    socket.current?.emit("typing", {
+    socket?.emit("typing", {
       recieverId,
       isTyping,
     });
   };
 
-  const handleCurrentChatClick = (chat: ChatInterface) => {
+  const handleCurrentChatClick = useCallback(async (chat: ChatInterface) => {
     setCurrentChat(chat);
     setShowChatSidebar(false);
-  };
+    await getConversations(chat._id, recieverId ?? "");
+  }, []);
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
@@ -132,10 +140,9 @@ export default function useChats() {
     setNewMessage(value);
   };
 
-  const handleTypingStatus = (action: "focus" | "blur") => {
-    console.log("action", action);
+  const handleTypingStatus = (action: "focus" | "blur") =>
     action === "focus" ? emitTypingStatus(true) : emitTypingStatus(false);
-  };
+
   // handle newMessage submit in input
   const handleSumbit = () => {
     if (!newMessage.trim().length) {
@@ -146,10 +153,11 @@ export default function useChats() {
     }
     emitTypingStatus(false);
 
-    socket.current?.emit("sendMessage", {
+    socket?.emit("sendMessage", {
       senderId: user.id,
       recieverId,
       text: newMessage,
+      chatId: currentChat?._id,
     });
     axios
       .post(CHAT_API + `/messages`, {

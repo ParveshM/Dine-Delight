@@ -19,8 +19,13 @@ export const chatRepositoryMongodb = () => {
   const addNewMessage = async (newMessageData: newMessageInterface) =>
     await Message.create(newMessageData);
 
-  const messages = async (conversationId: string) =>
-    await Message.find({ conversationId });
+  const messages = async (filter: Record<string, any>) =>
+    await Message.find(filter);
+
+  const updateMessages = async (
+    filter: Record<string, any>,
+    updateData: Record<string, any>
+  ) => await Message.updateMany(filter, updateData);
 
   return {
     addNewChat,
@@ -29,6 +34,7 @@ export const chatRepositoryMongodb = () => {
     isChatExists,
     addNewMessage,
     messages,
+    updateMessages,
   };
 };
 

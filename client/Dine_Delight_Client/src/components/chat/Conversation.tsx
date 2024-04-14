@@ -1,33 +1,89 @@
-import { useEffect, useState } from "react";
-import { USER_API } from "../../constants";
-import { ChatInterface } from "../../types/ChatInterface";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { CHAT_API, SERVER_URL, USER_API } from "../../constants";
+import { ChatInterface, MessageInterface } from "../../types/ChatInterface";
 import { RestaurantInterface } from "../../types/RestaurantInterface";
 import axios from "axios";
 import { UserInterface } from "../../types/UserInterface";
 import { useAppSelector } from "../../redux/store/Store";
 import { dummyUserImg } from "../../assets/images";
-
-interface ConversationProps extends ChatInterface {
-  userId: string | null | undefined;
+import { useSocket } from "../../pages/contextProvider";
+// import { useSocket } from "../../hooks/useSocket";
+interface SocketUserInterface {
+  userId: string;
+  socketId: string;
 }
-const Conversation: React.FC<ConversationProps> = ({ members, userId }) => {
+interface ConversationProps extends ChatInterface {
+  userId: string;
+  currentChat: ChatInterface | null;
+}
+const Conversation: React.FC<ConversationProps> = ({
+  members,
+  userId,
+  _id: conversationId,
+  currentChat,
+}) => {
   const { role } = useAppSelector((state) => state.UserSlice);
   const [restaurant, setRestaurant] = useState<RestaurantInterface | null>(
     null
   );
   const [userinfo, setUserInfo] = useState<UserInterface | null>(null);
+  const [messages, setMessages] = useState<MessageInterface[]>([]);
+  const [newMessageCount, setNewMessageCount] = useState<number>(0);
+  const socket = useSocket();
+  const [isActive, setIsActive] = useState<boolean>(false);
+  const isChatOpen = currentChat && currentChat._id === conversationId;
+  useEffect(() => {
+    socket?.on("notification", ({ count, senderId, chatId }) => {
+      // if (chat && currentChat?._id === conversationId) {
+      //   // members.includes(senderId) &&
+      //   //   setNewMessageCount((prev) => (prev += count));
+      // } else if (
+      //   !chat &&
+      //   currentChat?._id !== conversationId &&
+      //   members.includes(senderId)
+      // ) {
+      //   console.log(chat);
+      //   setNewMessageCount((prev) => (prev += count));
+      // }
+      if (!isChatOpen || chatId !== conversationId) {
+        if (members.includes(senderId)) {
+          setNewMessageCount((prev) => prev + count);
+        }
+      }
+    });
+    socket?.on("getUsers", (users: SocketUserInterface[]) => {
+      const activeUsers = users.some((user) => {
+        return role === "user"
+          ? userinfo?._id === user.userId
+          : user.userId === restaurant?._id;
+      });
+      setIsActive(activeUsers ? true : false);
+    });
+  }, []);
 
   useEffect(() => {
     const recieverId = members.find((member) => member !== userId);
-    const PATH: string = role === "user" ? "/restaurants" : "/users";
-    axios
-      .get(USER_API + `${PATH}/${recieverId}`)
-      .then(({ data }) => {
-        role === "user"
-          ? setRestaurant(data.restaurant)
-          : setUserInfo(data.user);
+    const URI: string = role === "user" ? "/restaurants" : "/users";
+
+    const userRequest = axios.get(USER_API + `${URI}/${recieverId}`);
+    const chatRequest = axios.get(CHAT_API + `/messages/${conversationId}`, {
+      params: {
+        unReadMessages: true,
+        recieverId,
+      },
+    });
+    Promise.all([userRequest, chatRequest])
+      .then((responses) => {
+        const [userData, chatData] = responses;
+        const { user, restaurant } = userData.data;
+        role === "user" ? setRestaurant(restaurant) : setUserInfo(user);
+
+        setMessages(chatData.data.messages);
+        setNewMessageCount(chatData.data.latestMessages.length);
       })
-      .catch((err) => console.log(err));
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }, [userId]);
 
   return (
@@ -41,11 +97,48 @@ const Conversation: React.FC<ConversationProps> = ({ members, userId }) => {
         alt="User image"
         className="h-10 w-10 rounded-full object-cover"
       />
-      <span className="font-semibold ">
-        {role === "user"
-          ? restaurant?.restaurantName ?? "Unnamed"
-          : userinfo?.name ?? "Unnamed"}
-      </span>
+      <div className="relative h-10 w-10  border border-white">
+        <img
+          src={
+            role === "user"
+              ? restaurant?.primaryImage ?? dummyUserImg
+              : userinfo?.profilePicture ?? dummyUserImg
+          }
+          alt="User image"
+          className=" w-full rounded-full object-fit"
+        />
+        <div
+          className={`absolute top-0 right-1 ${
+            isActive ? "bg-green-500" : "bg-gray-500"
+          }  h-3 w-3 rounded-full`}
+        ></div>
+      </div>
+      <div className="flex flex-col items-start ml-2">
+        <span className="font-semibold">
+          {role === "user"
+            ? restaurant?.restaurantName ?? "Unnamed"
+            : userinfo?.name ?? "Unnamed"}
+        </span>
+        <div className="flex items-center gap-2">
+          {newMessageCount > 0 && (
+            <span className="text-sm font-medium text-gray-600">
+              {newMessageCount === 1
+                ? "You have a new message"
+                : `${newMessageCount} new messages`}
+            </span>
+          )}
+          {newMessageCount > 0 && (
+            <span className="bg-red-400 rounded-full h-2 w-2"></span>
+          )}
+        </div>
+        <div className="w-44">
+          {newMessageCount === 0 && (
+            <p className="font-medium text-sm text-gray-500 break-words">
+              {messages.at(-1)?.text ?? "No recent messages"}
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

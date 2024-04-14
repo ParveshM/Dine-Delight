@@ -19,8 +19,13 @@ export default function chatDbRepository(
   const addNewMessage = async (newMessageData: newMessageInterface) =>
     await repository.addNewMessage(newMessageData);
 
-  const getMessagesByConversationId = async (id: string) =>
-    await repository.messages(id);
+  const getMessagesByFilter = async (filter: Record<string, any>) =>
+    await repository.messages(filter);
+
+  const updateMessages = async (
+    filter: Record<string, any>,
+    updateData: Record<string, any>
+  ) => await repository.updateMessages(filter, updateData);
 
   return {
     createNewChat,
@@ -28,7 +33,8 @@ export default function chatDbRepository(
     isChatExists,
     getConversationById,
     getAllConversations,
-    getMessagesByConversationId,
+    getMessagesByFilter,
+    updateMessages,
   };
 }
 

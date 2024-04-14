@@ -3,8 +3,14 @@ import { ChatDbRepositoryInterace } from "../app/interfaces/chatDbRepository";
 import { ChatRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/chatRepositoryMongodb";
 import { addNewChat, newMessage } from "../app/use-cases/chat/add";
 import { HttpStatus } from "../types/httpStatus";
-import { getChatById, getChats, getMessages } from "../app/use-cases/chat/read";
+import {
+  getChatById,
+  getChats,
+  getLatestMessages,
+  getMessages,
+} from "../app/use-cases/chat/read";
 import { get } from "mongoose";
+import { updateUnreadMessages } from "../app/use-cases/chat/update";
 
 const chatController = (
   chatDbRepository: ChatDbRepositoryInterace,
@@ -56,8 +62,15 @@ const chatController = (
     next: NextFunction
   ) => {
     try {
+      console.log("get chats =>/>");
       const { id } = req.params;
-      const chats = await getChatById(id, chatRepository);
+      const { recieverId, senderId } = req.query as {
+        recieverId: string;
+        senderId: string;
+      };
+      recieverId &&
+        (await updateUnreadMessages(id, recieverId, chatRepository));
+      const chats = await getChatById(id, senderId, chatRepository);
       res.status(HttpStatus.OK).json(chats);
     } catch (error) {
       next(error);
@@ -90,8 +103,23 @@ const chatController = (
   ) => {
     try {
       const { conversationId } = req.params;
-      const chats = await getMessages(conversationId, chatRepository);
-      res.status(HttpStatus.OK).json(chats);
+      const { unReadMessages, recieverId } = req.query as {
+        unReadMessages: string;
+        recieverId: string;
+      };
+      let latestMessages = null;
+      if (unReadMessages) {
+        latestMessages = await getLatestMessages(
+          conversationId,
+          recieverId,
+          chatRepository
+        );
+      }
+
+      const messages = await getMessages(conversationId, chatRepository);
+      res
+        .status(HttpStatus.OK)
+        .json({ success: true, messages, latestMessages });
     } catch (error) {
       next(error);
     }

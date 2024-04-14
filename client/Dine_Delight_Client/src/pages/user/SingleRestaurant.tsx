@@ -66,7 +66,7 @@ const SingleRestaurant = () => {
         navigate(`/chat?conversation=${chatID}`);
       })
       .catch(() => {
-        console.log("error in sending chat");
+        console.log("error in creating chat");
       });
   };
 
