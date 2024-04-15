@@ -19,8 +19,13 @@ export default function chatDbRepository(
   const addNewMessage = async (newMessageData: newMessageInterface) =>
     await repository.addNewMessage(newMessageData);
 
-  const getMessagesByFilter = async (filter: Record<string, any>) =>
+  const getLatestMessage = async (filter: Record<string, any>) =>
     await repository.messages(filter);
+
+  const getPaginatedMessage = async (
+    filter: Record<string, any>,
+    pagination: { skip: number; limit: number }
+  ) => await repository.paginatedMessages(filter, pagination);
 
   const updateMessages = async (
     filter: Record<string, any>,
@@ -33,8 +38,9 @@ export default function chatDbRepository(
     isChatExists,
     getConversationById,
     getAllConversations,
-    getMessagesByFilter,
+    getLatestMessage,
     updateMessages,
+    getPaginatedMessage,
   };
 }
 

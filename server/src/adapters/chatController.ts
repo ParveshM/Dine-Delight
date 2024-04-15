@@ -107,6 +107,9 @@ const chatController = (
         unReadMessages: string;
         recieverId: string;
       };
+      const page = parseInt(req.query.page as string);
+      const limit = 10;
+      const skip = (page - 1) * limit;
       let latestMessages = null;
       if (unReadMessages) {
         latestMessages = await getLatestMessages(
@@ -116,7 +119,12 @@ const chatController = (
         );
       }
 
-      const messages = await getMessages(conversationId, chatRepository);
+      const messages = await getMessages(
+        conversationId,
+        skip,
+        limit,
+        chatRepository
+      );
       res
         .status(HttpStatus.OK)
         .json({ success: true, messages, latestMessages });

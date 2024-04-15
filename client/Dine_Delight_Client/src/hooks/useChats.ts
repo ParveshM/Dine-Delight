@@ -10,15 +10,15 @@ import { useAppSelector } from "../redux/store/Store";
 import axios from "axios";
 import { CHAT_API } from "../constants";
 import { ChatInterface, MessageInterface } from "../types/ChatInterface";
-import { useSearchParams } from "react-router-dom";
 import getConversations from "../Api/getConversations";
 import { useSocket } from "../pages/contextProvider";
-// import { useSocket } from "./useSocket";
+
 export default function useChats() {
   const user = useAppSelector((state) => state.UserSlice);
   const [showChatsidebar, setShowChatSidebar] = useState<boolean>(true);
   const [chats, setChats] = useState<ChatInterface[]>([]);
   const [currentChat, setCurrentChat] = useState<ChatInterface | null>(null);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const [messages, setMessages] = useState<MessageInterface[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +26,6 @@ export default function useChats() {
     null
   );
   const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [params, setParams] = useSearchParams();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const socket = useSocket();
 
@@ -37,7 +36,9 @@ export default function useChats() {
   useEffect(() => {
     // get the chats by user and restaurant , load the data when user coming from other pages instead of chat page
     async function getChats() {
-      const conversation = params.get("conversation");
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      const conversation = urlSearchParams.get("conversation");
+
       if (conversation) {
         const data = await getConversations(
           conversation ?? "",
@@ -51,7 +52,7 @@ export default function useChats() {
       }
     }
     getChats();
-  }, [params]);
+  }, []);
 
   useEffect(() => {
     arrivalMessage &&
@@ -64,9 +65,12 @@ export default function useChats() {
     // emit and take events from server
     if (socket) {
       socket.on("connect", () => {
-        console.log("connneced to socket");
+        console.log("connected to socket");
       });
       socket?.emit("addUser", user.id);
+      socket?.on("getUsers", (users: string[]) => {
+        setOnlineUsers(users);
+      });
       socket?.on("getMessage", (data) => {
         setIsTyping(false);
         setArrivalMessage({
@@ -106,9 +110,9 @@ export default function useChats() {
   }, [currentChat]);
 
   // scroll to the bottom when the messages are verflowing
-  // useEffect(() => {
-  //   scrollRef?.scrollIntoView({ behavior: "smooth" });
-  // }, [messages, isTyping]);
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isTyping]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -144,7 +148,7 @@ export default function useChats() {
     action === "focus" ? emitTypingStatus(true) : emitTypingStatus(false);
 
   // handle newMessage submit in input
-  const handleSumbit = () => {
+  const handleSubmit = () => {
     if (!newMessage.trim().length) {
       emitTypingStatus(false);
       return setError("Please enter a message");
@@ -179,9 +183,10 @@ export default function useChats() {
     isTyping,
     scrollRef,
     newMessage,
+    onlineUsers,
     currentChat,
     handleChange,
-    handleSumbit,
+    handleSubmit,
     setNewMessage,
     setCurrentChat,
     arrivalMessage,

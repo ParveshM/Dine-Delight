@@ -19,18 +19,23 @@ export const getChatById = async (
 
 export const getMessages = async (
   memberId: string,
+  skip: number,
+  limit: number,
   chatRepository: ReturnType<ChatDbRepositoryInterace>
 ) =>
-  await chatRepository.getMessagesByFilter({
-    conversationId: memberId,
-  });
+  await chatRepository.getPaginatedMessage(
+    {
+      conversationId: memberId,
+    },
+    { skip, limit }
+  );
 
 export const getLatestMessages = async (
   conversationID: string,
   recieverId: string,
   chatRepository: ReturnType<ChatDbRepositoryInterace>
 ) =>
-  await chatRepository.getMessagesByFilter({
+  await chatRepository.getLatestMessage({
     conversationId: conversationID,
     senderId: recieverId,
     isRead: false,

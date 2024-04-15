@@ -27,7 +27,10 @@ const socketConfig = (io: Server) => {
     socket.on("addUser", (userId) => {
       // take userid and socketId from user
       addUsers(userId, socket.id);
-      io.emit("getUsers", users);
+      io.emit(
+        "getUsers",
+        users.map((user) => user.userId)
+      );
     });
 
     // send and get message
@@ -51,7 +54,10 @@ const socketConfig = (io: Server) => {
     socket.on("disconnect", () => {
       removeUser(socket.id);
       console.log("A user has been disconnected 😒");
-      io.emit("getUsers", users);
+      io.emit(
+        "getUsers",
+        users.map((user) => user.userId)
+      );
     });
   });
 };

@@ -15,9 +15,10 @@ const Chat: React.FC = () => {
     isTyping,
     scrollRef,
     newMessage,
+    onlineUsers,
     currentChat,
     handleChange,
-    handleSumbit,
+    handleSubmit,
     setCurrentChat,
     arrivalMessage,
     showChatsidebar,
@@ -43,6 +44,7 @@ const Chat: React.FC = () => {
             setShowChatSidebar={setShowChatSidebar}
             currentChat={currentChat}
             handleCurrentChatClick={handleCurrentChatClick}
+            onlineUsers={onlineUsers}
           />
         ) : (
           <div className="md:w-1/4   border rounded-md h-[33rem]">
@@ -54,6 +56,7 @@ const Chat: React.FC = () => {
                   {...chat}
                   userId={user?.id ?? ""}
                   currentChat={currentChat}
+                  onlineUsers={onlineUsers}
                 />
                 {chats.length > 1 && index !== chats.length - 1 && (
                   <hr className="mt-2" />
@@ -150,7 +153,7 @@ const Chat: React.FC = () => {
                         } focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 resize-none`}
                         placeholder="Your message..."
                         onKeyDown={(e) => {
-                          if (e.key === "Enter") handleSumbit();
+                          if (e.key === "Enter") handleSubmit();
                         }}
                         onBlur={() => handleTypingStatus("blur")}
                         onFocus={() => handleTypingStatus("focus")}
@@ -160,7 +163,7 @@ const Chat: React.FC = () => {
                         className="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600 transition ease-out"
                         onClick={(e) => {
                           e.preventDefault();
-                          handleSumbit();
+                          handleSubmit();
                         }}
                       >
                         <svg

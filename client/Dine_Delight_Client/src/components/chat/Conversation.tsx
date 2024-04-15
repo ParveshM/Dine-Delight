@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { CHAT_API, SERVER_URL, USER_API } from "../../constants";
+import { useEffect, useState } from "react";
+import { CHAT_API, USER_API } from "../../constants";
 import { ChatInterface, MessageInterface } from "../../types/ChatInterface";
 import { RestaurantInterface } from "../../types/RestaurantInterface";
 import axios from "axios";
@@ -7,22 +7,19 @@ import { UserInterface } from "../../types/UserInterface";
 import { useAppSelector } from "../../redux/store/Store";
 import { dummyUserImg } from "../../assets/images";
 import { useSocket } from "../../pages/contextProvider";
-// import { useSocket } from "../../hooks/useSocket";
-interface SocketUserInterface {
-  userId: string;
-  socketId: string;
-}
 interface ConversationProps extends ChatInterface {
   userId: string;
   currentChat: ChatInterface | null;
+  onlineUsers: string[];
 }
 const Conversation: React.FC<ConversationProps> = ({
   members,
   userId,
   _id: conversationId,
   currentChat,
+  onlineUsers,
 }) => {
-  const { role } = useAppSelector((state) => state.UserSlice);
+  const { role, id } = useAppSelector((state) => state.UserSlice);
   const [restaurant, setRestaurant] = useState<RestaurantInterface | null>(
     null
   );
@@ -32,34 +29,23 @@ const Conversation: React.FC<ConversationProps> = ({
   const socket = useSocket();
   const [isActive, setIsActive] = useState<boolean>(false);
   const isChatOpen = currentChat && currentChat._id === conversationId;
+
   useEffect(() => {
     socket?.on("notification", ({ count, senderId, chatId }) => {
-      // if (chat && currentChat?._id === conversationId) {
-      //   // members.includes(senderId) &&
-      //   //   setNewMessageCount((prev) => (prev += count));
-      // } else if (
-      //   !chat &&
-      //   currentChat?._id !== conversationId &&
-      //   members.includes(senderId)
-      // ) {
-      //   console.log(chat);
-      //   setNewMessageCount((prev) => (prev += count));
-      // }
       if (!isChatOpen || chatId !== conversationId) {
         if (members.includes(senderId)) {
           setNewMessageCount((prev) => prev + count);
         }
       }
     });
-    socket?.on("getUsers", (users: SocketUserInterface[]) => {
-      const activeUsers = users.some((user) => {
-        return role === "user"
-          ? userinfo?._id === user.userId
-          : user.userId === restaurant?._id;
-      });
-      setIsActive(activeUsers ? true : false);
-    });
   }, []);
+
+  useEffect(() => {
+    const activeUser = onlineUsers.some((user) => {
+      return members.filter((memberId) => memberId !== id).includes(user);
+    });
+    setIsActive(activeUser);
+  }, [onlineUsers]);
 
   useEffect(() => {
     const recieverId = members.find((member) => member !== userId);

@@ -22,6 +22,15 @@ export const chatRepositoryMongodb = () => {
   const messages = async (filter: Record<string, any>) =>
     await Message.find(filter);
 
+  const paginatedMessages = async (
+    filter: Record<string, any>,
+    paginate: { skip: number; limit: number }
+  ) =>
+    await Message.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(paginate.skip)
+      .limit(paginate.limit);
+
   const updateMessages = async (
     filter: Record<string, any>,
     updateData: Record<string, any>
@@ -35,6 +44,7 @@ export const chatRepositoryMongodb = () => {
     addNewMessage,
     messages,
     updateMessages,
+    paginatedMessages,
   };
 };
 

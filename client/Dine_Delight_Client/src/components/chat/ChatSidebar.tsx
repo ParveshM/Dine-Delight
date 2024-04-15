@@ -9,6 +9,7 @@ interface ChatSidebarProps {
   setShowChatSidebar: (isOpen: boolean) => void;
   handleCurrentChatClick: (chat: ChatInterface) => void;
   currentChat: ChatInterface | null;
+  onlineUsers: string[];
 }
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({
@@ -17,6 +18,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   showChatsidebar,
   setShowChatSidebar,
   handleCurrentChatClick,
+  onlineUsers,
 }) => {
   const user = useAppSelector((state) => state.UserSlice);
   return (
@@ -44,6 +46,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                   {...chat}
                   userId={user?.id ?? ""}
                   currentChat={currentChat}
+                  onlineUsers={onlineUsers}
                 />
                 {chats.length > 1 && <hr className="mt-2" />}
               </li>
