@@ -22,7 +22,7 @@ const Home: React.FC = () => {
     handleRemoveFilter,
     handleSearchQuery,
   } = useRestaurantList();
-  console.log(bookmarks);
+
   // Infinite scrolling with pagination and intersectionObserver
   const observer = useRef<IntersectionObserver>();
   const lastRestaurantRef = useCallback(

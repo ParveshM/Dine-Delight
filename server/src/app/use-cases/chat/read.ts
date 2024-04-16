@@ -10,33 +10,36 @@ export const getChatById = async (
   userId: string,
   chatRepository: ReturnType<ChatDbRepositoryInterace>
 ) => {
-  await chatRepository.updateMessages(
-    { conversationId: id, senderId: { $ne: userId } },
-    { isRead: true }
-  );
+  // await chatRepository.updateMessages(
+  //   { conversationId: id, senderId: { $ne: userId } },
+  //   { isRead: true }
+  // );
   return await chatRepository.getConversationById(id);
 };
 
 export const getMessages = async (
-  memberId: string,
+  conversationID: string,
   skip: number,
   limit: number,
   chatRepository: ReturnType<ChatDbRepositoryInterace>
 ) =>
   await chatRepository.getPaginatedMessage(
     {
-      conversationId: memberId,
+      conversationId: conversationID,
     },
     { skip, limit }
   );
 
 export const getLatestMessages = async (
-  conversationID: string,
   recieverId: string,
-  chatRepository: ReturnType<ChatDbRepositoryInterace>
-) =>
-  await chatRepository.getLatestMessage({
-    conversationId: conversationID,
+  chatRepository: ReturnType<ChatDbRepositoryInterace>,
+  conversationID?: string
+) => {
+  const filter: Record<string, any> = {
     senderId: recieverId,
     isRead: false,
-  });
+  };
+  conversationID && (filter.conversationId = conversationID);
+  const messages = await chatRepository.getLatestMessage(filter);
+  return messages;
+};

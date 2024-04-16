@@ -5,6 +5,7 @@ import useChats from "../../hooks/useChats";
 import ChatSidebar from "../../components/chat/ChatSidebar";
 import { ChevronLeft, PanelRightClose, PanelRightOpen, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../../components/shimmers/Spinner";
 
 const Chat: React.FC = () => {
   const {
@@ -14,10 +15,13 @@ const Chat: React.FC = () => {
     messages,
     isTyping,
     scrollRef,
+    topRef,
+    isLoading,
     newMessage,
     onlineUsers,
     currentChat,
     handleChange,
+    handleScroll,
     handleSubmit,
     setCurrentChat,
     arrivalMessage,
@@ -108,35 +112,45 @@ const Chat: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex justify-between h-full flex-col-reverse">
-                <div className="relative pr-4 mt-10 mb-20 overflow-y-auto ">
-                  {messages.length ? (
-                    messages.map((message, index) => (
-                      <div key={message._id ?? index} ref={scrollRef}>
-                        <Message
-                          {...message}
-                          own={message.senderId === user.id}
-                        />
-                        {isTyping &&
-                          index === messages.length - 1 &&
-                          !arrivalMessage && (
+              <div className="flex justify-between h-full flex-col">
+                {isLoading ? (
+                  <Spinner className="mt-20" />
+                ) : (
+                  <>
+                    <div
+                      className=" pr-4 mt-10 mb-20 overflow-y-auto"
+                      onScroll={handleScroll}
+                      ref={topRef}
+                    >
+                      {messages.length ? (
+                        messages.map((message, index) => (
+                          <div key={message._id ?? index} ref={scrollRef}>
                             <Message
                               {...message}
-                              own={false}
-                              isTyping={
-                                isTyping && index === messages.length - 1
-                              }
+                              own={message.senderId === user.id}
                             />
-                          )}
-                      </div>
-                    ))
-                  ) : (
-                    <h1 className="absolute top-[30%] text-xl text-gray-400 cursor-default">
-                      No messages yet
-                    </h1>
-                  )}
-                </div>
-                <div className="absolute  right-0 left-0 flex items-center mb-[-35px] py-6  px-4 bg-gray-50 rounded-lg dark:bg-gray-700 ">
+                            {isTyping && // Typint status indicator
+                              index === messages.length - 1 &&
+                              !arrivalMessage && (
+                                <Message
+                                  {...message}
+                                  own={false}
+                                  isTyping={
+                                    isTyping && index === messages.length - 1
+                                  }
+                                />
+                              )}
+                          </div>
+                        ))
+                      ) : (
+                        <h1 className="absolute top-[30%] left-[50%] text-xl text-gray-400 cursor-default">
+                          No messages yet
+                        </h1>
+                      )}
+                    </div>
+                  </>
+                )}
+                <div className="absolute bottom-0 right-0 left-0 flex items-center mb-[-35px] py-6  px-4 bg-gray-50 rounded-lg dark:bg-gray-700 ">
                   <div className="flex flex-col w-full gap-2 mx-4 ">
                     <div className="flex">
                       <textarea
@@ -157,6 +171,7 @@ const Chat: React.FC = () => {
                         }}
                         onBlur={() => handleTypingStatus("blur")}
                         onFocus={() => handleTypingStatus("focus")}
+                        autoFocus
                       />
                       <button
                         type="submit"

@@ -7,7 +7,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "tw-elements-react/dist/css/tw-elements-react.min.css";
 import ChatIcon from "./components/chat/ChatIcon";
-import SocketProvider from "./pages/contextProvider";
+import SocketProvider from "./redux/Context/SocketContext";
 
 const App = () => {
   return (

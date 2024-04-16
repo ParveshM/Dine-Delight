@@ -37,7 +37,6 @@ const CardsList: React.ForwardRefRenderFunction<
   const [isBookmarked, setIsbookmarked] = useState<boolean>(
     isBookmarkedByUser ?? false
   );
-  console.log(isBookmarkedByUser);
   useEffect(() => {
     if (userLocation.location.coordinates[0] && location) {
       const fetchDistance = async () => {

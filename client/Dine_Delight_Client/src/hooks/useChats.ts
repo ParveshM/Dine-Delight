@@ -11,7 +11,8 @@ import axios from "axios";
 import { CHAT_API } from "../constants";
 import { ChatInterface, MessageInterface } from "../types/ChatInterface";
 import getConversations from "../Api/getConversations";
-import { useSocket } from "../pages/contextProvider";
+import { useSocket } from "../redux/Context/SocketContext";
+import { useSearchParams } from "react-router-dom";
 
 export default function useChats() {
   const user = useAppSelector((state) => state.UserSlice);
@@ -26,6 +27,13 @@ export default function useChats() {
     null
   );
   const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const [isScrollingUp, setIsScrollingUp] = useState(false);
+  const [params] = useSearchParams();
+  const topRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const socket = useSocket();
 
@@ -52,7 +60,7 @@ export default function useChats() {
       }
     }
     getChats();
-  }, []);
+  }, [params]);
 
   useEffect(() => {
     arrivalMessage &&
@@ -97,21 +105,49 @@ export default function useChats() {
         .catch((error) => console.log(error));
   }, []);
 
+  useEffect(() => {
+    setPage(1);
+    setIsScrollingUp(false);
+
+    setMessages([]);
+  }, [currentChat]);
+
   // get messages in a chat by user with chat id
   useEffect(() => {
-    currentChat?._id &&
+    if (currentChat?._id) {
+      page === 1 ? setIsLoading(true) : setIsLoadingMore(true);
       axios
-        .get(CHAT_API + `/messages/${currentChat?._id}`)
-        .then(({ data }) => setMessages(data.messages))
-        .catch((error) => console.log(error));
+        .get(CHAT_API + `/messages/?conversationId=${currentChat?._id}`, {
+          params: {
+            page,
+          },
+        })
+        .then(({ data }) => {
+          setMessages((prev) => {
+            if (prev && prev.length) {
+              return [...data.messages.reverse(), ...prev];
+            } else {
+              return data.messages.reverse();
+            }
+          });
+
+          setHasMore(data.messages.length > 0);
+        })
+        .catch((error) => console.log(error))
+        .finally(() =>
+          page === 1 ? setIsLoading(false) : setIsLoadingMore(false)
+        );
+    }
     setError(null);
     setIsTyping(false);
     setNewMessage("");
-  }, [currentChat]);
+  }, [currentChat, page]);
 
-  // scroll to the bottom when the messages are verflowing
+  // scroll to the bottom when the messages are overflowing
   useEffect(() => {
+    // if (!isScrollingUp) {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    // }
   }, [messages, isTyping]);
 
   useEffect(() => {
@@ -128,11 +164,12 @@ export default function useChats() {
     });
   };
 
-  const handleCurrentChatClick = useCallback(async (chat: ChatInterface) => {
+  const handleCurrentChatClick = async (chat: ChatInterface) => {
     setCurrentChat(chat);
     setShowChatSidebar(false);
-    await getConversations(chat._id, recieverId ?? "");
-  }, []);
+    const reciever = chat.members.find((member) => member !== user.id);
+    await getConversations(chat._id, reciever ?? ""); // updating the unread messages when a chat is opened
+  };
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
@@ -147,7 +184,6 @@ export default function useChats() {
   const handleTypingStatus = (action: "focus" | "blur") =>
     action === "focus" ? emitTypingStatus(true) : emitTypingStatus(false);
 
-  // handle newMessage submit in input
   const handleSubmit = () => {
     if (!newMessage.trim().length) {
       emitTypingStatus(false);
@@ -175,19 +211,33 @@ export default function useChats() {
       })
       .catch((error) => console.log(error));
   };
+
+  const handleScroll = () => {
+    const scrollTop = topRef.current?.scrollTop;
+    if (scrollTop && scrollTop <= 1 && hasMore) {
+      setPage((prev) => (prev += 1));
+
+      // setIsScrollingUp(true);
+    }
+  };
+
   return {
     user,
     chats,
     error,
+    topRef,
     messages,
     isTyping,
     scrollRef,
+    isLoading,
     newMessage,
     onlineUsers,
     currentChat,
+    handleScroll,
     handleChange,
     handleSubmit,
     setNewMessage,
+    isLoadingMore,
     setCurrentChat,
     arrivalMessage,
     showChatsidebar,

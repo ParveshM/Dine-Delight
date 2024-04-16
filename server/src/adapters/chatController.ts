@@ -62,7 +62,6 @@ const chatController = (
     next: NextFunction
   ) => {
     try {
-      console.log("get chats =>/>");
       const { id } = req.params;
       const { recieverId, senderId } = req.query as {
         recieverId: string;
@@ -102,20 +101,32 @@ const chatController = (
     next: NextFunction
   ) => {
     try {
-      const { conversationId } = req.params;
-      const { unReadMessages, recieverId } = req.query as {
+      const { unReadMessages, recieverId, conversationId } = req.query as {
         unReadMessages: string;
         recieverId: string;
+        conversationId: string;
       };
       const page = parseInt(req.query.page as string);
-      const limit = 10;
+      const limit = 5;
       const skip = (page - 1) * limit;
+
+      // if (!conversationId) {
+      //   const latestMessages = await getLatestMessages(
+      //     recieverId,
+      //     chatRepository
+      //   );
+
+      //   return res
+      //     .status(HttpStatus.OK)
+      //     .json({ success: true, latestMessages });
+      // }
+
       let latestMessages = null;
       if (unReadMessages) {
         latestMessages = await getLatestMessages(
-          conversationId,
           recieverId,
-          chatRepository
+          chatRepository,
+          conversationId
         );
       }
 

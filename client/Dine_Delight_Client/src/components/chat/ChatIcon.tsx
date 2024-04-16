@@ -1,15 +1,44 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../redux/store/Store";
+import { useSocket } from "../../redux/Context/SocketContext";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { CHAT_API } from "../../constants";
 
 const ChatIcon = () => {
-  const { role, isAuthenticated } = useAppSelector((state) => state.UserSlice);
-
+  const { role, isAuthenticated, id } = useAppSelector(
+    (state) => state.UserSlice
+  );
+  const socket = useSocket();
   const navigate = useNavigate();
   const location = useLocation();
+  const [notificationCount, setNotificationCount] = useState<number>(0);
+
+  useEffect(() => {
+    socket?.on("notification", () => {});
+  }, []);
+
+  // useEffect(() => {
+  //   axios
+  //     .get(CHAT_API + `/messages`, {
+  //       params: {
+  //         unReadMessages: true,
+  //         recieverId: id,
+  //       },
+  //     })
+  //     .then(({ data }) => {
+  //       console.log(data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // }, []);
+
   const path =
     location.pathname === "/chat" || location.pathname === "/restaurant/chat";
   const isCartRoute = location.pathname.startsWith("/cart");
   if (!isAuthenticated || path || isCartRoute) return null;
+
   return (
     <button
       className={`fixed z-40 right-2 bottom-11 flex h-[60px] w-[60px] items-center 

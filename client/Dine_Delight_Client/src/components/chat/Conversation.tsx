@@ -6,7 +6,7 @@ import axios from "axios";
 import { UserInterface } from "../../types/UserInterface";
 import { useAppSelector } from "../../redux/store/Store";
 import { dummyUserImg } from "../../assets/images";
-import { useSocket } from "../../pages/contextProvider";
+import { useSocket } from "../../redux/Context/SocketContext";
 interface ConversationProps extends ChatInterface {
   userId: string;
   currentChat: ChatInterface | null;
@@ -52,8 +52,9 @@ const Conversation: React.FC<ConversationProps> = ({
     const URI: string = role === "user" ? "/restaurants" : "/users";
 
     const userRequest = axios.get(USER_API + `${URI}/${recieverId}`);
-    const chatRequest = axios.get(CHAT_API + `/messages/${conversationId}`, {
+    const chatRequest = axios.get(CHAT_API + `/messages/`, {
       params: {
+        conversationId,
         unReadMessages: true,
         recieverId,
       },
@@ -63,8 +64,7 @@ const Conversation: React.FC<ConversationProps> = ({
         const [userData, chatData] = responses;
         const { user, restaurant } = userData.data;
         role === "user" ? setRestaurant(restaurant) : setUserInfo(user);
-
-        setMessages(chatData.data.messages);
+        setMessages(chatData.data.messages.reverse());
         setNewMessageCount(chatData.data.latestMessages.length);
       })
       .catch((error) => {
@@ -74,16 +74,12 @@ const Conversation: React.FC<ConversationProps> = ({
 
   return (
     <div className="flex items-center p-2 gap-2 mt-2 hover:bg-gray-200 hover:cursor-pointer rounded-md transition ease-in-out">
-      <img
-        src={
-          role === "user"
-            ? restaurant?.primaryImage ?? dummyUserImg
-            : userinfo?.profilePicture ?? dummyUserImg
-        }
-        alt="User image"
-        className="h-10 w-10 rounded-full object-cover"
-      />
-      <div className="relative h-10 w-10  border border-white">
+      <div className="relative">
+        <div
+          className={`absolute top-0 right-1 ${
+            isActive ? "bg-green-500" : "bg-gray-500"
+          }  h-3 w-3 rounded-full`}
+        ></div>
         <img
           src={
             role === "user"
@@ -91,14 +87,10 @@ const Conversation: React.FC<ConversationProps> = ({
               : userinfo?.profilePicture ?? dummyUserImg
           }
           alt="User image"
-          className=" w-full rounded-full object-fit"
+          className=" w-10 h-10 rounded-full object-cover"
         />
-        <div
-          className={`absolute top-0 right-1 ${
-            isActive ? "bg-green-500" : "bg-gray-500"
-          }  h-3 w-3 rounded-full`}
-        ></div>
       </div>
+
       <div className="flex flex-col items-start ml-2">
         <span className="font-semibold">
           {role === "user"
