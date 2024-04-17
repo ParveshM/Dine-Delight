@@ -145,9 +145,7 @@ export default function useChats() {
 
   // scroll to the bottom when the messages are overflowing
   useEffect(() => {
-    // if (!isScrollingUp) {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-    // }
   }, [messages, isTyping]);
 
   useEffect(() => {

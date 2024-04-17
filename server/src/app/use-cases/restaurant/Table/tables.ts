@@ -32,5 +32,11 @@ export const addNewTable = async (
 
 export const getTableList = async (
   restaurantID: string,
+  skip: number,
+  limit: number,
   tableDbRepository: ReturnType<TableDbInterface>
-) => await tableDbRepository.getAllTables(restaurantID);
+) =>
+  await tableDbRepository.getAllTables(
+    { restaurantId: restaurantID },
+    { skip, limit }
+  );

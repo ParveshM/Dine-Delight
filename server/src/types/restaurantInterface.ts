@@ -40,3 +40,8 @@ export interface MenuItemInterface {
   isVegetarian: boolean;
   restaurantId: Types.ObjectId;
 }
+
+export interface PaginateInterface {
+  skip: number;
+  limit: number;
+}

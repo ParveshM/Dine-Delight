@@ -173,14 +173,24 @@ const restaurantController = (
   ) => {
     try {
       const restaurantID = req.seller;
-      const reservations = await getRestaurantReservations(
+      const page = parseInt(req.query.page as string) ?? 1;
+      const status = req.query.status as string;
+      const limit = 1;
+      const skip = (page - 1) * limit;
+
+      const { bookings, count } = await getRestaurantReservations(
         restaurantID,
+        status,
+        skip,
+        limit,
         bookingRepository
       );
       return res.status(HttpStatus.OK).json({
         success: true,
+        count,
+        limit,
+        reservations: bookings,
         message: "Reservations fetched successfully",
-        reservations,
       });
     } catch (error) {
       next(error);

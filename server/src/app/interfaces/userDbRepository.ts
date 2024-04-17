@@ -5,6 +5,7 @@ import {
 } from "../../entities/userEntity";
 import { TransactionEntityType } from "../../entities/transactionEntity";
 import { Types } from "mongoose";
+import { PaginateInterface } from "../../types/restaurantInterface";
 
 // Interface for the database repository that we need to use
 /*
@@ -55,7 +56,8 @@ export const userDbRepository = (
   const updateVerifiedUser = async (userId: string) =>
     await repository.updateVerifiedUser(userId);
 
-  const getAllUsers = async () => await repository.getAllUsers();
+  const getAllUsers = async (paginate: PaginateInterface) =>
+    await repository.getAllUsers(paginate);
 
   const updateVerificationCode = async (
     email: string,

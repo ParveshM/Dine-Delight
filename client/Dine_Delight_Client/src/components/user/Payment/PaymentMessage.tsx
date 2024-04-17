@@ -1,11 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { paymentFailedImg } from "../../../assets/images";
+import { CookingPot } from "lucide-react";
 
 interface PaymentMessageProps {
   isSuccess: boolean;
 }
 
 const PaymentMessage: React.FC<PaymentMessageProps> = ({ isSuccess }) => {
+  const { id } = useParams();
   return (
     <div className="bg-gray-100 min-h-screen flex justify-center items-center px-2">
       <div
@@ -40,7 +42,7 @@ const PaymentMessage: React.FC<PaymentMessageProps> = ({ isSuccess }) => {
               ? "Have a great day!"
               : "If the problem persists, please contact customer support."}
           </p>
-          <div>
+          <div className="flex items-center gap-2">
             <Link
               to={isSuccess ? "/booking_history" : "/"}
               className={`inline-block px-8 py-3 ${
@@ -51,6 +53,16 @@ const PaymentMessage: React.FC<PaymentMessageProps> = ({ isSuccess }) => {
             >
               {isSuccess ? "View Booking" : "GO BACK"}
             </Link>
+            {isSuccess && (
+              <Link
+                to={`/cart/${id}`}
+                className="bg-teal-400 hover:bg-teal-500  inline-flex gap-1 items-center
+              text-white font-semibold px-8 py-3 rounded-lg 
+              "
+              >
+                Have something on mind ? <CookingPot className="h-4 w-4" />
+              </Link>
+            )}
           </div>
         </div>
       </div>

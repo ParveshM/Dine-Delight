@@ -1,4 +1,5 @@
 import { ReserveSlotEntityType } from "../../../../entities/reserveSlotEntity";
+import { PaginateInterface } from "../../../../types/restaurantInterface";
 import { MatchStageInterface } from "../../../../types/tableInterface";
 import TableSlot from "../models/Tableslots";
 import mongoose from "mongoose";
@@ -12,8 +13,17 @@ export const TableSlotRepositoryMongodb = () => {
       endTime: slotData.getEndTime(),
     });
 
-  const getTableSlotbyId = async (tableId: string) =>
-    await TableSlot.find({ tableId }).sort({ slotDate: 1 });
+  const getTableSlotbyId = async (
+    filter: Record<string, any>,
+    paginate: PaginateInterface
+  ) => {
+    const tableSlot = await TableSlot.find(filter)
+      .sort({ slotDate: 1 })
+      .skip(paginate.skip)
+      .limit(paginate.limit);
+    const count = await TableSlot.countDocuments(filter);
+    return { tableSlot, count };
+  };
 
   const isSlotAvailable = async (
     tableId: string,

@@ -40,17 +40,26 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         </div>
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
           <ul className="space-y-2 font-medium">
-            {chats.map((chat) => (
-              <li onClick={() => handleCurrentChatClick(chat)} key={chat._id}>
-                <Conversation
-                  {...chat}
-                  userId={user?.id ?? ""}
-                  currentChat={currentChat}
-                  onlineUsers={onlineUsers}
-                />
-                {chats.length > 1 && <hr className="mt-2" />}
-              </li>
-            ))}
+            {chats.length ? (
+              <>
+                {chats.map((chat) => (
+                  <li
+                    onClick={() => handleCurrentChatClick(chat)}
+                    key={chat._id}
+                  >
+                    <Conversation
+                      {...chat}
+                      userId={user?.id ?? ""}
+                      currentChat={currentChat}
+                      onlineUsers={onlineUsers}
+                    />
+                    {chats.length > 1 && <hr className="mt-2" />}
+                  </li>
+                ))}
+              </>
+            ) : (
+              <p className="text-lg font-semibold">No conversations </p>
+            )}
           </ul>
         </div>
       </aside>

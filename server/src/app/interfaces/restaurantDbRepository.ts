@@ -1,7 +1,10 @@
 import { RatingEntityType } from "../../entities/ratingEntity";
 import { RestaurantEntityType } from "../../entities/restaurantEntity";
 import { restaurantRepositoryMongodbType } from "../../frameworks/database/mongodb/repositories/restaurantRepositoryMongodb";
-import { RestaurantInterface } from "../../types/restaurantInterface";
+import {
+  PaginateInterface,
+  RestaurantInterface,
+} from "../../types/restaurantInterface";
 
 export const restaurantDbRepository = (
   repository: ReturnType<restaurantRepositoryMongodbType>
@@ -18,10 +21,11 @@ export const restaurantDbRepository = (
   const verifyRestaurant = async (token: string) =>
     await repository.verifyRestaurant(token);
 
-  const getAllRestaurants = async () => await repository.getAllRestaurants();
+  const getAllRestaurants = async (paginate: PaginateInterface) =>
+    await repository.getAllRestaurants(paginate);
 
-  const getNewRegisteredRestaurants = async () =>
-    await repository.getNewRegistrations();
+  const getNewRegisteredRestaurants = async (paginate: PaginateInterface) =>
+    await repository.getNewRegistrations(paginate);
 
   const updateRestaurant = async (
     id: string,

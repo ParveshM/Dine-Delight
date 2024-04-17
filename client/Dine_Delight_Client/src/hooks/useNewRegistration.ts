@@ -3,6 +3,7 @@ import axiosJWT from "../utils/axiosService";
 
 import { ADMIN_API } from "../constants";
 import { newRestaurantInterface } from "../types/RestaurantInterface";
+import usePaginateState from "./usePaginateState";
 
 const useNewRegistrations = () => {
   const [newRestaurants, setNewRestaurants] = useState<
@@ -11,22 +12,38 @@ const useNewRegistrations = () => {
   const [filteredRegistration, setFilteredRegistration] = useState<
     newRestaurantInterface[]
   >([]);
-
+  const {
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    itemsPerPage,
+    setItemsPerPage,
+  } = usePaginateState();
   useEffect(() => {
     axiosJWT
-      .get(ADMIN_API + "/restaurants?new_registrations=true")
+      .get(ADMIN_API + "/restaurants?new_registrations=true", {
+        params: { page: currentPage },
+      })
       .then(({ data }) => {
-        setNewRestaurants(data.restaurants);
-        setFilteredRegistration(data.restaurants);
+        const { restaurants, count, limit } = data;
+        setNewRestaurants(restaurants);
+        setFilteredRegistration(restaurants);
+        setItemsPerPage(limit);
+        setPageSize(count);
       })
       .catch((error: any) => console.log(error));
-  }, [setNewRestaurants]);
+  }, [setNewRestaurants, currentPage]);
 
   return {
     newRestaurants,
     setNewRestaurants,
     filteredRegistration,
     setFilteredRegistration,
+    setCurrentPage,
+    currentPage,
+    pageSize,
+    itemsPerPage,
   };
 };
 

@@ -148,16 +148,20 @@ const AddMenuModal: React.FC<MenuModalProps> = ({
                 <option value="dessert">Dessert</option>
               </select>
             </div>
-            <div className="col-span-2 mt-8">
-              <label className="inline-flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-blue-600"
-                  {...formik.getFieldProps("isVegetarian")}
-                />
-                <span>isveg</span>
-              </label>
-            </div>
+            {action === "Edit" &&
+              (menuItem?.category === "starters" ||
+                menuItem?.category === "main course") && (
+                <div className="col-span-2 mt-8">
+                  <label className="inline-flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox h-5 w-5 text-blue-600"
+                      {...formik.getFieldProps("isVegetarian")}
+                    />
+                    <span>isveg</span>
+                  </label>
+                </div>
+              )}
           </div>
 
           <button

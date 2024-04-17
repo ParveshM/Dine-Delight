@@ -1,5 +1,6 @@
 import { TableEntityType } from "../../entities/tableEntity";
 import { TableRepositoryMongodbType } from "../../frameworks/database/mongodb/repositories/tableRepositoryMongoDb";
+import { PaginateInterface } from "../../types/restaurantInterface";
 
 export const tableDbRepository = (
   repository: ReturnType<TableRepositoryMongodbType>
@@ -13,8 +14,10 @@ export const tableDbRepository = (
   const getTablebyNumber = async (tableNumber: string, restaurantId: string) =>
     await repository.getTablebyNumber(tableNumber, restaurantId);
 
-  const getAllTables = async (restaurantID: string) =>
-    await repository.getAllTables(restaurantID);
+  const getAllTables = async (
+    filter: Record<string, any>,
+    paginate: PaginateInterface
+  ) => await repository.getAllTables(filter, paginate);
 
   return { addTable, getTablebyId, getTablebyNumber, getAllTables };
 };

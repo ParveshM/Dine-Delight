@@ -2,6 +2,7 @@ import { PanelRightClose, PanelRightOpen, XIcon } from "lucide-react";
 import { BsPlus, BsDash } from "react-icons/bs";
 import {
   CartItemInterface,
+  clearCart,
   removeItem,
   updateQuantity,
 } from "../../../redux/slices/CartSlice";
@@ -12,6 +13,7 @@ import showToast from "../../../utils/toaster";
 import axiosJWT from "../../../utils/axiosService";
 import { USER_API } from "../../../constants";
 import { useNavigate, useParams } from "react-router-dom";
+import Button from "../../restaurant/Button";
 interface CartSidbarProps {
   isSidebarOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
@@ -169,7 +171,11 @@ const CartSidebar: React.FC<CartSidbarProps> = ({
 
           <div className="absolute bottom-16 left-3 right-3">
             <div className="flex justify-between items-center px-3 py-2 bg-gray-200 rounded-lg ">
-              <div>clear</div>
+              <Button
+                label="Clear"
+                className="bg-gray-500"
+                handleButtonclick={() => dispatch(clearCart())}
+              />
               <div className="space-x-2">
                 <span className="font-semibold">Total:</span>
                 <span>₹{(totalAmount && totalAmount) ?? 0}</span>

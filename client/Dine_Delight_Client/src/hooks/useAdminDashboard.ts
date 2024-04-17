@@ -3,6 +3,7 @@ import { ADMIN_API } from "../constants";
 import { BookingInterface } from "../types/BookingInterface";
 import showToast from "../utils/toaster";
 import axiosJWT from "../utils/axiosService";
+import usePaginateState from "./usePaginateState";
 
 type DashboardDataType = {
   totalUsers: number;
@@ -18,9 +19,14 @@ export default function useAdminDashboard() {
   const [bookings, setBookings] = useState<BookingInterface[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(0);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+  const {
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    itemsPerPage,
+    setItemsPerPage,
+  } = usePaginateState();
 
   useEffect(() => {
     axiosJWT

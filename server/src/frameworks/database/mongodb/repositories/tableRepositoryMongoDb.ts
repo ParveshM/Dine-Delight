@@ -1,6 +1,6 @@
 import { TableEntityType } from "../../../../entities/tableEntity";
 import Table from "../models/tables";
-
+import { PaginateInterface } from "../../../../types/restaurantInterface";
 export const tableRepositoryMongodb = () => {
   const addTable = async (tableData: TableEntityType) =>
     await Table.create({
@@ -16,8 +16,16 @@ export const tableRepositoryMongodb = () => {
   const getTablebyNumber = async (tableNumber: string, restaurantId: string) =>
     await Table.findOne({ tableNumber, restaurantId });
 
-  const getAllTables = async (restaurantId: string) =>
-    await Table.find({ restaurantId });
+  const getAllTables = async (
+    filter: Record<string, any>,
+    Paginate: PaginateInterface
+  ) => {
+    const tables = await Table.find(filter)
+      .skip(Paginate.skip)
+      .limit(Paginate.limit);
+    const count = await Table.countDocuments(filter);
+    return { tables, count };
+  };
 
   return {
     addTable,

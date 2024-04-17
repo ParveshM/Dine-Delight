@@ -84,10 +84,10 @@ const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mt-8">
+      {/* <div className="grid grid-cols-2 gap-4 mt-8">
         <div className="col-span-2 md:col-span-1 bg-blue-200 p-4">Graph 1</div>
         <div className="col-span-2 md:col-span-1 bg-blue-200 p-4">Graph 2</div>
-      </div>
+      </div> */}
 
       <div className="mt-8">
         <div className="flex justify-between px-2">
