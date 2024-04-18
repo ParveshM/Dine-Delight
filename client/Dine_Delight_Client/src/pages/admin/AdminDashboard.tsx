@@ -58,7 +58,7 @@ const AdminDashboard: React.FC = () => {
               <Utensils className="w-5 h-5 text-orange-500" />
             </div>
             <div>
-              <p className="mb-2 text-sm font-medium text-gray-600 ">
+              <p className="mb-2  text-sm font-medium text-gray-600 ">
                 Restaurants
               </p>
               <p className="text-lg font-semibold text-gray-700">

@@ -3,7 +3,8 @@ export default function menuEntity(
   price: number,
   category: "starters" | "main course" | "drinks" | "dessert",
   isVegetarian: boolean,
-  restaurantId: string
+  restaurantId: string,
+  tags?: string[]
 ) {
   return {
     getName: (): string => name,
@@ -12,6 +13,7 @@ export default function menuEntity(
       category,
     isVegetarian: (): boolean => isVegetarian,
     getRestaurantId: (): string => restaurantId,
+    getTags: (): string[] => tags || [],
   };
 }
 export type MenuEntityType = ReturnType<typeof menuEntity>;

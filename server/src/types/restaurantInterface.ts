@@ -39,6 +39,7 @@ export interface MenuItemInterface {
   category: "starters" | "main course" | "drinks" | "dessert";
   isVegetarian: boolean;
   restaurantId: Types.ObjectId;
+  tags?: string[];
 }
 
 export interface PaginateInterface {

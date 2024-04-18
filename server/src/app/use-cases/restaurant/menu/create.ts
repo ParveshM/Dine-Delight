@@ -9,7 +9,7 @@ export const addItemToMenu = async (
   item: MenuItemInterface,
   menuRepository: ReturnType<MenuDbRepositoryInterface>
 ) => {
-  const { name, price, category, isVegetarian } = item;
+  const { name, price, category, isVegetarian, tags } = item;
 
   const isItemInMenu = await menuRepository.isItemExists(restaurantId, name);
 
@@ -24,7 +24,8 @@ export const addItemToMenu = async (
     price,
     category,
     isVegetarian,
-    restaurantId
+    restaurantId,
+    tags
   );
 
   return await menuRepository.createMenu(newMenuItem);

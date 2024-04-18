@@ -4,7 +4,7 @@ import { RESTAURANT_API } from "../../../constants";
 import showToast from "../../../utils/toaster";
 import TableRowData from "../../../components/restaurant/Table/tableRowItem";
 import Button from "../../../components/restaurant/Button";
-import AddTableModal from "../../../components/restaurant/Table/Modal/AddTableModal";
+import AddTableModal from "../../../components/restaurant/Modal/AddTableModal";
 import usePaginateState from "../../../hooks/usePaginateState";
 import Pagination from "../../../components/Pagination";
 

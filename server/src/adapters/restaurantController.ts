@@ -175,7 +175,7 @@ const restaurantController = (
       const restaurantID = req.seller;
       const page = parseInt(req.query.page as string) ?? 1;
       const status = req.query.status as string;
-      const limit = 1;
+      const limit = 10;
       const skip = (page - 1) * limit;
 
       const { bookings, count } = await getRestaurantReservations(

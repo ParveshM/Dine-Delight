@@ -71,11 +71,11 @@ export default function useCart() {
     }
     if (hasPageBeenRendered.current) {
       fetchMenu();
+    } else {
+      hasPageBeenRendered.current = true;
       return () => {
         dispatch(clearCart());
       };
-    } else {
-      hasPageBeenRendered.current = true;
     }
   }, [
     selectedCategory,

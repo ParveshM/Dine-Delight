@@ -9,7 +9,7 @@ interface MenuItemProps extends MenuItemInterface {
 const MenuItem: React.ForwardRefRenderFunction<
   HTMLDivElement,
   MenuItemProps
-> = ({ name, price, isVegetarian, category, handleClick }, ref) => {
+> = ({ name, price, isVegetarian, category, tags, handleClick }, ref) => {
   return (
     <div
       className={`relative  bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-md p-4 `}
@@ -30,6 +30,18 @@ const MenuItem: React.ForwardRefRenderFunction<
         <h3 className="text-lg font-semibold break-words">{name}</h3>
         <p className="text-sm text-gray-600 mt-2">₹{price}</p>
       </div>
+      {tags?.length ? (
+        <div className="flex flex-wrap gap-1 ">
+          {tags?.map((tag: string, index: number) => (
+            <span
+              key={`${index}-${tag}`}
+              className=" px-3 py-2 rounded-md text-sm shadow-sm font-medium bg-blue-100 text-blue-800 mr-2"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      ) : null}
       <div className="absolute bottom-2 right-2 flex gap-2 ">
         <FaEdit
           className=" w-5 h-5 cursor-pointer "

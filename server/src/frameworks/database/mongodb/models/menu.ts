@@ -17,6 +17,7 @@ const menuSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  tags: Array,
   restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant" },
 });
 export default mongoose.model("Menu", menuSchema);

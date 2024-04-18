@@ -6,7 +6,7 @@ import {
   removeItem,
   updateQuantity,
 } from "../../../redux/slices/CartSlice";
-import { useAppDispatch } from "../../../redux/store/Store";
+import { useAppDispatch, useAppSelector } from "../../../redux/store/Store";
 import { useMemo, useState } from "react";
 import { TbCircleX, TbSquareRoundedXFilled } from "react-icons/tb";
 import showToast from "../../../utils/toaster";
@@ -28,6 +28,7 @@ const CartSidebar: React.FC<CartSidbarProps> = ({
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
+  // const { cart: cartItems } = useAppSelector((state) => state.CartSlice);
 
   const totalAmount = useMemo(() => {
     if (cartItems.length)

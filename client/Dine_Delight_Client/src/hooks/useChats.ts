@@ -37,6 +37,21 @@ export default function useChats() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const socket = useSocket();
 
+  const observer = useRef<IntersectionObserver>();
+  const firstChat = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (isLoading || isLoadingMore) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && isScrollingUp && hasMore) {
+          setPage((prev) => prev + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, isLoadingMore, hasMore, isScrollingUp]
+  );
+
   const recieverId = useMemo(() => {
     return currentChat?.members.find((member) => member !== user.id);
   }, [currentChat]);
@@ -212,11 +227,9 @@ export default function useChats() {
 
   const handleScroll = () => {
     const scrollTop = topRef.current?.scrollTop;
-    if (scrollTop && scrollTop <= 1 && hasMore) {
-      setPage((prev) => (prev += 1));
-
-      // setIsScrollingUp(true);
-    }
+    scrollTop !== undefined && scrollTop <= 20
+      ? setIsScrollingUp(true)
+      : setIsScrollingUp(false);
   };
 
   return {
@@ -231,9 +244,10 @@ export default function useChats() {
     newMessage,
     onlineUsers,
     currentChat,
-    handleScroll,
+    firstChat,
     handleChange,
     handleSubmit,
+    handleScroll,
     setNewMessage,
     isLoadingMore,
     setCurrentChat,

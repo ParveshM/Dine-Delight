@@ -11,10 +11,10 @@ const DashboardTableData: React.FC<BookingInterface> = ({
   return (
     <tr className="dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
       <td className="px-6 py-4">{restaurantId.restaurantName}</td>
-      <td className="px-6 py-4">{bookingId.substring(0, 12) + ".."}</td>
-      <td className="px-6 py-4">{userId.name}</td>
+      <td className="px-6 py-4">{bookingId?.substring(0, 12) + ".."}</td>
+      <td className="px-6 py-4">{userId?.name ?? "John"}</td>
       <td className="px-6 py-4">
-        {tableSlotId.slotDate &&
+        {tableSlotId?.slotDate &&
           new Date(tableSlotId.slotDate).toLocaleDateString("en-IN", {
             day: "numeric",
             month: "numeric",

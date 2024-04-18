@@ -8,7 +8,7 @@ import {
 import axiosJWT from "../../utils/axiosService";
 import showToast from "../../utils/toaster";
 import Button from "../../components/restaurant/Button";
-import AddMenuModal from "../../components/restaurant/Table/Modal/AddMenuModal";
+import AddMenuModal from "../../components/restaurant/Modal/AddMenuModal";
 import ConfirmationModal from "../../components/user/Modals/ConfirmationModal";
 import { DebounceInput } from "react-debounce-input";
 import MenuItemsShimmer from "../../components/shimmers/MenuItemsShimmer";
@@ -51,7 +51,9 @@ const Menu: React.FC = () => {
   const handleItemAdd = (item: MenuItemInterface, action: "Add" | "Edit") => {
     if (selectedCategory && item.category === selectedCategory) {
       if (action === "Add") {
-        setMenuItems((prev) => [...prev, item]);
+        isVegFilterActive && item.isVegetarian
+          ? setMenuItems((prev) => [...prev, item])
+          : !item.isVegetarian && setMenuItems((prev) => [...prev, item]);
       } else {
         const filteredMenu = menuItems.filter(
           (menuItem) => menuItem._id !== item._id
@@ -71,7 +73,7 @@ const Menu: React.FC = () => {
       setMenuItems(filteredMenu);
       setIsDeleteModalOpen(false);
       axiosJWT
-        .delete(RESTAURANT_API + `/menu/delete/${itemForDelete._id}`, {})
+        .delete(RESTAURANT_API + `/menu/delete/${itemForDelete._id}`)
         .then(({ data }) => showToast(data.message))
         .catch(() => showToast("Oops! Something went wrong", "error"));
     }

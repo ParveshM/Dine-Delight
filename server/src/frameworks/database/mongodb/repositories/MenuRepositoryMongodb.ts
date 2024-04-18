@@ -10,6 +10,7 @@ export const MenuRepositoryMongodb = () => {
       price: menuData.getPrice(),
       isVegetarian: menuData.isVegetarian(),
       restaurantId: menuData.getRestaurantId(),
+      tags: menuData.getTags(),
     });
 
   const isItemExists = async (restaurantId: string, name: string) =>

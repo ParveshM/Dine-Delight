@@ -234,14 +234,14 @@ const SingleRestaurant = () => {
               </div>
             </div>
           </div>
-          {ratings.length && (
+          {ratings.length ? (
             <section className="mt-2 border shadow-md rounded-md p-2">
               <h1 className="text-2xl text-center font-semibold ">Reviews</h1>
               <div className="bg-white shadow-md rounded-md">
                 <ReviewSlider ratings={ratings} />
               </div>
             </section>
-          )}
+          ) : null}
         </>
       )}
       {/* <Footer /> */}
