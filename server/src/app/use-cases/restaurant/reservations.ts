@@ -8,12 +8,17 @@ import { TransactionDataType } from "../../../types/BookingInterface";
 
 export const getRestaurantReservations = async (
   restaurantID: string,
+  status: string,
+  skip: number,
+  limit: number,
   bookingRepository: ReturnType<BookingDbRepositoryInterface>
-) =>
-  await bookingRepository.bookings({
-    restaurantId: new Types.ObjectId(restaurantID),
-  });
-
+) => {
+  const filter: Record<string, any> = {};
+  if (status) {
+    filter.bookingStatus = status;
+  }
+  return await bookingRepository.paginatedBookings(filter, skip, limit);
+};
 export const updateReservationData = async (
   bookingID: string,
   status: string,

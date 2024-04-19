@@ -10,6 +10,7 @@ export const MenuRepositoryMongodb = () => {
       price: menuData.getPrice(),
       isVegetarian: menuData.isVegetarian(),
       restaurantId: menuData.getRestaurantId(),
+      tags: menuData.getTags(),
     });
 
   const isItemExists = async (restaurantId: string, name: string) =>
@@ -26,7 +27,13 @@ export const MenuRepositoryMongodb = () => {
     skip: number
   ) => await Menu.find(filter).limit(limit).skip(skip);
 
-  return { addMenu, isItemExists, updateMenuItem, deleteItem, getMenu };
+  return {
+    addMenu,
+    isItemExists,
+    updateMenuItem,
+    deleteItem,
+    getMenu,
+  };
 };
 
 export type MenuRepositoryMongodbType = typeof MenuRepositoryMongodb;

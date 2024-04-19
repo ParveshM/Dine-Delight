@@ -19,9 +19,17 @@ const BookingHistory: React.FC = () => {
       <h1 className="text-xl dark:text-white lg:text-2xl font-semibold leading-7 lg:leading-9 text-gray-800">
         Hisory & Recent bookings
       </h1>
-      {bookings.map((booking) => (
-        <BookingHistoryList {...booking} key={booking._id} />
-      ))}
+      {bookings.length ? (
+        <>
+          {bookings.map((booking) => (
+            <BookingHistoryList {...booking} key={booking._id} />
+          ))}
+        </>
+      ) : (
+        <div className="col-span-6 flex flex-col justify-center items-center">
+          <h2 className="text-2xl  font-bold mb-2">No bookings yet </h2>
+        </div>
+      )}
     </div>
   );
 };

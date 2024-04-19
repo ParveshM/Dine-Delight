@@ -300,7 +300,7 @@ const ViewRestaurant = () => {
                             className="h-full rounded-md"
                           />
                           <RxCrossCircled
-                            className="absolute top-0 right-0 cursor-pointer w-5 h-5 text-black"
+                            className="absolute -top-5 right-0 cursor-pointer w-5 h-5 text-red-600"
                             onClick={() => {
                               setImageToRemove(image);
                               setIsModalOpen(true);

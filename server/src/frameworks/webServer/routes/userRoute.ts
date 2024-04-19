@@ -102,6 +102,7 @@ const userRoute = () => {
     _bookingController.cancelBooking
   );
   router.post("/booking/preOrder", _bookingController.updatePreOrderedFood);
+  router.delete("/booking/preOrder", _bookingController.deletePreOrderedFood);
 
   router.get("/menu/:bookingID", authenticateUser, _menuController.getMenu);
 

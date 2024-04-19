@@ -22,7 +22,13 @@ export const menuDbRepository = (
     skip: number
   ) => await repository.getMenu(filter, limit, skip);
 
-  return { createMenu, isItemExists, updateMenuItem, deleteMenuItem, getMenu };
+  return {
+    createMenu,
+    isItemExists,
+    updateMenuItem,
+    deleteMenuItem,
+    getMenu,
+  };
 };
 
 export type MenuDbRepositoryInterface = typeof menuDbRepository;

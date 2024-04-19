@@ -2,19 +2,23 @@ import { PanelRightOpen } from "lucide-react";
 import { useAppSelector } from "../../redux/store/Store";
 import { ChatInterface } from "../../types/ChatInterface";
 import Conversation from "./Conversation";
-
+import { memo } from "react";
 interface ChatSidebarProps {
   chats: ChatInterface[];
   showChatsidebar: boolean;
   setShowChatSidebar: (isOpen: boolean) => void;
   handleCurrentChatClick: (chat: ChatInterface) => void;
+  currentChat: ChatInterface | null;
+  onlineUsers: string[];
 }
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({
   chats,
+  currentChat,
   showChatsidebar,
   setShowChatSidebar,
   handleCurrentChatClick,
+  onlineUsers,
 }) => {
   const user = useAppSelector((state) => state.UserSlice);
   return (
@@ -36,12 +40,26 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         </div>
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
           <ul className="space-y-2 font-medium">
-            {chats.map((chat) => (
-              <li onClick={() => handleCurrentChatClick(chat)} key={chat._id}>
-                <Conversation {...chat} userId={user?.id} />
-                {chats.length > 1 && <hr className="mt-2" />}
-              </li>
-            ))}
+            {chats.length ? (
+              <>
+                {chats.map((chat) => (
+                  <li
+                    onClick={() => handleCurrentChatClick(chat)}
+                    key={chat._id}
+                  >
+                    <Conversation
+                      {...chat}
+                      userId={user?.id ?? ""}
+                      currentChat={currentChat}
+                      onlineUsers={onlineUsers}
+                    />
+                    {chats.length > 1 && <hr className="mt-2" />}
+                  </li>
+                ))}
+              </>
+            ) : (
+              <p className="text-lg font-semibold">No conversations </p>
+            )}
           </ul>
         </div>
       </aside>
@@ -49,4 +67,4 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   );
 };
 
-export default ChatSidebar;
+export default memo(ChatSidebar);

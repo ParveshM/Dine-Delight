@@ -22,6 +22,8 @@ export default function useRestaurantList() {
   });
   // const [sortBy, setSortBy] = useState<"asc" | "desc">("asc");
   const [hasMore, setHasMore] = useState<boolean>(false);
+  const [bookmarks, setBookmarks] = useState<RestaurantInterface[]>([]);
+  const user = useAppSelector((state) => state.UserSlice);
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -37,6 +39,11 @@ export default function useRestaurantList() {
             // sortOrder: "desc",
           },
         });
+        if (user.isAuthenticated) {
+          const { data } = await axios.get(USER_API + `/users/${user.id}`);
+          setBookmarks(data.user.bookmarks);
+        }
+
         setData((prev) => [...prev, ...data?.restaurants]);
         setHasMore(data.restaurants?.length > 0);
         pageNumber > 1 ? setIsLoadingMore(false) : setIsLoading(false);
@@ -68,6 +75,7 @@ export default function useRestaurantList() {
   return {
     data,
     isLoading,
+    bookmarks,
     isLoadingMore,
     hasMore,
     setPage,

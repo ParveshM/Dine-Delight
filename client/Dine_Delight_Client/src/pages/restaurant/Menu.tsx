@@ -8,7 +8,7 @@ import {
 import axiosJWT from "../../utils/axiosService";
 import showToast from "../../utils/toaster";
 import Button from "../../components/restaurant/Button";
-import AddMenuModal from "../../components/restaurant/Table/Modal/AddMenuModal";
+import AddMenuModal from "../../components/restaurant/Modal/AddMenuModal";
 import ConfirmationModal from "../../components/user/Modals/ConfirmationModal";
 import { DebounceInput } from "react-debounce-input";
 import MenuItemsShimmer from "../../components/shimmers/MenuItemsShimmer";
@@ -51,7 +51,9 @@ const Menu: React.FC = () => {
   const handleItemAdd = (item: MenuItemInterface, action: "Add" | "Edit") => {
     if (selectedCategory && item.category === selectedCategory) {
       if (action === "Add") {
-        setMenuItems((prev) => [...prev, item]);
+        isVegFilterActive && item.isVegetarian
+          ? setMenuItems((prev) => [...prev, item])
+          : !item.isVegetarian && setMenuItems((prev) => [...prev, item]);
       } else {
         const filteredMenu = menuItems.filter(
           (menuItem) => menuItem._id !== item._id
@@ -71,7 +73,7 @@ const Menu: React.FC = () => {
       setMenuItems(filteredMenu);
       setIsDeleteModalOpen(false);
       axiosJWT
-        .delete(RESTAURANT_API + `/menu/delete/${itemForDelete._id}`, {})
+        .delete(RESTAURANT_API + `/menu/delete/${itemForDelete._id}`)
         .then(({ data }) => showToast(data.message))
         .catch(() => showToast("Oops! Something went wrong", "error"));
     }
@@ -122,21 +124,24 @@ const Menu: React.FC = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="px-4 py-2 w-full  border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:border-blue-500"
           />
-          <label className="inline-flex items-center  ">
-            <div
-              className={`relative w-12 h-6 rounded-full cursor-pointer ${
-                isVegFilterActive ? "bg-green-500" : "bg-gray-300"
-              }`}
-              onClick={() => setIsVegFilterActive(!isVegFilterActive)}
-            >
+          {(selectedCategory === "starters" ||
+            selectedCategory === "main course") && (
+            <label className="inline-flex items-center  ">
               <div
-                className={`absolute left-1 top-0.5 w-5 h-5 rounded-full bg-white transition-transform ${
-                  isVegFilterActive ? "transform translate-x-full" : ""
+                className={`relative w-12 h-6 rounded-full cursor-pointer ${
+                  isVegFilterActive ? "bg-green-500" : "bg-gray-300"
                 }`}
-              ></div>
-            </div>
-            <span className="ml-2">Veg</span>
-          </label>
+                onClick={() => setIsVegFilterActive(!isVegFilterActive)}
+              >
+                <div
+                  className={`absolute left-1 top-0.5 w-5 h-5 rounded-full bg-white transition-transform ${
+                    isVegFilterActive ? "transform translate-x-full" : ""
+                  }`}
+                ></div>
+              </div>
+              <span className="ml-2">Veg</span>
+            </label>
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 ">

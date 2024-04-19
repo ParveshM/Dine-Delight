@@ -8,6 +8,8 @@ export interface MessageInterface {
   conversationId?: string;
   senderId: string;
   text: string;
+  isRead?: boolean;
   createdAt: Date;
   own?: boolean;
+  isTyping?: boolean;
 }

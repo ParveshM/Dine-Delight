@@ -115,11 +115,23 @@ const tableController = (
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const restaurantID = req.seller;
-        const tables = await getTableList(restaurantID, dbTableRepository);
+        const page = parseInt(req.query.page as string) ?? 1;
+        const limit = 5;
+        const skip = (page - 1) * limit;
+
+        const { tables, count } = await getTableList(
+          restaurantID,
+          skip,
+          limit,
+          dbTableRepository
+        );
         res.status(HttpStatus.OK).json({
           success: true,
-          message: "Tables fetched successfully",
           tables,
+          count,
+          skip,
+          limit,
+          message: "Tables fetched successfully",
         });
       } catch (error) {
         throw new Error("Error in fetching tables");
@@ -133,27 +145,36 @@ const tableController = (
    * @param tableID
    */
 
-  const getAllTableSlots = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const { tableID } = req.params;
-        const tableSlot = await getTableSlots(tableID, dbTableSlotsRepository);
-        if (tableSlot)
-          res.status(HttpStatus.OK).json({
-            success: true,
-            message: "TableSlots fetched successfully",
-            tableSlot,
-          });
-        else
-          res.status(HttpStatus.FOUND).json({
-            success: false,
-            message: "Something happened while fetching table slots",
-          });
-      } catch (error) {
-        throw new Error("Error in fetching table");
-      }
+  const getAllTableSlots = asyncHandler(async (req: Request, res: Response) => {
+    try {
+      const { tableID } = req.params;
+      const page = parseInt(req.query.page as string) ?? 1;
+      const { date, time } = req.query as { date: string; time: string };
+      const limit = 10;
+      const skip = (page - 1) * limit;
+
+      const filterQuery: Record<string, any> = {};
+      if (date) filterQuery.slotDate = date;
+      if (time) filterQuery.startTime = time;
+      const paginate = { skip, limit };
+
+      const { tableSlot, count } = await getTableSlots(
+        tableID,
+        filterQuery,
+        paginate,
+        dbTableSlotsRepository
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "TableSlots fetched successfully",
+        tableSlot,
+        count,
+        limit,
+      });
+    } catch (error) {
+      throw new Error("Error in fetching table");
     }
-  );
+  });
 
   /*
    * * METHOD :POST

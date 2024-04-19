@@ -3,8 +3,14 @@ import { ChatDbRepositoryInterace } from "../app/interfaces/chatDbRepository";
 import { ChatRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/chatRepositoryMongodb";
 import { addNewChat, newMessage } from "../app/use-cases/chat/add";
 import { HttpStatus } from "../types/httpStatus";
-import { getChatById, getChats, getMessages } from "../app/use-cases/chat/read";
+import {
+  getChatById,
+  getChats,
+  getLatestMessages,
+  getMessages,
+} from "../app/use-cases/chat/read";
 import { get } from "mongoose";
+import { updateUnreadMessages } from "../app/use-cases/chat/update";
 
 const chatController = (
   chatDbRepository: ChatDbRepositoryInterace,
@@ -57,7 +63,13 @@ const chatController = (
   ) => {
     try {
       const { id } = req.params;
-      const chats = await getChatById(id, chatRepository);
+      const { recieverId, senderId } = req.query as {
+        recieverId: string;
+        senderId: string;
+      };
+      recieverId &&
+        (await updateUnreadMessages(id, recieverId, chatRepository));
+      const chats = await getChatById(id, senderId, chatRepository);
       res.status(HttpStatus.OK).json(chats);
     } catch (error) {
       next(error);
@@ -89,9 +101,44 @@ const chatController = (
     next: NextFunction
   ) => {
     try {
-      const { conversationId } = req.params;
-      const chats = await getMessages(conversationId, chatRepository);
-      res.status(HttpStatus.OK).json(chats);
+      const { unReadMessages, recieverId, conversationId } = req.query as {
+        unReadMessages: string;
+        recieverId: string;
+        conversationId: string;
+      };
+      const page = parseInt(req.query.page as string);
+      const limit = 5;
+      const skip = (page - 1) * limit;
+
+      // if (!conversationId) {
+      //   const latestMessages = await getLatestMessages(
+      //     recieverId,
+      //     chatRepository
+      //   );
+
+      //   return res
+      //     .status(HttpStatus.OK)
+      //     .json({ success: true, latestMessages });
+      // }
+
+      let latestMessages = null;
+      if (unReadMessages) {
+        latestMessages = await getLatestMessages(
+          recieverId,
+          chatRepository,
+          conversationId
+        );
+      }
+
+      const messages = await getMessages(
+        conversationId,
+        skip,
+        limit,
+        chatRepository
+      );
+      res
+        .status(HttpStatus.OK)
+        .json({ success: true, messages, latestMessages });
     } catch (error) {
       next(error);
     }

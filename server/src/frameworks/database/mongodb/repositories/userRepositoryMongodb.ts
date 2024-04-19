@@ -9,6 +9,7 @@ import wallet from "../models/wallet";
 import Transactions from "../models/transactions";
 import { TransactionEntityType } from "../../../../entities/transactionEntity";
 import { Types } from "mongoose";
+import { PaginateInterface } from "../../../../types/restaurantInterface";
 
 export const userRepositoryMongodb = () => {
   const getUserbyEmail = async (email: string) => {
@@ -17,7 +18,9 @@ export const userRepositoryMongodb = () => {
   };
 
   const getUserbyId = async (id: string) =>
-    await User.findById(id).populate("wallet").select(["-password"]);
+    await User.findById(id)
+      .populate(["wallet", "bookmarks"])
+      .select(["-password"]);
 
   const updateUserBlock = async (id: string, status: boolean) =>
     await User.findByIdAndUpdate(id, { isBlocked: status });
@@ -90,8 +93,13 @@ export const userRepositoryMongodb = () => {
       { upsert: true }
     );
 
-  const getAllUsers = async () => await User.find({ isVerified: true });
-
+  const getAllUsers = async (paginate: PaginateInterface) => {
+    const users = await User.find({ isVerified: true })
+      .skip(paginate.skip)
+      .limit(paginate.limit);
+    const count = await User.countDocuments({ isVerified: true });
+    return { users, count };
+  };
   const updateUserInfo = async (id: string, updateData: Record<string, any>) =>
     await User.findByIdAndUpdate(id, updateData, { new: true });
 

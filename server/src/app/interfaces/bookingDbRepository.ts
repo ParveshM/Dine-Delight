@@ -33,8 +33,19 @@ export const bookingDbRepository = (
     preOrderData: CartItemInterface
   ) => await repository.createPreorderedFood(bookingId, preOrderData);
 
+  const getOrderItem = async (filter: Record<string, any>) =>
+    await repository.getOrderItem(filter);
+
+  const deleteOrderItem = async (filter: Record<string, any>) =>
+    await repository.deletOrderItem(filter);
+
   const getPreoOrderbyBookingId = async (bookingId: string) =>
     await repository.getPreOrder(bookingId);
+
+  const updatePreOrderItem = async (
+    filter: Record<string, any>,
+    updateData: Record<string, any>
+  ) => await repository.updatePreOrderItem(filter, updateData);
 
   return {
     createBooking,
@@ -46,6 +57,9 @@ export const bookingDbRepository = (
     calculateProfit,
     createPreOrder,
     getPreoOrderbyBookingId,
+    updatePreOrderItem,
+    getOrderItem,
+    deleteOrderItem,
   };
 };
 export type BookingDbRepositoryInterface = typeof bookingDbRepository;

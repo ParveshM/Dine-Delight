@@ -12,15 +12,17 @@ import { useCallback, useRef } from "react";
 const Home: React.FC = () => {
   const {
     data,
-    isLoading,
-    isLoadingMore,
-    hasMore,
     filter,
+    hasMore,
     setPage,
+    isLoading,
+    bookmarks,
     handleFilter,
+    isLoadingMore,
     handleRemoveFilter,
     handleSearchQuery,
   } = useRestaurantList();
+
   // Infinite scrolling with pagination and intersectionObserver
   const observer = useRef<IntersectionObserver>();
   const lastRestaurantRef = useCallback(
@@ -64,10 +66,21 @@ const Home: React.FC = () => {
                           {...res}
                           key={res._id}
                           ref={lastRestaurantRef}
+                          isBookmarkedByUser={bookmarks.some(
+                            (item) => item._id === res._id
+                          )}
                         />
                       );
                     } else {
-                      return <CardsList {...res} key={res._id} />;
+                      return (
+                        <CardsList
+                          {...res}
+                          key={res._id}
+                          isBookmarkedByUser={bookmarks.some(
+                            (item) => item._id === res._id
+                          )}
+                        />
+                      );
                     }
                   })}
                 </>

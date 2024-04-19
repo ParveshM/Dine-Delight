@@ -1,5 +1,8 @@
 import { RestaurantEntityType } from "../../../../entities/restaurantEntity";
-import { RestaurantInterface } from "../../../../types/restaurantInterface";
+import {
+  PaginateInterface,
+  RestaurantInterface,
+} from "../../../../types/restaurantInterface";
 import Restaurant from "../models/restaurant";
 import Rating from "../models/rating";
 import { RatingEntityType } from "../../../../entities/ratingEntity";
@@ -32,9 +35,19 @@ export const restaurantRepositoryMongodb = () => {
       { isVerified: true, verificationToken: null }
     );
 
-  const getAllRestaurants = async () =>
-    await Restaurant.find({ isVerified: true, isApproved: true });
-
+  const getAllRestaurants = async (paginate: PaginateInterface) => {
+    const restaurants = await Restaurant.find({
+      isVerified: true,
+      isApproved: true,
+    })
+      .skip(paginate.skip)
+      .limit(paginate.limit);
+    const count = await Restaurant.countDocuments({
+      isVerified: true,
+      isApproved: true,
+    });
+    return { restaurants, count };
+  };
   const getListedRestaurants = async (
     filter: Record<string, any>,
     sortBy: Record<string, any>,
@@ -90,13 +103,21 @@ export const restaurantRepositoryMongodb = () => {
     ]);
   };
 
-  const getNewRegistrations = async () =>
-    await Restaurant.find({
+  const getNewRegistrations = async (paginate: PaginateInterface) => {
+    const restaurants = await Restaurant.find({
+      isApproved: false,
+      isVerified: true,
+      isRejected: false,
+    })
+      .skip(paginate.skip)
+      .limit(paginate.limit);
+    const count = await Restaurant.countDocuments({
       isApproved: false,
       isVerified: true,
       isRejected: false,
     });
-
+    return { restaurants, count };
+  };
   const updateRestaurantStatus = async (
     id: string,
     updateFields: Record<string, any>

@@ -4,7 +4,9 @@ import { RESTAURANT_API } from "../../../constants";
 import showToast from "../../../utils/toaster";
 import TableRowData from "../../../components/restaurant/Table/tableRowItem";
 import Button from "../../../components/restaurant/Button";
-import AddTableModal from "../../../components/restaurant/Table/Modal/AddTableModal";
+import AddTableModal from "../../../components/restaurant/Modal/AddTableModal";
+import usePaginateState from "../../../hooks/usePaginateState";
+import Pagination from "../../../components/Pagination";
 
 export interface TableDataInterface {
   _id: string;
@@ -16,17 +18,32 @@ export interface TableDataInterface {
 const Tables = () => {
   const [tableData, setTableData] = useState<TableDataInterface[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const {
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    itemsPerPage,
+    setItemsPerPage,
+  } = usePaginateState();
 
   useEffect(() => {
     axiosJWT
-      .get(RESTAURANT_API + "/tables")
+      .get(RESTAURANT_API + "/tables", {
+        params: {
+          page: currentPage,
+        },
+      })
       .then(({ data }) => {
-        setTableData(data.tables);
+        const { tables, count, limit } = data;
+        setTableData(tables);
+        setPageSize(count);
+        setItemsPerPage(limit);
       })
       .catch(() =>
         showToast("Oops! Something went wrong while fetching tables", "error")
       );
-  }, []);
+  }, [currentPage]);
 
   const newTableData = (newTable: TableDataInterface) => {
     setTableData((curr) => [...curr, newTable]);
@@ -71,6 +88,12 @@ const Tables = () => {
                 ))}
               </tbody>
             </table>
+            <Pagination
+              currentPage={currentPage}
+              totalCount={pageSize}
+              itemsPerPage={itemsPerPage} //items per page
+              onPageChange={(page) => setCurrentPage(page)}
+            />
           </div>
         </>
       ) : (

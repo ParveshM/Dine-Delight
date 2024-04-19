@@ -1,5 +1,6 @@
 import reserveSlotEntity from "../../../../entities/reserveSlotEntity";
 import { HttpStatus } from "../../../../types/httpStatus";
+import { PaginateInterface } from "../../../../types/restaurantInterface";
 import { allotTableSlotInterface } from "../../../../types/tableInterface";
 import CustomError from "../../../../utils/customError";
 import { TableSlotDbInterface } from "../../../interfaces/TableSlotdbRepository";
@@ -29,9 +30,24 @@ export const addTableslotAndTime = async (
 };
 
 export const getTableSlots = async (
-  tableID: string,
+  tableId: string,
+  filterQuery: Record<string, any>,
+  paginate: PaginateInterface,
   tableSlotRepository: ReturnType<TableSlotDbInterface>
-) => await tableSlotRepository.getTablSlotebyId(tableID);
+) => {
+  const filter: Record<string, any> = {
+    tableId,
+  };
+  if (filterQuery.slotDate) {
+    filter.slotDate = { $gte: filterQuery.slotDate };
+  }
+
+  if (filterQuery.startTime) {
+    filter.startTime = { $eq: filterQuery.startTime };
+  }
+
+  return await tableSlotRepository.getTablSlotebyId(filter, paginate);
+};
 
 export const removeTableSlot = async (
   tableID: string,

@@ -9,7 +9,9 @@ const FilterDropdown: React.FC<{ setFilter: (filter: FilterType) => void }> = ({
     <Dropdown
       label=""
       dismissOnClick={true}
-      renderTrigger={() => <FilterIcon className="mr-2  text-slate-500" />}
+      renderTrigger={() => (
+        <FilterIcon className="mr-2  text-slate-500 cursor-pointer" />
+      )}
       placement="right"
       className="ml-4 absolute righ-0 bottm-10"
     >

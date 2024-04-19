@@ -1,5 +1,3 @@
-import { useEffect, useRef } from "react";
-import ChatOnline from "../../components/chat/ChatOnline";
 import Conversation from "../../components/chat/Conversation";
 import Message from "../../components/chat/Message";
 import Navbar from "../../components/user/Header/Navbar";
@@ -7,22 +5,31 @@ import useChats from "../../hooks/useChats";
 import ChatSidebar from "../../components/chat/ChatSidebar";
 import { ChevronLeft, PanelRightClose, PanelRightOpen, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { chatBackground } from "../../assets/images";
+import Spinner from "../../components/shimmers/Spinner";
 
 const Chat: React.FC = () => {
   const {
     user,
     chats,
     error,
+    topRef,
     messages,
+    isTyping,
+    firstChat,
     scrollRef,
+    isLoading,
     newMessage,
+    onlineUsers,
     currentChat,
     handleChange,
-    handleSumbit,
+    handleScroll,
+    handleSubmit,
+    isLoadingMore,
     setCurrentChat,
+    arrivalMessage,
     showChatsidebar,
     setShowChatSidebar,
+    handleTypingStatus,
     handleCurrentChatClick,
   } = useChats();
   const navigate = useNavigate();
@@ -41,16 +48,25 @@ const Chat: React.FC = () => {
             chats={chats}
             showChatsidebar={showChatsidebar}
             setShowChatSidebar={setShowChatSidebar}
+            currentChat={currentChat}
             handleCurrentChatClick={handleCurrentChatClick}
+            onlineUsers={onlineUsers}
           />
         ) : (
           <div className="md:w-1/4   border rounded-md h-[33rem]">
             <h1 className="text-center font-semibold text-lg">Users</h1>
             <hr className="mt-2" />
-            {chats.map((chat) => (
-              <div onClick={() => setCurrentChat(chat)} key={chat._id}>
-                <Conversation {...chat} userId={user?.id} />
-                {Conversation.length > 1 && <hr className="mt-2" />}
+            {chats.map((chat, index) => (
+              <div onClick={() => handleCurrentChatClick(chat)} key={chat._id}>
+                <Conversation
+                  {...chat}
+                  userId={user?.id ?? ""}
+                  currentChat={currentChat}
+                  onlineUsers={onlineUsers}
+                />
+                {chats.length > 1 && index !== chats.length - 1 && (
+                  <hr className="mt-2" />
+                )}
               </div>
             ))}
           </div>
@@ -98,24 +114,72 @@ const Chat: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex justify-between h-full flex-col-reverse">
-                <div className="relative pr-4 mt-10 mb-20 overflow-y-auto ">
-                  {messages.length ? (
-                    messages.map((message, index) => (
-                      <div key={message._id ?? index} ref={scrollRef}>
-                        <Message
-                          {...message}
-                          own={message.senderId === user.id}
-                        />
-                      </div>
-                    ))
-                  ) : (
-                    <h1 className="absolute top-[30%] text-xl text-gray-400 cursor-default">
-                      No messages yet
-                    </h1>
-                  )}
-                </div>
-                <div className="absolute  right-0 left-0 flex items-center mb-[-35px] py-6  px-4 bg-gray-50 rounded-lg dark:bg-gray-700 ">
+              <div className="flex justify-between h-full flex-col">
+                {isLoading ? (
+                  <Spinner className="mt-20" />
+                ) : (
+                  <div
+                    className=" pr-4 mt-10 mb-20 overflow-y-auto"
+                    onScroll={handleScroll}
+                    ref={topRef}
+                  >
+                    {isLoadingMore ? <Spinner className="mt-20" /> : null}
+
+                    {messages.length ? (
+                      messages.map((message, index) => {
+                        if (index === 0) {
+                          return (
+                            <div key={message._id ?? index} ref={firstChat}>
+                              <div ref={scrollRef}>
+                                <Message
+                                  {...message}
+                                  own={message.senderId === user.id}
+                                />
+                                {isTyping && // Typint status indicator
+                                  index === messages.length - 1 &&
+                                  !arrivalMessage && (
+                                    <Message
+                                      {...message}
+                                      own={false}
+                                      isTyping={
+                                        isTyping &&
+                                        index === messages.length - 1
+                                      }
+                                    />
+                                  )}
+                              </div>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div key={message._id ?? index} ref={scrollRef}>
+                              <Message
+                                {...message}
+                                own={message.senderId === user.id}
+                              />
+                              {isTyping && // Typint status indicator
+                                index === messages.length - 1 &&
+                                !arrivalMessage && (
+                                  <Message
+                                    {...message}
+                                    own={false}
+                                    isTyping={
+                                      isTyping && index === messages.length - 1
+                                    }
+                                  />
+                                )}
+                            </div>
+                          );
+                        }
+                      })
+                    ) : (
+                      <h1 className="absolute top-[30%] left-[50%] text-xl text-gray-400 cursor-default">
+                        No messages yet
+                      </h1>
+                    )}
+                  </div>
+                )}
+                <div className="absolute bottom-0 right-0 left-0 flex items-center mb-[-35px] py-6  px-4 bg-gray-50 rounded-lg dark:bg-gray-700 ">
                   <div className="flex flex-col w-full gap-2 mx-4 ">
                     <div className="flex">
                       <textarea
@@ -132,15 +196,18 @@ const Chat: React.FC = () => {
                         } focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 resize-none`}
                         placeholder="Your message..."
                         onKeyDown={(e) => {
-                          if (e.key === "Enter") handleSumbit();
+                          if (e.key === "Enter") handleSubmit();
                         }}
+                        onBlur={() => handleTypingStatus("blur")}
+                        onFocus={() => handleTypingStatus("focus")}
+                        autoFocus
                       />
                       <button
                         type="submit"
                         className="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600 transition ease-out"
                         onClick={(e) => {
                           e.preventDefault();
-                          handleSumbit();
+                          handleSubmit();
                         }}
                       >
                         <svg

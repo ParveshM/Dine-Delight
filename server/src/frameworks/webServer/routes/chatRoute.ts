@@ -15,7 +15,7 @@ const chatRoute = () => {
   router.post("/conversations", _chatController.createNewChat);
 
   router.post("/messages", _chatController.createNewMessage);
-  router.get("/messages/:conversationId", _chatController.fetchMessages);
+  router.get("/messages", _chatController.fetchMessages);
 
   return router;
 };

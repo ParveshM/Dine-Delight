@@ -4,13 +4,13 @@ import { ChangeEvent, useState } from "react";
 import {
   TimeSlotInterface,
   TableSlotInterface,
-} from "../../../../types/RestaurantInterface";
+} from "../../../types/RestaurantInterface";
 import { useParams, useNavigate } from "react-router-dom";
-import axiosJWT from "../../../../utils/axiosService";
-import { RESTAURANT_API } from "../../../../constants";
-import showToast from "../../../../utils/toaster";
-import { formatDate } from "../../../../utils/util";
-import Button from "../../Button";
+import axiosJWT from "../../../utils/axiosService";
+import { RESTAURANT_API } from "../../../constants";
+import showToast from "../../../utils/toaster";
+import { formatDate } from "../../../utils/util";
+import Button from "../Button";
 
 interface AddTableSlotModalProps {
   setIsModalOpen: (isOpen: boolean) => void;

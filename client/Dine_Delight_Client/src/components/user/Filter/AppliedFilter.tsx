@@ -16,7 +16,7 @@ const AppliedFilters: React.FC<AppliedFilterType> = ({
     return "600+";
   };
   return (
-    <div className="flex flex-wrap justify-center gap-2 mb-2 )">
+    <div className="flex flex-wrap justify-center gap-2 mb-2 ">
       {cost && (
         <div className="flex items-center bg-yellow-200 text-yellow-900 rounded-full px-3 py-1 shadow-md">
           <span className="mr-1 font-semibold text-sm">

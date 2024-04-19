@@ -2,18 +2,22 @@ import { Request } from "express";
 import { UserDbInterface } from "../../interfaces/userDbRepository";
 import { restaurantDbInterface } from "../../interfaces/restaurantDbRepository";
 import { BookingDbRepositoryInterface } from "../../interfaces/bookingDbRepository";
+import { PaginateInterface } from "../../../types/restaurantInterface";
 
-export const getUsers = async (userDbRepository: ReturnType<UserDbInterface>) =>
-  await userDbRepository.getAllUsers();
+export const getUsers = async (
+  paginate: PaginateInterface,
+  userDbRepository: ReturnType<UserDbInterface>
+) => await userDbRepository.getAllUsers(paginate);
 
 export const getRestaurants = async (
   new_registrations: boolean | undefined,
+  paginate: PaginateInterface,
   restaurantDbRepository: ReturnType<restaurantDbInterface>
 ) => {
   if (new_registrations) {
-    return await restaurantDbRepository.getNewRegisteredRestaurants();
+    return await restaurantDbRepository.getNewRegisteredRestaurants(paginate);
   }
-  return await restaurantDbRepository.getAllRestaurants();
+  return await restaurantDbRepository.getAllRestaurants(paginate);
 };
 
 export const getDashBoardData = async (

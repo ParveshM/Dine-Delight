@@ -1,5 +1,6 @@
 import { ReserveSlotEntityType } from "../../entities/reserveSlotEntity";
 import { TableSlotRepositoryMongodbType } from "../../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
+import { PaginateInterface } from "../../types/restaurantInterface";
 import { allotTableSlotInterface } from "../../types/tableInterface";
 
 export const TableSlotDbRepository = (
@@ -8,8 +9,10 @@ export const TableSlotDbRepository = (
   const addNewTableSlot = async (reserveTableData: ReserveSlotEntityType) =>
     await repository.addNewTableSlot(reserveTableData);
 
-  const getTablSlotebyId = async (tableId: string) =>
-    await repository.getTableSlotbyId(tableId);
+  const getTablSlotebyId = async (
+    filter: Record<string, any>,
+    paginate: PaginateInterface
+  ) => await repository.getTableSlotbyId(filter, paginate);
 
   const isSlotAvailable = async ({
     tableId,

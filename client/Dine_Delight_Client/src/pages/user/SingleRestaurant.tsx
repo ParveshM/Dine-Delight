@@ -66,7 +66,7 @@ const SingleRestaurant = () => {
         navigate(`/chat?conversation=${chatID}`);
       })
       .catch(() => {
-        console.log("error in sending chat");
+        console.log("error in creating chat");
       });
   };
 
@@ -125,21 +125,24 @@ const SingleRestaurant = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex justify-end items-center">
-                    <div
-                      className=" relative p-2 bg-blue-100 rounded-full"
-                      onClick={handleChatClick}
-                      onMouseEnter={() => setTooltip(true)}
-                      onMouseLeave={() => setTooltip(false)}
-                    >
-                      <MessageCircleMore className="w-5 h-5 text-blue-500 cursor-pointer" />
-                      {showTooltip && (
-                        <div className="absolute bottom-12 right-4 bg-black text-white p-2 rounded-md ">
-                          Chat with Restaurant
-                        </div>
-                      )}
+
+                  {user.isAuthenticated && (
+                    <div className="flex justify-end items-center">
+                      <div
+                        className=" relative p-2 bg-blue-100 rounded-full"
+                        onClick={handleChatClick}
+                        onMouseEnter={() => setTooltip(true)}
+                        onMouseLeave={() => setTooltip(false)}
+                      >
+                        <MessageCircleMore className="w-5 h-5 text-blue-500 cursor-pointer" />
+                        {showTooltip && (
+                          <div className="absolute bottom-12 right-4 bg-black text-white p-2 rounded-md ">
+                            Chat with Restaurant
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <hr className="bg-slate-200 h-[2px] " />
                   <div className=" flex flex-col  text-lg mb-2 ">
                     <p className="font-bold ">Why we like it</p>
@@ -231,14 +234,14 @@ const SingleRestaurant = () => {
               </div>
             </div>
           </div>
-          {ratings.length && (
+          {ratings.length ? (
             <section className="mt-2 border shadow-md rounded-md p-2">
               <h1 className="text-2xl text-center font-semibold ">Reviews</h1>
               <div className="bg-white shadow-md rounded-md">
                 <ReviewSlider ratings={ratings} />
               </div>
             </section>
-          )}
+          ) : null}
         </>
       )}
       {/* <Footer /> */}

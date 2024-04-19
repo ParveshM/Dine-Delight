@@ -88,8 +88,16 @@ export default (
     next: NextFunction
   ) => {
     try {
-      const users = await getUsers(dbUserRepository);
-      return res.status(HttpStatus.OK).json({ success: true, users });
+      const page = parseInt(req.query.page as string) ?? 1;
+      const limit = 1;
+      const skip = (page - 1) * limit;
+      const { users, count } = await getUsers(
+        { skip, limit },
+        dbUserRepository
+      );
+      return res
+        .status(HttpStatus.OK)
+        .json({ success: true, users, limit, count });
     } catch (error) {
       next(error);
     }
@@ -105,14 +113,21 @@ export default (
     next: NextFunction
   ) => {
     try {
+      const page = parseInt(req.query.page as string) ?? 1;
+      const limit = 1;
+      const skip = (page - 1) * limit;
       const new_registrations = req.query.new_registrations as
         | boolean
         | undefined; // if there is a query return the new registration
-      const restaurants = await getRestaurants(
+
+      const { restaurants, count } = await getRestaurants(
         new_registrations,
+        { skip, limit },
         dbResaurantRepository
       );
-      return res.status(HttpStatus.OK).json({ success: true, restaurants });
+      return res
+        .status(HttpStatus.OK)
+        .json({ success: true, restaurants, count, limit });
     } catch (error) {
       next(error);
     }
