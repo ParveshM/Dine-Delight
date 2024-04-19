@@ -105,13 +105,13 @@ const Profile: React.FC = () => {
             </Link>
           </div>
           <div className="space-y-2">
-            {transactons.length > 0 ? (
+            {transactons.length ? (
               <h3 className="">Recent Transaction</h3>
             ) : (
               <h3>No recent transactions</h3>
             )}
-            {transactons &&
-              transactons.slice(5).map((item) => (
+            {transactons.length &&
+              transactons.slice(0, 5).map((item) => (
                 <div
                   className="flex justify-between items-center bg-gray-100 rounded-md p-2"
                   key={item._id}

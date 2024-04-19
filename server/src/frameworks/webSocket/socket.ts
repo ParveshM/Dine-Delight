@@ -41,6 +41,15 @@ const socketConfig = (io: Server) => {
         count: 1,
         senderId,
         chatId,
+        text,
+      });
+    });
+
+    socket.on("update_message_status", ({ status, recieverId }) => {
+      const user = getUser(recieverId);
+      io.to(user?.socketId ?? "").emit("get_message_status", {
+        status,
+        recieverId,
       });
     });
 

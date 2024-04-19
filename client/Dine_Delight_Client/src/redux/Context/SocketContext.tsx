@@ -14,21 +14,21 @@ SocketContext.displayName = "Socket Context";
 export const useSocket = () => useContext(SocketContext);
 
 const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [socket, setSocket] = useState<Socket | null>(null);
-
-  useEffect(() => {
-    const socketInstance = io(SERVER_URL); // Initialize socket connection on page load
-    setSocket(socketInstance);
-    socketInstance.on("connect", () => {
-      console.log("connected");
-    });
-    return () => {
-      if (socketInstance) {
-        socketInstance.disconnect();
-      }
-    };
-  }, []);
-
+  // const [socket, setSocket] = useState<Socket | null>(null);
+  const socket = io(SERVER_URL);
+  // useEffect(() => {
+  //   const socketInstance = io(SERVER_URL); // Initialize socket connection on page load
+  //   setSocket(socketInstance);
+  //   socketInstance.on("connect", () => {
+  //     console.log("connected");
+  //   });
+  //   return () => {
+  //     if (socketInstance) {
+  //       socketInstance.disconnect();
+  //     }
+  //   };
+  // }, []);
+  socket.on("connect", () => console.log("connected"));
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
   );

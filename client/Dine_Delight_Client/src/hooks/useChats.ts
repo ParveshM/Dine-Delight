@@ -78,10 +78,17 @@ export default function useChats() {
   }, [params]);
 
   useEffect(() => {
-    arrivalMessage &&
-      currentChat?.members.includes(arrivalMessage.senderId) &&
+    if (
+      arrivalMessage &&
+      currentChat?.members.includes(arrivalMessage.senderId)
+    ) {
       setMessages((prev) => [...prev, arrivalMessage]);
-    setArrivalMessage(null);
+      setArrivalMessage(null);
+      socket?.emit("update_message_status", {
+        status: true,
+        recieverId: arrivalMessage.senderId,
+      });
+    }
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
@@ -101,6 +108,20 @@ export default function useChats() {
           text: data.text,
           createdAt: new Date(),
         });
+        // socket?.emit("update_message_status", {
+        //   status: true,
+        //   recieverId: data.senderId,
+        // });
+      });
+
+      socket?.on("get_message_status", (data) => {
+        console.log(data);
+        setMessages((prev) =>
+          prev.map((m) => {
+            m.isRead = true;
+            return m;
+          })
+        );
       });
 
       socket?.on("senderTyping", (isTyping) => {
@@ -123,7 +144,6 @@ export default function useChats() {
   useEffect(() => {
     setPage(1);
     setIsScrollingUp(false);
-
     setMessages([]);
   }, [currentChat]);
 

@@ -7,6 +7,7 @@ import { UserInterface } from "../../types/UserInterface";
 import { useAppSelector } from "../../redux/store/Store";
 import { dummyUserImg } from "../../assets/images";
 import { useSocket } from "../../redux/Context/SocketContext";
+import getConversations from "../../Api/getConversations";
 interface ConversationProps extends ChatInterface {
   userId: string;
   currentChat: ChatInterface | null;
@@ -28,17 +29,31 @@ const Conversation: React.FC<ConversationProps> = ({
   const [newMessageCount, setNewMessageCount] = useState<number>(0);
   const socket = useSocket();
   const [isActive, setIsActive] = useState<boolean>(false);
-  const isChatOpen = currentChat && currentChat._id === conversationId;
 
   useEffect(() => {
-    socket?.on("notification", ({ count, senderId, chatId }) => {
+    const isChatOpen = currentChat && currentChat._id === conversationId;
+
+    socket?.on("notification", async ({ count, senderId, chatId, text }) => {
       if (!isChatOpen || chatId !== conversationId) {
         if (members.includes(senderId)) {
           setNewMessageCount((prev) => prev + count);
         }
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          {
+            senderId: senderId,
+            text: text,
+            createdAt: new Date(),
+          },
+        ]);
       }
+      await getConversations(chatId, senderId);
     });
-  }, []);
+    return () => {
+      socket?.off("notification");
+    };
+  }, [currentChat]);
 
   useEffect(() => {
     const activeUser = onlineUsers.some((user) => {
@@ -70,7 +85,7 @@ const Conversation: React.FC<ConversationProps> = ({
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, [userId]);
+  }, [userId, currentChat]);
 
   return (
     <div className="flex items-center p-2 gap-2 mt-2 hover:bg-gray-200 hover:cursor-pointer rounded-md transition ease-in-out">
