@@ -95,9 +95,19 @@ export const bookingRepositoryMongodb = () => {
     const { _id, price, quantity } = predorderData;
     return await Preorder.create({ bookingId, itemId: _id, price, quantity });
   };
+  const getOrderItem = async (filter: Record<string, any>) =>
+    await Preorder.findOne(filter);
+
+  const deletOrderItem = async (filter: Record<string, any>) =>
+    await Preorder.deleteOne(filter);
 
   const getPreOrder = async (bookingId: string) =>
     await Preorder.find({ bookingId }).populate("itemId");
+
+  const updatePreOrderItem = async (
+    filter: Record<string, any>,
+    updateData: Record<string, any>
+  ) => await Preorder.findOneAndUpdate(filter, updateData);
 
   return {
     createBooking,
@@ -110,6 +120,9 @@ export const bookingRepositoryMongodb = () => {
     totalAdminPayment,
     createPreorderedFood,
     getPreOrder,
+    updatePreOrderItem,
+    getOrderItem,
+    deletOrderItem,
   };
 };
 export type BookingRepositoryMongodbType = typeof bookingRepositoryMongodb;

@@ -22,9 +22,49 @@ export const createPreOrderForBooking = async (
     );
 
   for (const item of cartItems) {
-    await bookingRepository.createPreOrder(bookingID, item);
+    const isItemExists = await bookingRepository.getOrderItem({
+      bookingId: bookingID,
+      itemId: item._id,
+    });
+    if (isItemExists) {
+      const updateData: Record<string, any> = {
+        $set: { quantity: item.quantity },
+      };
+      await bookingRepository.updatePreOrderItem(
+        {
+          bookingId: bookingID,
+          itemId: item._id,
+        },
+        updateData
+      );
+    } else {
+      await bookingRepository.createPreOrder(bookingID, item);
+    }
   }
   await bookingRepository.updateBookingDetails(bookingID, {
     foodStatus: "Accepted",
+  });
+};
+
+export const deletePreOrderForBooking = async (
+  bookingID: string,
+  cartItemId: string,
+  bookingRepository: ReturnType<BookingDbRepositoryInterface>
+) => {
+  if (!bookingID)
+    throw new CustomError(
+      "Please provide a booking ID",
+      HttpStatus.BAD_REQUEST
+    );
+
+  const booking = bookingRepository.getBookingById(bookingID);
+  if (!booking)
+    throw new CustomError(
+      "Please provide a booking ID",
+      HttpStatus.BAD_REQUEST
+    );
+  await bookingRepository.deleteOrderItem({
+    bookingId: bookingID,
+    itemId: cartItemId,
   });
 };

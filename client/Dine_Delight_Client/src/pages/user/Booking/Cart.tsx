@@ -36,8 +36,7 @@ const Cart: React.FC = () => {
     "Completed",
   ];
 
-  return bookingstatus.includes(booking?.bookingStatus ?? "") ||
-    booking?.foodStatus ? (
+  return bookingstatus.includes(booking?.bookingStatus ?? "") ? (
     <>{navigate(-1)}</>
   ) : (
     <>

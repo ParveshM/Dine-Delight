@@ -1,14 +1,15 @@
-import { PanelRightClose, PanelRightOpen, XIcon } from "lucide-react";
+import { PanelRightClose } from "lucide-react";
 import { BsPlus, BsDash } from "react-icons/bs";
 import {
   CartItemInterface,
   clearCart,
+  loadCartItems,
   removeItem,
   updateQuantity,
 } from "../../../redux/slices/CartSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/store/Store";
-import { useMemo, useState } from "react";
-import { TbCircleX, TbSquareRoundedXFilled } from "react-icons/tb";
+import { useEffect, useMemo, useState } from "react";
+import { TbCircleX } from "react-icons/tb";
 import showToast from "../../../utils/toaster";
 import axiosJWT from "../../../utils/axiosService";
 import { USER_API } from "../../../constants";
@@ -22,13 +23,23 @@ interface CartSidbarProps {
 const CartSidebar: React.FC<CartSidbarProps> = ({
   isSidebarOpen,
   setIsSidebarOpen,
-  cartItems,
 }) => {
   const [isSubmitting, setIssubmitting] = useState<boolean>(false);
+  const { cart: cartItems } = useAppSelector((state) => state.CartSlice);
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
-  // const { cart: cartItems } = useAppSelector((state) => state.CartSlice);
+
+  useEffect(() => {
+    axiosJWT
+      .get(USER_API + `/bookings/${id}`)
+      .then(({ data }) => {
+        if (data?.preOrder) {
+          dispatch(loadCartItems(data?.preOrder));
+        }
+      })
+      .catch(() => showToast("Oops! Something went wrong", "error"));
+  }, []);
 
   const totalAmount = useMemo(() => {
     if (cartItems.length)
@@ -37,6 +48,18 @@ const CartSidebar: React.FC<CartSidbarProps> = ({
         return (acc += subTotal);
       }, 0);
   }, [cartItems]);
+
+  const handleRemoveItem = async (cartItemId: string) => {
+    axiosJWT
+      .delete(USER_API + `/booking/preOrder`, {
+        data: { bookingId: id, cartItemId },
+      })
+      .then(() => {
+        dispatch(removeItem({ itemId: cartItemId }));
+        showToast("Item removed successfully");
+      })
+      .catch(() => showToast("Oops! Something went wrong", "error"));
+  };
 
   const handleUpdateQuantity = (
     itemId: string,
@@ -111,7 +134,7 @@ const CartSidebar: React.FC<CartSidbarProps> = ({
                     <tr key={item._id}>
                       <td className="px-1  py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900 break-words">
-                          {item.name}
+                          {item?.name}
                         </div>
                       </td>
                       <td className="px-1 py-4 whitespace-nowrap">
@@ -150,10 +173,7 @@ const CartSidebar: React.FC<CartSidbarProps> = ({
                       <td className="px-1 py-4 whitespace-nowrap">
                         <div
                           className="text-sm text-gray-900 cursor-pointer"
-                          onClick={() => {
-                            dispatch(removeItem({ itemId: item._id }));
-                            showToast("Item removed successfully");
-                          }}
+                          onClick={() => handleRemoveItem(item._id)}
                         >
                           <TbCircleX className=" text-red-500 w-5 h-5" />
                         </div>

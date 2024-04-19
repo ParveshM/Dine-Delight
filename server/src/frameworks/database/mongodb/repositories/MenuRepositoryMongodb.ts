@@ -27,7 +27,13 @@ export const MenuRepositoryMongodb = () => {
     skip: number
   ) => await Menu.find(filter).limit(limit).skip(skip);
 
-  return { addMenu, isItemExists, updateMenuItem, deleteItem, getMenu };
+  return {
+    addMenu,
+    isItemExists,
+    updateMenuItem,
+    deleteItem,
+    getMenu,
+  };
 };
 
 export type MenuRepositoryMongodbType = typeof MenuRepositoryMongodb;

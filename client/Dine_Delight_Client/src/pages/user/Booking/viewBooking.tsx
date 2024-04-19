@@ -193,7 +193,7 @@ const ViewBooking: React.FC = () => {
           </div>
 
           {/* pre order  */}
-          {booking?.foodStatus && (
+          {booking?.foodStatus && preOrder.length ? (
             <div className="col-span-6 space-y-3">
               <h1 className="text-xl font-semibold  border-b">Pre orders</h1>
               <ul className="grid grid-rows-4  whitespace-nowrap">
@@ -219,7 +219,7 @@ const ViewBooking: React.FC = () => {
               </ul>
               <ProgerssBar cookingStatus={booking.foodStatus} />
             </div>
-          )}
+          ) : null}
         </div>
 
         <div className="flex flex-col gap-2 md:flex-row items-center justify-center mt-8">
@@ -229,15 +229,18 @@ const ViewBooking: React.FC = () => {
             handleButtonclick={handleChat}
           />
           {booking?.bookingStatus &&
-            !bookingstatus.includes(booking?.bookingStatus ?? "") &&
-            !booking?.foodStatus && (
+            booking?.foodStatus === "Accepted" &&
+            !bookingstatus.includes(booking?.bookingStatus ?? "") && (
               <button
                 className="bg-teal-400 hover:bg-teal-500  inline-flex gap-1 items-center
               text-white font-semibold py-2 px-4 rounded-lg 
               "
                 onClick={() => navigate(`/cart/${id}`)}
               >
-                Have something on mind ? <CookingPot className="h-4 w-4" />
+                {preOrder.length
+                  ? "Edit your order"
+                  : "Have something on mind ?"}
+                <CookingPot className="h-4 w-4" />
               </button>
             )}
           {booking?.bookingStatus &&

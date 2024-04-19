@@ -10,6 +10,7 @@ import { useAppDispatch } from "../../redux/store/Store";
 import { setUser } from "../../redux/slices/UserSlice";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+
 axios.defaults.withCredentials = true;
 const LoginForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<Boolean>(false);
@@ -148,7 +149,6 @@ const LoginForm: React.FC = () => {
                     picture: string;
                     email_verified: boolean;
                   } = jwtDecode(credentialResponse?.credential);
-                  // console.log(data);
                   handleGooglSignIn(data);
                 }}
                 onError={() => {

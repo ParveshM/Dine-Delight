@@ -22,7 +22,10 @@ import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/reposi
 import { TableSlotDbInterface } from "../app/interfaces/TableSlotdbRepository";
 import { TableSlotRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/TableSlotRepositoryMongodb";
 import { cancelBookingAndUpdateWallet } from "../app/use-cases/user/Booking/cancellation";
-import { createPreOrderForBooking } from "../app/use-cases/user/Booking/preorderFood";
+import {
+  createPreOrderForBooking,
+  deletePreOrderForBooking,
+} from "../app/use-cases/user/Booking/preorderFood";
 
 const bookingController = (
   reservationServiceInterface: ReservationServiceInterface,
@@ -210,7 +213,7 @@ const bookingController = (
   };
 
   /*
-   * * METHOD :PATCH
+   * * METHOD :POST
    * * Update preorder
    */
   const updatePreOrderedFood = async (
@@ -230,6 +233,31 @@ const bookingController = (
     }
   };
 
+  /*
+   * * METHOD :DELETE
+   * * Delete preorder item
+   */
+  const deletePreOrderedFood = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { bookingId, cartItemId } = req.body;
+      await deletePreOrderForBooking(
+        bookingId,
+        cartItemId,
+        dbBookingRepository
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Item deleted successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     reserveTable,
     updatePaymentStatus,
@@ -237,6 +265,7 @@ const bookingController = (
     cancelBooking,
     getBookingDetails,
     updatePreOrderedFood,
+    deletePreOrderedFood,
   };
 };
 

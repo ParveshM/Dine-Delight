@@ -1,4 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PreorderInterface } from "../../types/RestaurantInterface";
 
 export interface CartItemInterface {
   _id: string;
@@ -6,7 +7,11 @@ export interface CartItemInterface {
   price: number;
   quantity: number;
 }
-
+interface PrOrderedItems {
+  itemId: CartItemInterface[];
+  price: number;
+  quantity: number;
+}
 interface CartInterface {
   cart: CartItemInterface[];
 }
@@ -18,6 +23,17 @@ const CartSlice = createSlice({
   name: "Cart",
   initialState,
   reducers: {
+    loadCartItems: (state, action: PayloadAction<PreorderInterface[]>) => {
+      action.payload.forEach((item) => {
+        const cartItem = {
+          _id: item.itemId._id,
+          name: item.itemId.name,
+          price: item.price,
+          quantity: item.quantity,
+        };
+        state.cart.push(cartItem);
+      });
+    },
     addToCart: (state, action: PayloadAction<CartItemInterface>) => {
       const { _id } = action.payload;
       const isItemExists = state.cart.find((item) => item._id === _id);
@@ -59,6 +75,11 @@ const CartSlice = createSlice({
     clearCart: () => initialState,
   },
 });
-export const { addToCart, updateQuantity, removeItem, clearCart } =
-  CartSlice.actions;
+export const {
+  addToCart,
+  updateQuantity,
+  removeItem,
+  clearCart,
+  loadCartItems,
+} = CartSlice.actions;
 export default CartSlice.reducer;
