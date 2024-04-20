@@ -62,7 +62,7 @@ export const bookingRepositoryMongodb = () => {
   const countBookings = async () => Booking.countDocuments();
 
   const totalAdminPayment = async () => {
-    const result = await Booking.aggregate([
+    const graphData = await Booking.aggregate([
       {
         $match: {
           bookingStatus: "Completed",
@@ -71,21 +71,24 @@ export const bookingRepositoryMongodb = () => {
       },
       {
         $group: {
-          _id: null,
-          totalProfit: {
-            $sum: "$adminPayment",
-          },
+          _id: { month: { $month: "$createdAt" } },
+          profit: { $sum: "$adminPayment" },
         },
       },
       {
         $project: {
+          month: "$_id.month",
+          profit: 1,
           _id: 0,
-          totalProfit: 1,
         },
       },
     ]);
 
-    return result[0].totalProfit;
+    const totalProfit = graphData.reduce((acc, curr) => {
+      return (acc += curr.profit);
+    }, 0);
+
+    return { totalProfit, graphData };
   };
 
   const createPreorderedFood = async (

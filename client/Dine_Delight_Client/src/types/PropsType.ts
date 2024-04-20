@@ -59,3 +59,8 @@ export interface RatingProps {
   halfIcon?: React.ReactElement;
   fullIcon?: React.ReactElement;
 }
+
+export interface GraphData {
+  month: number;
+  profit: number;
+}

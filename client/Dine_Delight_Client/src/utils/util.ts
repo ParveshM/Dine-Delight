@@ -1,3 +1,5 @@
+import { GraphData } from "../types/PropsType";
+
 export const formatDate = (date: Date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -104,3 +106,17 @@ export const getStatusColor = (status: string) => {
 
   return { color, width };
 };
+
+export function CalculateData(data: GraphData[] = []) {
+  let dataSet = Array.from({ length: 12 }).fill(0);
+
+  if (!data?.length) return dataSet;
+
+  for (let i = 1; i <= 12; i++) {
+    const monthData = data.find((item) => item.month === i);
+    if (monthData) {
+      dataSet[i] = monthData.profit;
+    }
+  }
+  return dataSet;
+}

@@ -217,6 +217,7 @@ export default (
         totalBookings,
         totalRestaurants,
         totalProfit,
+        graphData,
         bookings,
         count,
       } = await getDashBoardData(
@@ -233,6 +234,7 @@ export default (
         totalBookings,
         totalRestaurants,
         totalProfit,
+        graphData,
         bookings,
         count,
         limit,
