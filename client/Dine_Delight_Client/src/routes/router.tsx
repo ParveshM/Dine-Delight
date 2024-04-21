@@ -1,6 +1,5 @@
 import { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-
 import ProtectedRoute, {
   AdminProtectedRoute,
   SellerProtectedRoute,
@@ -61,6 +60,7 @@ const Home = lazy(() => import("../pages/Home"));
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
 const Cart = lazy(() => import("../pages/user/Booking/Cart"));
 const Bookmarks = lazy(() => import("../pages/user/Bookmarks"));
+const Dashboard = lazy(() => import("../pages/restaurant/Dashboard"));
 
 export const MainRouter = () => {
   return (
@@ -126,7 +126,7 @@ export const MainRouter = () => {
             <Route index element={<Navigate to="dashboard" />} />
             <Route
               path="dashboard"
-              element={<SellerPage children={<div>Dashboard</div>} />}
+              element={<SellerPage children={<Dashboard />} />}
             />
             <Route
               path="reservations"

@@ -1,5 +1,8 @@
 import { ReactNode } from "react";
-import { newRestaurantInterface } from "./RestaurantInterface";
+import {
+  RestaurantInterface,
+  newRestaurantInterface,
+} from "./RestaurantInterface";
 
 export type childrenProps = {
   children: ReactNode;
@@ -63,4 +66,16 @@ export interface RatingProps {
 export interface GraphData {
   month: number;
   profit: number;
+}
+
+export interface bookingStatisticsInterface {
+  bookingStatus: string;
+  count: number;
+}
+
+export interface ReportDataInterface {
+  createdAt: Date;
+  _id: string;
+  adminPayment: number;
+  restaurant: RestaurantInterface;
 }

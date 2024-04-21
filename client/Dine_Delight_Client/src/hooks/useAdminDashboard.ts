@@ -6,7 +6,7 @@ import axiosJWT from "../utils/axiosService";
 import usePaginateState from "./usePaginateState";
 import { GraphData } from "../types/PropsType";
 
-type DashboardDataType = {
+export type DashboardDataType = {
   totalUsers: number;
   totalBookings: number;
   totalRestaurants: number;
@@ -19,7 +19,7 @@ export default function useAdminDashboard() {
     null
   );
   const [bookings, setBookings] = useState<BookingInterface[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const {
     currentPage,
@@ -56,19 +56,18 @@ export default function useAdminDashboard() {
         setBookings(bookings);
         setPageSize(count);
         setItemsPerPage(limit);
-        setLoading(false);
       })
       .catch(() => {
         showToast("Oops! Something went wrong", "error");
-        setLoading(false);
       });
   }, [selectedStatus, currentPage]);
 
   return {
     dashboardData,
-    loading,
     currentPage,
     pageSize,
+    isModalOpen,
+    setIsModalOpen,
     itemsPerPage,
     bookings,
     setSelectedStatus,

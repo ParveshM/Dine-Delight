@@ -8,8 +8,10 @@ import {
 import useAdminDashboard from "../../hooks/useAdminDashboard";
 import DashboardTableData from "../../components/Admin/DashboardTableData";
 import Pagination from "../../components/Pagination";
-import LineChart from "../../components/Admin/LineChart";
+import LineChart from "../../components/Admin/Graph/LineChart";
 import DashboardCard from "../../components/Admin/DashboardCard";
+import ReportModal from "../../components/Admin/ReportModal";
+import Button from "../../components/restaurant/Button";
 
 const AdminDashboard: React.FC = () => {
   const {
@@ -17,6 +19,8 @@ const AdminDashboard: React.FC = () => {
     currentPage,
     itemsPerPage,
     bookings,
+    isModalOpen,
+    setIsModalOpen,
     setCurrentPage,
     setSelectedStatus,
     pageSize,
@@ -51,8 +55,15 @@ const AdminDashboard: React.FC = () => {
           className="bg-green-100"
         />
       </div>
+      <div className="flex justify-end mt-1">
+        <Button
+          label="Create Report"
+          className="bg-green-600 hover:bg-green-700 "
+          handleButtonclick={() => setIsModalOpen(true)}
+        />
+      </div>
       {/* Graph data  */}
-      <div className="grid grid-cols-2 ">
+      <div className="grid grid-cols-2 mt-0">
         <div className="col-span-2  md:h-[400px]  rounded-lg">
           <LineChart data={dashboardData?.data} />
         </div>
@@ -127,6 +138,7 @@ const AdminDashboard: React.FC = () => {
           />
         </div>
       </div>
+      {isModalOpen && <ReportModal isModalOpen={setIsModalOpen} />}
     </div>
   );
 };

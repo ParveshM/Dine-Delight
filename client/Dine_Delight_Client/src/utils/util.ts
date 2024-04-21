@@ -1,4 +1,5 @@
-import { GraphData } from "../types/PropsType";
+import { statusLabel } from "../constants";
+import { GraphData, bookingStatisticsInterface } from "../types/PropsType";
 
 export const formatDate = (date: Date) => {
   const year = date.getFullYear();
@@ -119,4 +120,30 @@ export function CalculateData(data: GraphData[] = []) {
     }
   }
   return dataSet;
+}
+
+export function getBookingStatusData(data?: bookingStatisticsInterface[]) {
+  let dataSet = Array.from({ length: statusLabel.length }).fill(0);
+  if (!data?.length) return dataSet;
+
+  for (let i = 0; i < statusLabel.length; i++) {
+    const item = data.find((d) => d.bookingStatus === statusLabel[i]);
+    if (item) dataSet[i] = item.count;
+  }
+  return dataSet;
+}
+
+export function getfirstDayOfMonth() {
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const secondDay = new Date(firstDay);
+  secondDay.setDate(firstDay.getDate() + 1);
+  return secondDay.toISOString().slice(0, 10);
+}
+export function getLastDayOfMonth() {
+  const now = new Date();
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const secondLastDay = new Date(lastDay);
+  secondLastDay.setDate(lastDay.getDate() + 1);
+  return secondLastDay.toISOString().slice(0, 10);
 }

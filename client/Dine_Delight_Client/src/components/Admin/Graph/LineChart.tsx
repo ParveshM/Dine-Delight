@@ -1,27 +1,15 @@
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
-import { Line } from "react-chartjs-2";
-import { GraphData } from "../../types/PropsType";
-import { CalculateData } from "../../utils/util";
+import { Line, Bar } from "react-chartjs-2";
+import { GraphData } from "../../../types/PropsType";
+import { CalculateData } from "../../../utils/util";
+import { labels } from "../../../constants";
 
 Chart.register(CategoryScale);
 
 const LineChart: React.FC<{ data?: GraphData[] }> = ({ data }) => {
   const chartData = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
+    labels,
     datasets: [
       {
         label: "Profit",
