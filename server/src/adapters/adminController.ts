@@ -6,6 +6,7 @@ import {
   getUsers,
   getRestaurants,
   getDashBoardData,
+  generateReportforAdmin,
 } from "../app/use-cases/Admin/adminRead";
 import { HttpStatus } from "../types/httpStatus";
 import { UserDbInterface } from "../app/interfaces/userDbRepository";
@@ -245,6 +246,39 @@ export default (
     }
   };
 
+  /*
+   * METHOD:GET
+   * Generate reports for admin
+   */
+  const generateReport = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { startDate, endDate } = req.query as {
+        startDate: string;
+        endDate: string;
+      };
+
+      const report = await generateReportforAdmin(
+        startDate,
+        endDate,
+        bookingRepository
+      );
+
+      res
+        .status(HttpStatus.OK)
+        .json({
+          success: true,
+          message: "Reports generated successfully",
+          report,
+        });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     adminLogin,
     getAllUser,
@@ -253,5 +287,6 @@ export default (
     validateRestaurant,
     listRestaurant,
     dashboardDetails,
+    generateReport,
   };
 };

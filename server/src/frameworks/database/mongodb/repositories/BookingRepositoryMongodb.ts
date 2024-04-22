@@ -1,7 +1,10 @@
+import mongoose from "mongoose";
 import { BookingEntityType } from "../../../../entities/bookingEntity";
 import { CartItemInterface } from "../../../../types/BookingInterface";
 import Booking from "../models/Booking";
 import Preorder from "../models/Preorder";
+import { RestaurantReportFilter } from "../../../../types/restaurantInterface";
+import { Types } from "mongoose";
 
 export const bookingRepositoryMongodb = () => {
   const createBooking = async (reservationData: BookingEntityType) =>
@@ -32,14 +35,13 @@ export const bookingRepositoryMongodb = () => {
       upsert: true,
     });
 
-  const updateAdminPayment = async (bookingId: string, Amount: number) => {
-    const update = await Booking.updateOne(
+  const updateAdminPayment = async (bookingId: string, Amount: number) =>
+    await Booking.updateOne(
       { bookingId },
       {
         $set: { adminPayment: Amount },
       }
     );
-  };
 
   const bookings = async (filter: Record<string, any>) =>
     await Booking.find(filter)
@@ -91,6 +93,150 @@ export const bookingRepositoryMongodb = () => {
     return { totalProfit, graphData };
   };
 
+  const getAdminReport = async (startDate: string, endDate: string) =>
+    await Booking.aggregate([
+      {
+        $match: {
+          bookingStatus: "Completed",
+          adminPayment: {
+            $exists: true,
+          },
+          createdAt: {
+            $gte: new Date(startDate),
+            $lte: new Date(endDate),
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "restaurants",
+          localField: "restaurantId",
+          foreignField: "_id",
+          as: "restaurant",
+        },
+      },
+      {
+        $unwind: {
+          path: "$restaurant",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          restaurant: 1,
+          adminPayment: 1,
+          createdAt: 1,
+        },
+      },
+    ]);
+
+  const getRestaurantReport = async (filter: RestaurantReportFilter) =>
+    await Booking.aggregate([
+      {
+        $match: filter,
+      },
+      {
+        $lookup: {
+          from: "tables",
+          localField: "tableId",
+          foreignField: "_id",
+          as: "table",
+        },
+      },
+      {
+        $unwind: {
+          path: "$table",
+        },
+      },
+      {
+        $lookup: {
+          from: "tableslots",
+          localField: "tableSlotId",
+          foreignField: "_id",
+          as: "tableSlot",
+        },
+      },
+      {
+        $unwind: {
+          path: "$tableSlot",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: {
+          path: "$user",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          tableSlot: 1,
+          table: 1,
+          user: 1,
+          paymentMethod: 1,
+          paymentStatus: 1,
+          bookingStatus: 1,
+          totalAmount: 1,
+          bookingId: 1,
+          createdAt: 1,
+        },
+      },
+    ]);
+
+  const restaurantGraphData = async (restaurantId: string) => {
+    const graphData = await Booking.aggregate([
+      {
+        $match: {
+          restaurantId: new Types.ObjectId(restaurantId),
+        },
+      },
+      {
+        $group: {
+          _id: { month: { $month: "$createdAt" } },
+          profit: { $sum: "$totalAmount" },
+        },
+      },
+      {
+        $project: {
+          month: "$_id.month",
+          profit: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    const bookingStatistics = await Booking.aggregate([
+      {
+        $match: {
+          restaurantId: new Types.ObjectId(restaurantId),
+        },
+      },
+      {
+        $group: {
+          _id: "$bookingStatus",
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $project: {
+          bookingStatus: "$_id",
+          _id: 0,
+          count: 1,
+        },
+      },
+    ]);
+
+    return { graphData, bookingStatistics };
+  };
   const createPreorderedFood = async (
     bookingId: string,
     predorderData: CartItemInterface
@@ -126,6 +272,9 @@ export const bookingRepositoryMongodb = () => {
     updatePreOrderItem,
     getOrderItem,
     deletOrderItem,
+    getAdminReport,
+    getRestaurantReport,
+    restaurantGraphData,
   };
 };
 export type BookingRepositoryMongodbType = typeof bookingRepositoryMongodb;

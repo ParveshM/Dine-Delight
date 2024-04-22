@@ -1,15 +1,17 @@
 import { useFormik } from "formik";
 import { IoClose } from "react-icons/io5";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import axiosJWT from "../../utils/axiosService";
 import { ADMIN_API, RESTAURANT_API } from "../../constants";
 import showToast from "../../utils/toaster";
 import { ReportDataInterface } from "../../types/PropsType";
-import { pdfGenerator } from "../../utils/exportData";
+import { arrayToExcel, pdfGenerator } from "../../utils/exportData";
 import { getLastDayOfMonth, getfirstDayOfMonth } from "../../utils/util";
 import { useAppSelector } from "../../redux/store/Store";
 import { ChevronDown } from "lucide-react";
 import * as Yup from "yup";
+// import * as XLSX from "xlsx";
+// import { saveAs } from "file-saver";
 
 const validationSchema = Yup.object().shape({
   startDate: Yup.date().required("Start date is required"),
@@ -19,7 +21,7 @@ const validationSchema = Yup.object().shape({
     .min(Yup.ref("startDate"), "End date must be after start date")
     .test(
       "greater-than-start",
-      "End date must be greater than start date",
+      "From date must be greater than To date",
       function (value, { parent }) {
         const { startDate } = parent;
         return value > new Date(startDate);
@@ -30,7 +32,7 @@ const validationSchema = Yup.object().shape({
 const ReportModal: React.FC<{ isModalOpen: (isOpen: boolean) => void }> = ({
   isModalOpen,
 }) => {
-  const [hasData, setHasData] = useState<boolean>(false);
+  const [hasData, setHasData] = useState<boolean>(true);
   const [data, setData] = useState<ReportDataInterface[]>([]);
   const { role } = useAppSelector((state) => state.UserSlice);
   const isSeller = useMemo(() => role === "seller", [role]);
@@ -59,6 +61,14 @@ const ReportModal: React.FC<{ isModalOpen: (isOpen: boolean) => void }> = ({
         .catch(() => showToast("Oops! Something went wrong", "error"));
     },
   });
+  const exportFile = useCallback(() => {
+    try {
+      const fileName = `${formik.values.startDate}-${formik.values.endDate} Report.xls`;
+      arrayToExcel.convertArrayToTable(data, fileName, role);
+    } catch (error) {
+      console.error("Error in generating excel", error);
+    }
+  }, [data]);
 
   return (
     <div
@@ -118,7 +128,6 @@ const ReportModal: React.FC<{ isModalOpen: (isOpen: boolean) => void }> = ({
                 <select
                   className="block w-full appearance-none bg-white border border-gray-300 text-sm py-1 px-2 pr-8 rounded-md focus:outline-none focus:border-blue-500"
                   {...formik.getFieldProps("selectedStatus")}
-                  defaultValue=""
                 >
                   <option value="">All</option>
                   <option value="Pending">Pending</option>
@@ -142,7 +151,7 @@ const ReportModal: React.FC<{ isModalOpen: (isOpen: boolean) => void }> = ({
               </button>
             </div>
           </form>
-          {hasData ? (
+          {hasData && data.length ? (
             <div className="flex justify-between gap-2">
               <button
                 className="text-white w-full bg-blue-500 hover:bg-blue-600 
@@ -163,16 +172,16 @@ const ReportModal: React.FC<{ isModalOpen: (isOpen: boolean) => void }> = ({
 
               <button
                 className="text-white w-full bg-gray-500 hover:bg-gray-600 focus:ring-green-400 focus:ring-2 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center "
-                onClick={() => ""}
+                onClick={exportFile}
               >
                 Download Excel
               </button>
             </div>
-          ) : (
+          ) : !hasData ? (
             <p className="text-center text-gray-500 mt-4">
               No matching data on your filter
             </p>
-          )}
+          ) : null}
         </div>
       </div>
     </div>

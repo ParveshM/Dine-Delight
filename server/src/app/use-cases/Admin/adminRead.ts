@@ -52,3 +52,9 @@ export const getDashBoardData = async (
     count,
   };
 };
+
+export const generateReportforAdmin = async (
+  startDate: string,
+  endDate: string,
+  bookingRepository: ReturnType<BookingDbRepositoryInterface>
+) => await bookingRepository.getAdminReport(startDate, endDate);
