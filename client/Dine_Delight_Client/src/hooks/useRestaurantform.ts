@@ -8,6 +8,8 @@ import {
   validateRestaurantDetails,
 } from "../utils/validation";
 import { getAddressByReversedGeocode } from "../Api/reverseGeocode";
+import { extractPublicId } from "../utils/util";
+import axios from "axios";
 
 export interface FormInitalState {
   restaurantName: string;
@@ -192,6 +194,17 @@ const formUtils = () => {
       );
       setFormData((prev) => ({ ...prev, secondaryImages: filteredImages }));
       setIsModalOpen(false);
+      // const publicId = extractPublicId(imageToRemove);
+      // const deleteUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`;
+
+      // // Make the DELETE request to delete the image
+      // axios.delete(deleteUrl, {
+      //   params: {
+      //     api_key: apiKey,
+      //     api_secret: ,
+      //     public_id: publicId
+      //   }
+      // })
       axiosJWT
         .put(RESTAURANT_API + "/info", { secondaryImages: filteredImages })
         .then(() => {

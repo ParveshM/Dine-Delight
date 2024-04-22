@@ -43,3 +43,9 @@ export const addOrRemoveBookmarks = async (
 
   return await userRepository.updateProfile(userId, bookmarkData);
 };
+
+export const updateEmailSubscription = async (
+  restaurantId: string,
+  userId: string,
+  userRepository: ReturnType<UserDbInterface>
+) => await userRepository.updateSubcription(restaurantId, userId);

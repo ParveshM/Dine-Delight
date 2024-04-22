@@ -52,3 +52,9 @@ export interface RestaurantReportFilter {
   createdAt: Record<string, any>;
   bookingStatus?: string;
 }
+
+export interface SenderListInterface {
+  email: string;
+  restaurantId: string;
+  userId: string;
+}

@@ -78,6 +78,12 @@ export const userDbRepository = (
 
   const countUsers = async () => await repository.countUsers();
 
+  const updateSubcription = async (restaurant: string, user: string) =>
+    await repository.updateSubcription(restaurant, user);
+
+  const isUserSubscribed = async (user: string, restaurant: string) =>
+    await repository.isUserSubscribed(user, restaurant);
+
   return {
     getUserbyEmail,
     getUserbyId,
@@ -99,6 +105,8 @@ export const userDbRepository = (
     verifyAndResetPassword,
     updateProfile,
     countUsers,
+    updateSubcription,
+    isUserSubscribed,
   };
 };
 

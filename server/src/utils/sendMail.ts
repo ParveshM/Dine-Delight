@@ -2,12 +2,13 @@ import transporter from "../frameworks/services/mailService";
 const sentMail = async (
   email: string,
   emailSubject: string,
-  content: string
+  content: string,
+  fromAddress?: string
 ) => {
   // send mail with defined transport object
   try {
     const info = await transporter.sendMail({
-      from: '"Dine Delight 🍽️" <dinedelight000@gmail.com>',
+      from: fromAddress || '"Dine Delight 🍽️" <dinedelight000@gmail.com>',
       to: email,
       subject: emailSubject,
       html: content,

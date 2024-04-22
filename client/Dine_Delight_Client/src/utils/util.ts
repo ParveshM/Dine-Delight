@@ -147,3 +147,10 @@ export function getLastDayOfMonth() {
   secondLastDay.setDate(lastDay.getDate() + 1);
   return secondLastDay.toISOString().slice(0, 10);
 }
+
+export function extractPublicId(cloudinaryUrl: string) {
+  const regex =
+    /\/([^/]+)\.(jpg|jpeg|png|gif|svg|webp|bmp|ico|tiff|pdf|eps|psd|webm|mp4|mov|avi|mkv|flv|mp3|aac|m4a|ogg|oga|wav|zip|gz|tar|bz2|7z|rar|iso|dmg)$/i;
+  const match = cloudinaryUrl.match(regex);
+  return match ? match[1] : null;
+}

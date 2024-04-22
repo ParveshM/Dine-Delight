@@ -10,18 +10,21 @@ import {
 import { getMenuByRestaurant } from "../app/use-cases/restaurant/menu/read";
 import { BookingDbRepositoryInterface } from "../app/interfaces/bookingDbRepository";
 import { BookingRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/BookingRepositoryMongodb";
+import { UserDbInterface } from "../app/interfaces/userDbRepository";
+import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/userRepositoryMongodb";
+import { sendEmailNewsLetter } from "../app/use-cases/restaurant/menu/sendEmailNewsletter";
 
 const menuController = (
   menuDbRepository: MenuDbRepositoryInterface,
   menuDbRepositoryImpl: MenuRepositoryMongodbType,
-  bookingDbRepository?: BookingDbRepositoryInterface,
-  bookingDbRepositoryImpl?: BookingRepositoryMongodbType
+  bookingDbRepository: BookingDbRepositoryInterface,
+  bookingDbRepositoryImpl: BookingRepositoryMongodbType,
+  userDbRepository: UserDbInterface,
+  userDbRepositoryImpl: UserRepositoryMongodbType
 ) => {
   const menuRepository = menuDbRepository(menuDbRepositoryImpl());
-  let bookingRepository =
-    bookingDbRepository &&
-    bookingDbRepositoryImpl &&
-    bookingDbRepository(bookingDbRepositoryImpl());
+  const userRepository = userDbRepository(userDbRepositoryImpl());
+  const bookingRepository = bookingDbRepository(bookingDbRepositoryImpl());
 
   /*
    * METHOD:POST
@@ -39,6 +42,7 @@ const menuController = (
         req.body,
         menuRepository
       );
+      sendEmailNewsLetter(restaurantId, userRepository, bookingRepository);
       res
         .status(HttpStatus.OK)
         .json({ success: true, menuItem, message: "Item added successfully" });

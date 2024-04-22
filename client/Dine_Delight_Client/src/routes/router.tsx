@@ -61,6 +61,7 @@ const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
 const Cart = lazy(() => import("../pages/user/Booking/Cart"));
 const Bookmarks = lazy(() => import("../pages/user/Bookmarks"));
 const Dashboard = lazy(() => import("../pages/restaurant/Dashboard"));
+const UnsubscribePage = lazy(() => import("../pages/user/UnsubscribePage"));
 
 export const MainRouter = () => {
   return (
@@ -83,6 +84,10 @@ export const MainRouter = () => {
               element={<ResetPassword />}
             />
           </Route>
+          <Route
+            path="/unsubscribe/:restaurantId/:userId"
+            element={<UnsubscribePage />}
+          />
 
           {/* User Protected Route  */}
           <Route path="" element={<ProtectedRoute />}>

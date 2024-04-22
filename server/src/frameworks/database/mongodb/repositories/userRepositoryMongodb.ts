@@ -10,6 +10,7 @@ import Transactions from "../models/transactions";
 import { TransactionEntityType } from "../../../../entities/transactionEntity";
 import { Types } from "mongoose";
 import { PaginateInterface } from "../../../../types/restaurantInterface";
+import EmailSubscription from "../models/EmailSubscription";
 
 export const userRepositoryMongodb = () => {
   const getUserbyEmail = async (email: string) => {
@@ -106,6 +107,12 @@ export const userRepositoryMongodb = () => {
   const countUsers = async () =>
     await User.countDocuments({ isVerified: true });
 
+  const updateSubcription = async (restaurant: string, user: string) =>
+    await EmailSubscription.create({ restaurant, user, isSubscribed: false });
+
+  const isUserSubscribed = async (user: string, restaurant: string) =>
+    await EmailSubscription.findOne({ user, restaurant });
+
   // exporting the functions
   return {
     getUserbyEmail,
@@ -128,6 +135,8 @@ export const userRepositoryMongodb = () => {
     findVerificationCodeAndUpdate,
     updateUserInfo,
     countUsers,
+    updateSubcription,
+    isUserSubscribed,
   };
 };
 
