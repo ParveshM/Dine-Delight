@@ -1,3 +1,5 @@
+import { UserInterface } from "./UserInterface";
+
 export interface RestaurantInterface {
   _id: string;
   restaurantName: string;
@@ -80,4 +82,23 @@ export interface PreorderInterface {
   itemId: MenuItemInterface;
   quantity: number;
   price: number;
+}
+
+export interface RestaurantReportInterface {
+  _id: string;
+  bookingId: string;
+  paymentMethod: "Online" | "Wallet";
+  paymentStatus: "Pending" | "Paid" | "Failed";
+  totalAmount: number;
+  bookingStatus:
+    | "Pending"
+    | "Confirmed"
+    | "Cancelled"
+    | "Checked-in"
+    | "No-show"
+    | "Completed";
+  createdAt: Date;
+  table: TableInterface;
+  tableSlot: TableSlotInterface;
+  user: UserInterface;
 }

@@ -39,6 +39,7 @@ export default () => {
     controller.listRestaurant
   );
   router.get("/dashboard", authenticateAdmin, controller.dashboardDetails);
+  router.get("/reports", authenticateAdmin, controller.generateReport);
 
   return router;
 };

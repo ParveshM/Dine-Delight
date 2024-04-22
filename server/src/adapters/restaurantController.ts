@@ -22,6 +22,10 @@ import {
 import { UserDbInterface } from "../app/interfaces/userDbRepository";
 import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/userRepositoryMongodb";
 import { getBookingByBookingId } from "../app/use-cases/user/Booking/reservation";
+import {
+  dashBoardData,
+  generateRestaurantReport,
+} from "../app/use-cases/restaurant/dashboard";
 
 const restaurantController = (
   authServiceInterface: AuthServiceInterfaceType,
@@ -251,6 +255,61 @@ const restaurantController = (
     }
   };
 
+  const restaurantDashboard = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { graphData, bookings, bookingStatistics } = await dashBoardData(
+        req.seller,
+        bookingRepository
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        graphData,
+        bookings,
+        bookingStatistics,
+        message: "Dashboard data fetched successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * * METHOD:GET
+   * * Generate Report for restaurant
+   */
+  const generateReports = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { startDate, endDate, status } = req.query as {
+        startDate: string;
+        endDate: string;
+        status: string;
+      };
+      const restaurantID = req.seller;
+      const report = await generateRestaurantReport(
+        restaurantID,
+        startDate,
+        endDate,
+        bookingRepository,
+        status
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Report generated successfully",
+        report,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     signup,
     verifyToken,
@@ -260,6 +319,8 @@ const restaurantController = (
     reservations,
     updateReservations,
     getReservationbybookingId,
+    generateReports,
+    restaurantDashboard,
   };
 };
 export default restaurantController;

@@ -53,6 +53,8 @@ const restaurantRoute = () => {
   router.post("/verify_token/:token", controller.verifyToken);
   router.post("/login", controller.login);
   router.get("/info", authenticateSeller, controller.get_restaurantDetails);
+  router.get("/reports", authenticateSeller, controller.generateReports);
+  router.get("/dashboard", authenticateSeller, controller.restaurantDashboard);
   router.put("/info", authenticateSeller, controller.updateRestaurantDetails);
 
   /************* Reservations *************** */

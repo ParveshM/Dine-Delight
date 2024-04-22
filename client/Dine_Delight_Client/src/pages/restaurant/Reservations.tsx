@@ -57,9 +57,11 @@ const Reservations = () => {
                 ))}
               </>
             ) : (
-              <h1 className=" text-xl font-semibold  text-center mt-2 ">
-                No Reservations
-              </h1>
+              <tr>
+                <td className=" text-xl font-semibold  text-center mt-2 ">
+                  No Reservations
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

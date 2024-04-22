@@ -34,7 +34,7 @@ export const getDashBoardData = async (
   }
   const totalUsers = await userRepository.countUsers();
   const totalRestaurants = await restaurantRepository.countRestaurants();
-  const totalProfit = await bookingRepository.calculateProfit();
+  const { graphData, totalProfit } = await bookingRepository.calculateProfit();
   const totalBookings = await bookingRepository.countBookings();
   const { count, bookings } = await bookingRepository.paginatedBookings(
     filter,
@@ -43,11 +43,18 @@ export const getDashBoardData = async (
   );
 
   return {
-    totalUsers,
-    totalBookings,
     totalRestaurants,
+    totalBookings,
     totalProfit,
+    totalUsers,
+    graphData,
     bookings,
     count,
   };
 };
+
+export const generateReportforAdmin = async (
+  startDate: string,
+  endDate: string,
+  bookingRepository: ReturnType<BookingDbRepositoryInterface>
+) => await bookingRepository.getAdminReport(startDate, endDate);

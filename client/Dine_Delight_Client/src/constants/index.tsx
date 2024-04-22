@@ -91,7 +91,7 @@ export const userSidebarItem = [
 
 export const reservationTableColomns = [
   { label: "BookingID", key: "bookingId" },
-  { label: "Email", key: "email" },
+  { label: "Name", key: "name" },
   { label: "Time", key: "time" },
   { label: "Date", key: "date" },
   { label: "Table Size", key: "tableSize" },
@@ -112,4 +112,27 @@ export const cookingStatuses: string[] = [
   "Ready",
   "Served",
   "Delayed",
+];
+export const labels = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+export const statusLabel = [
+  "Pending",
+  "Confirmed",
+  "Cancelled",
+  "Checked-in",
+  "No-show",
+  "Completed",
 ];

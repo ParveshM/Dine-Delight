@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 export interface CreateRestaurantInterface {
   restaurantName: string;
@@ -45,4 +45,10 @@ export interface MenuItemInterface {
 export interface PaginateInterface {
   skip: number;
   limit: number;
+}
+
+export interface RestaurantReportFilter {
+  restaurantId: string | Types.ObjectId;
+  createdAt: Record<string, any>;
+  bookingStatus?: string;
 }

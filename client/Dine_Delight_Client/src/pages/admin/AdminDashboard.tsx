@@ -2,11 +2,16 @@ import {
   CalendarCheck,
   ChevronDown,
   CircleDollarSign,
+  UsersRound,
   Utensils,
 } from "lucide-react";
 import useAdminDashboard from "../../hooks/useAdminDashboard";
 import DashboardTableData from "../../components/Admin/DashboardTableData";
 import Pagination from "../../components/Pagination";
+import LineChart from "../../components/Admin/Graph/LineChart";
+import DashboardCard from "../../components/Admin/DashboardCard";
+import ReportModal from "../../components/Admin/ReportModal";
+import Button from "../../components/restaurant/Button";
 
 const AdminDashboard: React.FC = () => {
   const {
@@ -14,6 +19,8 @@ const AdminDashboard: React.FC = () => {
     currentPage,
     itemsPerPage,
     bookings,
+    isModalOpen,
+    setIsModalOpen,
     setCurrentPage,
     setSelectedStatus,
     pageSize,
@@ -22,72 +29,45 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="mt-4">
       <div className="grid grid-cols-12 gap-2 bg-gray-50 p-2 rounded-md">
-        <div className="col-span-6 md:col-span-3 ">
-          <div className=" h-full flex items-center p-4 bg-white rounded-lg shadow-md ">
-            <div className="p-3 mr-4 text-yellow-500 bg-yellow-100 rounded-full">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
-              </svg>
-            </div>
-            <div>
-              <p className="mb-2 text-sm font-medium text-gray-600">Users</p>
-              <p className="text-lg font-semibold text-gray-700">
-                {dashboardData?.totalUsers}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="col-span-6 md:col-span-3 ">
-          <div className=" h-full flex items-center p-4 bg-white rounded-lg shadow-md ">
-            <div className="p-3 mr-4 bg-blue-100 rounded-full">
-              <CalendarCheck className="w-5 h-5 text-blue-500" />
-            </div>
-            <div>
-              <p className="mb-2 text-sm font-medium text-gray-600">
-                Total bookings
-              </p>
-              <p className="text-lg font-semibold text-gray-700">
-                {dashboardData?.totalBookings}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="col-span-6 md:col-span-3 ">
-          <div className=" h-full flex items-center p-4 bg-white rounded-lg shadow-md ">
-            <div className="p-3 mr-4 bg-orange-100 rounded-full">
-              <Utensils className="w-5 h-5 text-orange-500" />
-            </div>
-            <div>
-              <p className="mb-2  text-sm font-medium text-gray-600 ">
-                Restaurants
-              </p>
-              <p className="text-lg font-semibold text-gray-700">
-                {dashboardData?.totalRestaurants}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="col-span-6 md:col-span-3 ">
-          <div className=" h-full flex items-center p-4 bg-white rounded-lg shadow-md ">
-            <div className="p-3 mr-4 bg-green-100 rounded-full">
-              <CircleDollarSign className="w-5 h-5 text-green-500" />
-            </div>
-            <div>
-              <p className="mb-2 text-sm font-medium text-gray-600">
-                Total Profit
-              </p>
-              <p className="text-lg font-semibold text-gray-700">
-                ₹ {dashboardData?.totalProfit}
-              </p>
-            </div>
-          </div>
+        <DashboardCard
+          Icon={<UsersRound className="w-5 h-5 text-yellow-500" />}
+          label="Users"
+          data={dashboardData?.totalUsers || 0}
+          className="bg-yellow-100"
+        />
+        <DashboardCard
+          Icon={<CalendarCheck className="w-5 h-5 text-blue-500" />}
+          label=" Total bookings"
+          data={dashboardData?.totalBookings || 0}
+          className="bg-blue-100"
+        />
+        <DashboardCard
+          Icon={<Utensils className="w-5 h-5 text-orange-500" />}
+          label="Restaurants"
+          data={dashboardData?.totalRestaurants || 0}
+          className="bg-orange-100"
+        />
+        <DashboardCard
+          Icon={<CircleDollarSign className="w-5 h-5 text-green-500" />}
+          label="Total Profit"
+          showPriceSymbol={true}
+          data={dashboardData?.totalProfit || 0}
+          className="bg-green-100"
+        />
+      </div>
+      <div className="flex justify-end mt-1">
+        <Button
+          label="Create Report"
+          className="bg-green-600 hover:bg-green-700 "
+          handleButtonclick={() => setIsModalOpen(true)}
+        />
+      </div>
+      {/* Graph data  */}
+      <div className="grid grid-cols-2 mt-0">
+        <div className="col-span-2  md:h-[400px]  rounded-lg">
+          <LineChart data={dashboardData?.data} />
         </div>
       </div>
-
-      {/* <div className="grid grid-cols-2 gap-4 mt-8">
-        <div className="col-span-2 md:col-span-1 bg-blue-200 p-4">Graph 1</div>
-        <div className="col-span-2 md:col-span-1 bg-blue-200 p-4">Graph 2</div>
-      </div> */}
 
       <div className="mt-8">
         <div className="flex justify-between px-2">
@@ -144,7 +124,9 @@ const AdminDashboard: React.FC = () => {
                   ))}
                 </>
               ) : (
-                <h2>No booking found</h2>
+                <tr>
+                  <td>No booking found</td>
+                </tr>
               )}
             </tbody>
           </table>
@@ -156,6 +138,7 @@ const AdminDashboard: React.FC = () => {
           />
         </div>
       </div>
+      {isModalOpen && <ReportModal isModalOpen={setIsModalOpen} />}
     </div>
   );
 };
