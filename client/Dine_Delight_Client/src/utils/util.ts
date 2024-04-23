@@ -154,3 +154,12 @@ export function extractPublicId(cloudinaryUrl: string) {
   const match = cloudinaryUrl.match(regex);
   return match ? match[1] : null;
 }
+
+export function calculateDiscountedPrice(
+  originalPrice: number,
+  discountPercentage: number
+) {
+  const discountDecimal = discountPercentage / 100;
+  const discountedPrice = originalPrice - originalPrice * discountDecimal;
+  return Number(discountedPrice.toFixed(2));
+}

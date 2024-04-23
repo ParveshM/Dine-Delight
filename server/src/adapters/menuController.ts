@@ -42,7 +42,15 @@ const menuController = (
         req.body,
         menuRepository
       );
-      sendEmailNewsLetter(restaurantId, userRepository, bookingRepository);
+      const { notifyUsers } = req.body;
+      if (notifyUsers) {
+        sendEmailNewsLetter(
+          restaurantId,
+          userRepository,
+          bookingRepository,
+          req.body
+        );
+      }
       res
         .status(HttpStatus.OK)
         .json({ success: true, menuItem, message: "Item added successfully" });
@@ -61,11 +69,21 @@ const menuController = (
   ) => {
     try {
       const { menuItemID } = req.params;
+      const restaurantId = req.seller;
+      const { notifyUsers } = req.body;
       const updatedMenuItem = await updateMenuItem(
         menuItemID,
         req.body,
         menuRepository
       );
+      if (notifyUsers) {
+        sendEmailNewsLetter(
+          restaurantId,
+          userRepository,
+          bookingRepository,
+          req.body
+        );
+      }
       res.status(HttpStatus.OK).json({
         success: true,
         menuItem: updatedMenuItem,
@@ -102,16 +120,15 @@ const menuController = (
    */
   const getMenu = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let restaurantId = req.seller;
+      let restaurantId = req.seller || req.query.restaurantId;
       const page = parseInt(req.query.page as string, 10) || 1;
       const q = req.query.q as string;
       const isVegetarian = req.query.isVegetarian;
       const category = req.query.category;
+      const bookingId = req.query.bookingId as string;
 
-      if (req.params.bookingID) {
-        const booking = await bookingRepository?.getBookingById(
-          req.params.bookingID
-        );
+      if (bookingId) {
+        const booking = await bookingRepository?.getBookingById(bookingId);
         restaurantId = booking?.restaurantId;
       }
 

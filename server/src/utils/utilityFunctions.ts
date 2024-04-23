@@ -17,3 +17,12 @@ export function parseTimeSlot(timeString: string) {
 
   return paddedHour + ":" + paddedMin;
 }
+
+export function calculateDiscountedPrice(
+  originalPrice: number,
+  discountPercentage: number
+) {
+  const discountDecimal = discountPercentage / 100;
+  const discountedPrice = originalPrice - originalPrice * discountDecimal;
+  return Number(discountedPrice.toFixed(2));
+}

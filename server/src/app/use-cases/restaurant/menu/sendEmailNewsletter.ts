@@ -1,13 +1,16 @@
 import { startEmailSendingJob } from "../../../../frameworks/services/mailService";
-import { SenderListInterface } from "../../../../types/restaurantInterface";
-import mailTemplate from "../../../../utils/mailTemplate";
+import {
+  MenuItemInterface,
+  SenderListInterface,
+} from "../../../../types/restaurantInterface";
 import { BookingDbRepositoryInterface } from "../../../interfaces/bookingDbRepository";
 import { UserDbInterface } from "../../../interfaces/userDbRepository";
 
 export const sendEmailNewsLetter = async (
   restaurantId: string,
   userRepository: ReturnType<UserDbInterface>,
-  bookingRepository: ReturnType<BookingDbRepositoryInterface>
+  bookingRepository: ReturnType<BookingDbRepositoryInterface>,
+  data: MenuItemInterface
 ) => {
   let senderList: SenderListInterface[] = [];
   const bookings: any[] = await bookingRepository.bookings({
@@ -23,12 +26,14 @@ export const sendEmailNewsLetter = async (
       if (!isSubscribed && !uniqueEmail.has(booking.userId.email)) {
         uniqueEmail.set(booking.userId.email, true);
         senderList.push({
+          userName: booking.userId.name,
           email: booking.userId.email,
           restaurantId,
+          restaurantName: booking.restaurantId.restaurantName,
           userId: booking.userId._id,
         });
       }
     }
-    senderList.length && startEmailSendingJob(senderList);
+    senderList.length && startEmailSendingJob(senderList, data);
   }
 };

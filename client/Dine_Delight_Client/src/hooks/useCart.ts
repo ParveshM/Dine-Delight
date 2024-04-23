@@ -7,6 +7,7 @@ import { USER_API } from "../constants";
 import { BookingInterface } from "../types/BookingInterface";
 import { useAppDispatch } from "../redux/store/Store";
 import { addToCart, clearCart } from "../redux/slices/CartSlice";
+import { calculateDiscountedPrice } from "../utils/util";
 export default function useCart() {
   const { id } = useParams();
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -48,16 +49,20 @@ export default function useCart() {
   useEffect(() => {
     setMenuItems([]);
     setPage(1);
+    if (selectedCategory === "drinks" || selectedCategory === "dessert") {
+      setIsVegFilterActive(false); // drinks and desserts wont be veg or non veg so no filteing required
+    }
   }, [selectedCategory, isVegFilterActive, searchQuery]);
 
   useEffect(() => {
     async function fetchMenu() {
       page > 1 ? setIsLoadingMore(true) : setIsLoading(true);
       axiosJWT
-        .get(USER_API + `/menu/${id}`, {
+        .get(USER_API + `/menu`, {
           params: {
             q: searchQuery,
             page,
+            bookingId: id,
             category: selectedCategory,
             isVegetarian: isVegFilterActive,
           },
@@ -86,12 +91,13 @@ export default function useCart() {
   ]);
 
   const handleAddToCart = (item: MenuItemInterface) => {
-    const { _id, name, price } = item;
+    const { _id, name, price, discount } = item;
+    const discountPrice = calculateDiscountedPrice(price, discount);
     dispatch(
       addToCart({
         _id,
         name,
-        price,
+        price: discountPrice,
         quantity: 1,
       })
     );

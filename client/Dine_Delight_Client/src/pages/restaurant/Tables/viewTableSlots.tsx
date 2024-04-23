@@ -5,7 +5,6 @@ import useTableSlots from "../../../hooks/useTableSlots";
 import { useState } from "react";
 import AddTableSlotModal from "../../../components/restaurant/Modal/AddTableSlotModal";
 import Pagination from "../../../components/Pagination";
-import { convertTimeFormat } from "../../../utils/timeConverter";
 import { formatDate } from "../../../utils/util";
 
 const ViewTable = () => {

@@ -25,7 +25,7 @@ const useTableSlots = () => {
   } = usePaginateState();
   const [filter, setFilter] = useState({
     date: "",
-    time: "13:00",
+    time: "",
   });
   const [isFilterOn, setIsFilterOn] = useState<boolean>(false);
 

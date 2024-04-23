@@ -72,6 +72,7 @@ export interface MenuItemInterface {
   category: "starters" | "main course" | "drinks" | "dessert";
   isVegetarian: boolean;
   tags?: string[];
+  discount: number;
   restaurantId: string;
 }
 export type MenuCategory = "starters" | "main course" | "drinks" | "dessert";

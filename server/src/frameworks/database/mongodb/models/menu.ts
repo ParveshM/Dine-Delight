@@ -18,6 +18,7 @@ const menuSchema = new mongoose.Schema({
     required: true,
   },
   tags: Array,
+  discount: { type: Number, default: 0 },
   restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant" },
 });
 export default mongoose.model("Menu", menuSchema);
