@@ -55,7 +55,9 @@ const userRoute = () => {
     menuDbRepository,
     MenuRepositoryMongodb,
     bookingDbRepository,
-    bookingRepositoryMongodb
+    bookingRepositoryMongodb,
+    userDbRepository,
+    userRepositoryMongodb
   );
 
   /******** user authentication Routes ********/
@@ -66,6 +68,7 @@ const userRoute = () => {
   router.post("/google_signIn", controller.googleSignIn); // google sign in
   router.post("/forgot_password", controller.forgotPassword);
   router.post("/reset_password/:token", controller.resetPassword);
+  router.post("/email/unSubscribe", controller.updateEmailPreference);
 
   router.get("/users/:id", controller.userInfo);
   router.get("/profile", authenticateUser, controller.userProfile);
@@ -104,7 +107,7 @@ const userRoute = () => {
   router.post("/booking/preOrder", _bookingController.updatePreOrderedFood);
   router.delete("/booking/preOrder", _bookingController.deletePreOrderedFood);
 
-  router.get("/menu/:bookingID", authenticateUser, _menuController.getMenu);
+  router.get("/menu", authenticateUser, _menuController.getMenu);
 
   return router;
 };

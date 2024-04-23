@@ -46,7 +46,11 @@ const restaurantRoute = () => {
 
   const _menuController = menuController(
     menuDbRepository,
-    MenuRepositoryMongodb
+    MenuRepositoryMongodb,
+    bookingDbRepository,
+    bookingRepositoryMongodb,
+    userDbRepository,
+    userRepositoryMongodb
   );
 
   router.post("/signup", controller.signup);

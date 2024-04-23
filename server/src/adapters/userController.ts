@@ -31,6 +31,7 @@ import {
   WalletTransactions,
   addOrRemoveBookmarks,
   getUserProfile,
+  updateEmailSubscription,
   updateUser,
 } from "../app/use-cases/user/read & update/profile";
 import { addNewRating } from "../app/use-cases/restaurant/ratings";
@@ -459,6 +460,34 @@ const userController = (
       next(error);
     }
   };
+  /**
+   * * METHOD:POST
+   * * Update email preference
+   */
+  const updateEmailPreference = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { restaurantId, userId } = req.body as {
+        restaurantId: string;
+        userId: string;
+      };
+      const isUpdated = await updateEmailSubscription(
+        restaurantId,
+        userId,
+        dbRepositoryUser
+      );
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Subcription updated successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 
   return {
     registerUser,
@@ -477,6 +506,7 @@ const userController = (
     getTransactions,
     createNewRating,
     updateBookmarks,
+    updateEmailPreference,
   };
 };
 export default userController;

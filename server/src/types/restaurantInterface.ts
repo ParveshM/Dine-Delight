@@ -40,6 +40,7 @@ export interface MenuItemInterface {
   isVegetarian: boolean;
   restaurantId: Types.ObjectId;
   tags?: string[];
+  discount: number;
 }
 
 export interface PaginateInterface {
@@ -51,4 +52,12 @@ export interface RestaurantReportFilter {
   restaurantId: string | Types.ObjectId;
   createdAt: Record<string, any>;
   bookingStatus?: string;
+}
+
+export interface SenderListInterface {
+  userName: string;
+  email: string;
+  restaurantId: string;
+  restaurantName: string;
+  userId: string;
 }

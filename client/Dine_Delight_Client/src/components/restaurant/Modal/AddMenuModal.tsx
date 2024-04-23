@@ -20,6 +20,16 @@ const validationSchema = Yup.object().shape({
   price: Yup.number()
     .required("Price is required")
     .min(1, "Enter a valid price"),
+  discount: Yup.number()
+    .min(0, "Enter a valid discount")
+    .max(50, "Enter discount between 1-50"),
+  notifyUsers: Yup.boolean().test(
+    "testDiscount",
+    "Discount must be greater than 0 ",
+    function (value) {
+      return !value || (value && this.parent.discount >= 1);
+    }
+  ),
 });
 
 interface MenuModalProps {
@@ -49,6 +59,8 @@ const AddMenuModal: React.FC<MenuModalProps> = ({
       isVegetarian: menuItem?.isVegetarian || false,
       category: menuItem?.category || "starters",
       tags: menuItem?.tags || [],
+      discount: menuItem?.discount || "",
+      notifyUsers: false,
     },
     validationSchema,
     onSubmit: (values) => {
@@ -83,7 +95,7 @@ const AddMenuModal: React.FC<MenuModalProps> = ({
       <div className="relative bg-white rounded-lg shadow-lg max-w-md w-full mx-3">
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="text-lg font-semibold text-gray-900 inline-flex items-center gap-2">
-            {action === "Add" ? "Add" : "Edit"} Item{" "}
+            {action === "Add" ? "Add" : "Edit"} Item
             <CookingPot className="text-orange-400 text-2xl" />
           </h3>
           <button
@@ -125,7 +137,7 @@ const AddMenuModal: React.FC<MenuModalProps> = ({
                 {...formik.getFieldProps("price")}
               />
               {formik.errors.price && formik.touched.price && (
-                <div className="text-red-500">{formik.errors.price}</div>
+                <p className="text-red-500">{formik.errors.price}</p>
               )}
             </div>
             <div className="col-span-2">
@@ -163,6 +175,43 @@ const AddMenuModal: React.FC<MenuModalProps> = ({
                 </label>
               </div>
             ) : null}
+
+            <div className="col-span-2 mt-2">
+              <label
+                htmlFor="Discount"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Discount
+              </label>
+              <div className="relative ">
+                <input
+                  type="number"
+                  className="bg-gray-50 border app border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white "
+                  {...formik.getFieldProps("discount")}
+                />
+                <span className="absolute inset-y-0 right-0 flex items-center pr-2 text-gray-500 dark:text-gray-400">
+                  %
+                </span>
+              </div>
+              {formik.errors.discount && formik.touched.discount && (
+                <p className="text-red-500">{formik.errors.discount}</p>
+              )}
+            </div>
+            <div className="col-span-2 mt-10">
+              <label className="inline-flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  className="form-checkbox h-5 w-5 text-blue-600"
+                  checked={formik?.values.notifyUsers}
+                  {...formik.getFieldProps("notifyUsers")}
+                />
+                <span>Notify users by email</span>
+              </label>
+              {formik.errors.notifyUsers && formik.touched.notifyUsers && (
+                <p className="text-red-500">{formik.errors.notifyUsers}</p>
+              )}
+            </div>
+
             <div className="col-span-4 ">
               <label htmlFor="tags" className="mb-4">
                 Tags

@@ -1,6 +1,8 @@
 import { MenuItemInterface } from "../../../types/RestaurantInterface";
 import { forwardRef } from "react";
 import Button from "../../restaurant/Button";
+import { MdDiscount } from "react-icons/md";
+import { calculateDiscountedPrice } from "../../../utils/util";
 
 interface MenuItemProps extends MenuItemInterface {
   handleClick: () => void;
@@ -8,14 +10,18 @@ interface MenuItemProps extends MenuItemInterface {
 const MenuItemList: React.ForwardRefRenderFunction<
   HTMLDivElement,
   MenuItemProps
-> = ({ name, price, isVegetarian, category, tags, handleClick }, ref) => {
+> = (
+  { name, price, isVegetarian, category, discount, tags, handleClick },
+  ref
+) => {
+  const discountedPrice = calculateDiscountedPrice(price, discount);
   return (
     <div
       className="relative  bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-md p-4 cursor-pointer"
       ref={ref}
     >
-      {(category === "starters" || category === "main course") && (
-        <div className="relative mb-2">
+      <div className="flex items-center relative mb-4">
+        {(category === "main course" || category === "starters") && (
           <p
             className={`absolute top-0 right-0 ${
               isVegetarian ? "bg-green-500" : "bg-red-500"
@@ -23,11 +29,19 @@ const MenuItemList: React.ForwardRefRenderFunction<
           >
             {isVegetarian ? "veg" : "non-veg"}
           </p>
-        </div>
-      )}
+        )}
+        {discount > 0 && (
+          <div className="absolute top-0 left-2 bg-yellow-400 text-yellow-900 py-1 px-2 rounded-md text-xs font-semibold flex items-center">
+            <MdDiscount className="w-4 h-4 mr-1" />
+            {discount}%
+          </div>
+        )}{" "}
+      </div>
       <div className="p-4">
         <h3 className="text-lg font-semibold break-words">{name}</h3>
-        <p className="text-sm text-gray-600 mt-2">₹{price}</p>
+        <p className="text-sm text-gray-600 mt-2 inline-flex gap-1">
+          {discount > 0 && <del>₹{price}</del>}₹{discountedPrice}
+        </p>
       </div>
       <div className="flex justify-end">
         {tags?.length ? (
