@@ -62,6 +62,8 @@ const Cart = lazy(() => import("../pages/user/Booking/Cart"));
 const Bookmarks = lazy(() => import("../pages/user/Bookmarks"));
 const Dashboard = lazy(() => import("../pages/restaurant/Dashboard"));
 const UnsubscribePage = lazy(() => import("../pages/user/UnsubscribePage"));
+const MenuOrder = lazy(() => import("../pages/user/MenuOrder"));
+const Banners = lazy(() => import("../pages/admin/Banners"));
 
 export const MainRouter = () => {
   return (
@@ -110,6 +112,7 @@ export const MainRouter = () => {
               element={<AccountPage children={<Bookmarks />} />}
             />
             <Route path="/cart/:id" element={<Cart />} />
+            <Route path="/menu/:id" element={<MenuOrder />} />
             <Route
               path="/transaction_history"
               element={<AccountPage children={<TransactionHistory />} />}
@@ -184,8 +187,11 @@ export const MainRouter = () => {
               path="new_registrations"
               element={<AdminPage children={<NewRegistration />} />}
             />
+            <Route
+              path="banners"
+              element={<AdminPage children={<Banners />} />}
+            />
           </Route>
-          <Route path="banners" element={<div>Banners</div>} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

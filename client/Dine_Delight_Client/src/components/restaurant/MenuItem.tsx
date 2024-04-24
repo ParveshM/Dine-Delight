@@ -33,7 +33,7 @@ const MenuItem: React.ForwardRefRenderFunction<
         )}
         {discount > 0 && (
           <div className="absolute top-0 left-2 bg-yellow-400 text-yellow-900 py-1 px-2 rounded-md text-xs font-semibold flex items-center">
-            <MdDiscount className="w-4 h-4 mr-1" />
+            <MdDiscount className="w-4 h-4 " />
             {discount}%
           </div>
         )}

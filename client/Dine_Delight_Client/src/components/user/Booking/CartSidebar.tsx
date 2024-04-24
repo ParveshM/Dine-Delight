@@ -1,20 +1,10 @@
 import { PanelRightClose } from "lucide-react";
 import { BsPlus, BsDash } from "react-icons/bs";
-import {
-  CartItemInterface,
-  clearCart,
-  loadCartItems,
-  removeItem,
-  updateQuantity,
-} from "../../../redux/slices/CartSlice";
-import { useAppDispatch, useAppSelector } from "../../../redux/store/Store";
-import { useEffect, useMemo, useState } from "react";
+import { CartItemInterface, clearCart } from "../../../redux/slices/CartSlice";
+import { useAppDispatch } from "../../../redux/store/Store";
 import { TbCircleX } from "react-icons/tb";
-import showToast from "../../../utils/toaster";
-import axiosJWT from "../../../utils/axiosService";
-import { USER_API } from "../../../constants";
-import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../restaurant/Button";
+import useCartSidebar from "../../../hooks/useCartSidebar";
 interface CartSidbarProps {
   isSidebarOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
@@ -24,64 +14,16 @@ const CartSidebar: React.FC<CartSidbarProps> = ({
   isSidebarOpen,
   setIsSidebarOpen,
 }) => {
-  const [isSubmitting, setIssubmitting] = useState<boolean>(false);
-  const { cart: cartItems } = useAppSelector((state) => state.CartSlice);
   const dispatch = useAppDispatch();
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const {
+    cartItems,
+    handleCheckout,
+    handleRemoveItem,
+    handleUpdateQuantity,
+    totalAmount,
+    isSubmitting,
+  } = useCartSidebar();
 
-  useEffect(() => {
-    axiosJWT
-      .get(USER_API + `/bookings/${id}`)
-      .then(({ data }) => {
-        if (data?.preOrder) {
-          dispatch(loadCartItems(data?.preOrder));
-        }
-      })
-      .catch(() => showToast("Oops! Something went wrong", "error"));
-  }, []);
-
-  const totalAmount = useMemo(() => {
-    if (cartItems.length)
-      return cartItems.reduce((acc, item) => {
-        let subTotal = item?.quantity * item?.price;
-        return (acc += subTotal);
-      }, 0);
-  }, [cartItems]);
-
-  const handleRemoveItem = async (cartItemId: string) => {
-    axiosJWT
-      .delete(USER_API + `/booking/preOrder`, {
-        data: { bookingId: id, cartItemId },
-      })
-      .then(() => {
-        dispatch(removeItem({ itemId: cartItemId }));
-        showToast("Item removed successfully");
-      })
-      .catch(() => showToast("Oops! Something went wrong", "error"));
-  };
-
-  const handleUpdateQuantity = (
-    itemId: string,
-    quantity: number,
-    type: "increment" | "decrement"
-  ) => {
-    dispatch(updateQuantity({ itemId, quantity, type }));
-  };
-  const handleCheckout = () => {
-    setIssubmitting(true);
-    axiosJWT
-      .post(USER_API + "/booking/preOrder", {
-        bookingId: id,
-        cartItems,
-      })
-      .then(() => {
-        showToast("Pre order placed successfully");
-        navigate(`/booking/view/${id}`);
-      })
-      .catch(() => showToast("Oops! Something went wrong"))
-      .finally(() => setIssubmitting(false));
-  };
   return (
     <>
       <aside

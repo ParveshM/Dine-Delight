@@ -12,6 +12,7 @@ import AddMenuModal from "../../components/restaurant/Modal/AddMenuModal";
 import ConfirmationModal from "../../components/user/Modals/ConfirmationModal";
 import { DebounceInput } from "react-debounce-input";
 import MenuItemsShimmer from "../../components/shimmers/MenuItemsShimmer";
+import QrGenerator from "../../components/restaurant/QrGenerator";
 
 const Menu: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -26,6 +27,7 @@ const Menu: React.FC = () => {
     null
   );
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isQrModalOpen, setQrModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -105,13 +107,20 @@ const Menu: React.FC = () => {
   return (
     <div className="grid grid-cols-8 gap-8">
       <div className="col-span-5 md:col-span-6 space-y-8 ">
-        <div className="flex justify-between items-center gap-2  mb-3">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-2  mb-3">
           <h1 className="text-3xl font-semibold ">Menu</h1>
-          <Button
-            label="Add Item"
-            className="px-4 py-2 bg-yellow-400 "
-            handleButtonclick={() => setIsModalOpen(true)}
-          />
+          <div className="flex item-center gap-2">
+            <Button
+              label="Qr Code"
+              className="px-4 py-2 bg-green-400"
+              handleButtonclick={() => setQrModalOpen(true)}
+            />
+            <Button
+              label="Add Item"
+              className="px-4 py-2 bg-yellow-400 "
+              handleButtonclick={() => setIsModalOpen(true)}
+            />
+          </div>
         </div>
 
         <div className=" flex items-center gap-2">
@@ -144,7 +153,7 @@ const Menu: React.FC = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 pb-5">
           {selectedCategory && (
             <h3 className="text-xl font-semibold col-span-full uppercase">
               {selectedCategory}
@@ -249,6 +258,7 @@ const Menu: React.FC = () => {
           handleConfirmation={handleItemDelete}
         />
       )}
+      {isQrModalOpen && <QrGenerator setIsModalOpen={setQrModalOpen} />}
     </div>
   );
 };

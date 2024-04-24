@@ -244,7 +244,7 @@ const SingleRestaurant = () => {
           ) : null}
         </>
       )}
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 };

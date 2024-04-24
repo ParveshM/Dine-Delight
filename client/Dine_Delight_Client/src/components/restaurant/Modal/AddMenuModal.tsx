@@ -107,7 +107,7 @@ const AddMenuModal: React.FC<MenuModalProps> = ({
           </button>
         </div>
         <form className="p-4 md:p-5" onSubmit={formik.handleSubmit}>
-          <div className="grid gap-4 mb-4 grid-cols-4">
+          <div className="grid grid-cols-4 gap-4 mb-4">
             <div className="col-span-2">
               <label
                 htmlFor="Dish name"

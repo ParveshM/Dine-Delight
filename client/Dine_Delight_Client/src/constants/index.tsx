@@ -13,6 +13,7 @@ export const TOKEN_API = BASE_URL + "token";
 export const CHAT_API = BASE_URL + "chat";
 export const CLOUDINARY_UPLOAD_API =
   "https://api.cloudinary.com/v1_1/dcoveyjze/upload";
+export const CLOUDNAME = "dcoveyjze";
 export const cloudinaryUploadPreset = "restaurant";
 export const randomImg = "https://picsum.photos/200/";
 

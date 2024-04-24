@@ -39,12 +39,6 @@ const TableSlotsData: React.FC<TableSlotDataaPropsType> = ({
       <td className="px-6 py-4 inline-flex gap-2">
         {isAvailable ? ( //Show the delete button only when the slot is available
           <>
-            {/* <button
-              className="p-1 rounded-md bg-sky-400 text-white font-semibold hover:bg-sky-500 transition duration-150"
-              onClick={() => console.log("")}
-            >
-              <Edit />
-            </button> */}
             <button
               className="p-1 rounded-md bg-red-400 text-white font-semibold hover:bg-red-500 transition duration-150"
               onClick={() => handleDeleteSlot(_id ?? "")}
@@ -52,9 +46,7 @@ const TableSlotsData: React.FC<TableSlotDataaPropsType> = ({
               <Trash />
             </button>
           </>
-        ) : (
-          <p className="text-base ">No actions</p>
-        )}
+        ) : null}
       </td>
     </tr>
   );

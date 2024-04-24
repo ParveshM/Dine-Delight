@@ -4,7 +4,7 @@ import logout from "../../../utils/logout";
 import UserSidebarList from "./UserSidebarList";
 import { Link, useNavigate } from "react-router-dom";
 import { LogOut, PanelRightOpen } from "lucide-react";
-interface UserSidbarProps {
+export interface UserSidbarProps {
   isSidebarOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
 }
