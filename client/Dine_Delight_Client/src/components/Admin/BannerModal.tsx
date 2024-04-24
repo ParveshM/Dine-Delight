@@ -135,7 +135,7 @@ const BannerModal: React.FC<BannerModalProps> = ({
                   croppingAspectRatio: 1.5,
                   croppingDefaultSelectionRatio: 100 / 100,
                   showSkipCropButton: false,
-                  clientAllowedFormats: ["images"],
+                  clientAllowedFormats: ["jpg", "jpeg", "png", "webp"],
                 }}
                 setImageUrl={setImageUrl}
               />

@@ -21,6 +21,14 @@ import {
 } from "../app/use-cases/Admin/adminUpdate";
 import { BookingDbRepositoryInterface } from "../app/interfaces/bookingDbRepository";
 import { BookingRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/BookingRepositoryMongodb";
+import { AdminDbRepositoryInterface } from "../app/interfaces/AdminDbRepository";
+import { AdminRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/AdminRepositoryMongodb";
+import {
+  addBanner,
+  getAllBanners,
+  removBannerImage,
+  updateActiveBanners,
+} from "../app/use-cases/Admin/banner-usecase";
 
 // adminAuthController
 export default (
@@ -31,13 +39,16 @@ export default (
   restaurantDbRepository: restaurantDbInterface,
   restaurantDbRepositoryImpl: restaurantRepositoryMongodbType,
   bookingDbRepository: BookingDbRepositoryInterface,
-  bookingDbRepositoryImpl: BookingRepositoryMongodbType
+  bookingDbRepositoryImpl: BookingRepositoryMongodbType,
+  adminDbRepository: AdminDbRepositoryInterface,
+  adminDbRepositoryImpl: AdminRepositoryMongodbType
 ) => {
   const dbUserRepository = userDbRepository(userDbRepositoryImpl());
   const dbResaurantRepository = restaurantDbRepository(
     restaurantDbRepositoryImpl()
   );
   const bookingRepository = bookingDbRepository(bookingDbRepositoryImpl());
+  const adminRepository = adminDbRepository(adminDbRepositoryImpl());
   const authService = authServiceInterface(authServiceImpl());
   /*
    * METHOD:POST
@@ -115,7 +126,7 @@ export default (
   ) => {
     try {
       const page = parseInt(req.query.page as string) ?? 1;
-      const limit = 1;
+      const limit = parseInt(req.query.limit as string) || 10;
       const skip = (page - 1) * limit;
       const new_registrations = req.query.new_registrations as
         | boolean
@@ -267,13 +278,105 @@ export default (
         bookingRepository
       );
 
-      res
-        .status(HttpStatus.OK)
-        .json({
-          success: true,
-          message: "Reports generated successfully",
-          report,
-        });
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Reports generated successfully",
+        report,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /*
+   * METHOD:GET
+   * Get Banners
+   */
+  const getBanners = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const banners = await getAllBanners(adminRepository);
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Banners fetched successfully",
+        banners,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /*
+   * METHOD:POST
+   * Add new banner
+   */
+  const addNewBanner = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const newBanner = await addBanner(req.body, adminRepository);
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Banner Added successfully",
+        newBanner,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /*
+   * METHOD:PATCH
+   * updateBanner
+   */
+  const updateBanner = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { isActive } = req.query as { isActive: string };
+      const { bannerId } = req.params;
+
+      const updatedBanner = await updateActiveBanners(
+        bannerId,
+        isActive,
+        adminRepository
+      );
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Banner updated successfully",
+        updatedBanner,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  /*
+   * METHOD:DELETE
+   * Remove banner
+   */
+  const removBanner = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { bannerId } = req.params;
+
+      await removBannerImage(bannerId, adminRepository);
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Banner deleted successfully",
+      });
     } catch (error) {
       next(error);
     }
@@ -288,5 +391,9 @@ export default (
     listRestaurant,
     dashboardDetails,
     generateReport,
+    getBanners,
+    addNewBanner,
+    updateBanner,
+    removBanner,
   };
 };

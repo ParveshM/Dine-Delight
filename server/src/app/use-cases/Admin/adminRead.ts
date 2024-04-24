@@ -1,8 +1,8 @@
-import { Request } from "express";
 import { UserDbInterface } from "../../interfaces/userDbRepository";
 import { restaurantDbInterface } from "../../interfaces/restaurantDbRepository";
 import { BookingDbRepositoryInterface } from "../../interfaces/bookingDbRepository";
 import { PaginateInterface } from "../../../types/restaurantInterface";
+import { AdminDbRepositoryInterface } from "../../interfaces/AdminDbRepository";
 
 export const getUsers = async (
   paginate: PaginateInterface,

@@ -1,4 +1,3 @@
-import { UserRepositoryMongodbType } from "../../frameworks/database/mongodb/repositories/userRepositoryMongodb";
 import {
   googleSignInUserEntityType,
   userEntityType,
@@ -6,6 +5,7 @@ import {
 import { TransactionEntityType } from "../../entities/transactionEntity";
 import { Types } from "mongoose";
 import { PaginateInterface } from "../../types/restaurantInterface";
+import { UserRepositoryMongodbType } from "../../frameworks/database/mongodb/repositories/userRepositoryMongodb";
 
 // Interface for the database repository that we need to use
 /*
