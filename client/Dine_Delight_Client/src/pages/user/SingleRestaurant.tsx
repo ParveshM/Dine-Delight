@@ -27,6 +27,7 @@ import StarRating from "../../components/user/Review/StarRating";
 import ReviewSlider from "../../components/user/Review/ReviewSlider";
 import { MessageCircleMore } from "lucide-react";
 import { useAppSelector } from "../../redux/store/Store";
+import CustomMap from "../../components/restaurant/Map";
 
 const SingleRestaurant = () => {
   const { id } = useParams();
@@ -199,32 +200,42 @@ const SingleRestaurant = () => {
                     )}
                   </div>
                 </TECarousel>
-                {/* <h1 className="text-2xl font-bold">Direction</h1>
-            <div className="text-xl mt-2">Map Details</div> */}
-                <h1 className="text-2xl font-bold mt-4">Contact</h1>
-                <div className="flex flex-col gap-2 mt-2">
-                  {/* <div className="flex items-center gap-2 hover:underline ">
-                <BiSolidNavigation className="hover:underline" />
-                <Link to="" className="font-medium hover:font-bold">
-                  Get Direction
-                </Link>
-              </div> */}
-                  {/* <hr className="h-0.5 bg-slate-100" /> */}
-                  <div className="flex items-center gap-2 ">
+                <h2 className="text-3xl  mt-2" style={{ fontWeight: "bold" }}>
+                  Here to find
+                </h2>
+                <div className="rounded-md overflow-hidden  mt-4">
+                  <CustomMap
+                    longitude={restaurant.location?.coordinates[0]}
+                    latitude={restaurant.location?.coordinates[1]}
+                    isMarkerDraggable={false}
+                  />
+                </div>
+                <div className="flex flex-col gap-2 mt-2 text-blue-500 ">
+                  <div className="flex items-center gap-2 hover:text-blue-600">
+                    <BiSolidNavigation />
+                    <Link
+                      to={`https://maps.google.com/?q=${restaurant.location?.coordinates[1]},${restaurant.location?.coordinates[0]}`}
+                      target="_blank"
+                      className="font-medium hover:underline font-mono"
+                    >
+                      Get Direction
+                    </Link>
+                  </div>
+                  <div className="flex items-center gap-2 hover:text-blue-600 ">
                     <FaPhone />
                     <Link
                       to=""
-                      className="font-medium hover:underline hover:font-bold"
+                      className="font-medium hover:underline font-mono"
                     >
                       {restaurant.phone}
                     </Link>
                   </div>
                   <hr className="h-0.5 bg-slate-100" />
-                  <div className="flex items-center gap-2 ">
+                  <div className="flex items-center gap-2 hover:text-blue-600 ">
                     <MdEmail />
                     <Link
                       to=""
-                      className="font-medium hover:underline hover:font-bold"
+                      className="font-medium hover:underline font-mono"
                     >
                       {restaurant.email}
                     </Link>

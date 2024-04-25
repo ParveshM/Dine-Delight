@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import { ChevronDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import {
   BannerInterface,
@@ -8,8 +8,17 @@ import {
 } from "../../types/RestaurantInterface";
 import axiosJWT from "../../utils/axiosService";
 import { ADMIN_API, CLOUDNAME, cloudinaryUploadPreset } from "../../constants";
-import CloudinaryUploadWidget from "../../redux/Context/UploadwidgetContext";
+import CloudinaryUploadWidget, {
+  CloudinaryScriptContext,
+} from "../../redux/Context/UploadwidgetContext";
 import showToast from "../../utils/toaster";
+import * as Yup from "yup";
+
+const validationSchema = Yup.object().shape({
+  title: Yup.string().required("Title is required"),
+  description: Yup.string().required("Description is required"),
+  restaurantUrl: Yup.string().required("Field is required"),
+});
 
 interface BannerModalProps {
   setModalOpen: (isOpen: boolean) => void;
@@ -21,13 +30,18 @@ const BannerModal: React.FC<BannerModalProps> = ({
 }) => {
   const [restaurants, setRestaurants] = useState<RestaurantInterface[]>([]);
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const formik = useFormik({
     initialValues: {
       title: "",
       description: "",
+      restaurantUrl: "",
       image: "",
     },
+    validationSchema,
     onSubmit: (values) => {
+      setIsSubmitting(true);
       formik.values.image = imageUrl;
       axiosJWT
         .post(ADMIN_API + "/banners/add", values)
@@ -35,7 +49,8 @@ const BannerModal: React.FC<BannerModalProps> = ({
           handleAddedBanner(data.newBanner);
           setModalOpen(false);
         })
-        .catch(() => showToast("Oops! Something went wrong", "error"));
+        .catch(() => showToast("Oops! Something went wrong", "error"))
+        .finally(() => setIsSubmitting(false));
     },
   });
 
@@ -80,7 +95,7 @@ const BannerModal: React.FC<BannerModalProps> = ({
                 {...formik.getFieldProps("title")}
               />
               {formik.errors.title && (
-                <p className="col-span-2 flex justify-center items-center text-red-500">
+                <p className="col-span-2 mt-1 text-red-500">
                   {formik.errors.title}
                 </p>
               )}
@@ -97,12 +112,12 @@ const BannerModal: React.FC<BannerModalProps> = ({
                 className="bg-gray-50 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 {...formik.getFieldProps("description")}
               />
+              {formik.errors.description && (
+                <p className="col-span-2 mt-1 text-red-500">
+                  {formik.errors.description}
+                </p>
+              )}
             </div>
-            {formik.errors.description && (
-              <p className="col-span-2 flex justify-center items-center text-red-500">
-                {formik.errors.description}
-              </p>
-            )}
             <div className="relative col-span-2">
               <select
                 className="block w-full appearance-none bg-white border border-gray-300 text-sm py-1 px-2 pr-8 rounded-md focus:outline-none focus:border-blue-500"
@@ -122,6 +137,11 @@ const BannerModal: React.FC<BannerModalProps> = ({
               <div className="absolute top-1 right-0 flex items-center px-2 pointer-events-none">
                 <ChevronDown />
               </div>
+              {formik.errors.restaurantUrl && (
+                <p className="col-span-2 mt-1  text-red-500">
+                  {formik.errors.restaurantUrl}
+                </p>
+              )}
             </div>
             <div className="col-span-2 flex items-center gap-2">
               <p className="font-medium"> Upload images</p>
@@ -140,13 +160,19 @@ const BannerModal: React.FC<BannerModalProps> = ({
                 setImageUrl={setImageUrl}
               />
               {imageUrl && (
-                <img src={imageUrl} alt="" width={100} height={100} />
+                <img
+                  src={imageUrl}
+                  alt="image preview"
+                  width={100}
+                  height={100}
+                />
               )}
             </div>
             <div className="col-span-2">
               <button
                 type="submit"
-                className="text-white w-full bg-green-500 hover:bg-green-600 focus:ring-green-400 focus:ring-2 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2 text-center"
+                className="text-white w-full disabled:cursor-wait bg-green-500 hover:bg-green-600 focus:ring-green-400 focus:ring-2 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2 text-center"
+                disabled={isSubmitting}
               >
                 Submit
               </button>

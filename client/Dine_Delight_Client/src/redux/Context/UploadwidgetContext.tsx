@@ -21,8 +21,8 @@ interface CloudinaryWidgetResult {
   };
 }
 
-/* gloabl type defenition used for  cloudinary upload widget script 
-, (as it is loading in window we need to define the types while importing) */
+/* gloabl type defenition used for  cloudinary upload widget script, 
+(as it is loading in window we need to define the types while importing) */
 
 declare global {
   interface Window {
@@ -47,7 +47,7 @@ const CloudinaryUploadWidget: React.FC<UploadWidgetProps> = ({
   setImageUrl,
 }) => {
   const [loaded, setLoaded] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     if (!loaded) {
       const uwScript = document.getElementById("uw");
@@ -74,6 +74,7 @@ const CloudinaryUploadWidget: React.FC<UploadWidgetProps> = ({
           }
         }
       );
+
       myWidget.open();
     }
   };
@@ -82,9 +83,10 @@ const CloudinaryUploadWidget: React.FC<UploadWidgetProps> = ({
     <CloudinaryScriptContext.Provider value={{ loaded }}>
       <button
         id="upload_widget"
-        className="bg-blue-500 py-2 px-4 rounded-md text-white font-semibold shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="bg-blue-500 py-2 px-4 disabled:cursor-wait rounded-md text-white font-semibold shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
         type="button"
         onClick={initializeCloudinaryWidget}
+        disabled={isLoading}
       >
         Upload
       </button>

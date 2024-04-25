@@ -42,7 +42,7 @@ export default function useRestaurantList() {
             // sortOrder: "desc",
           },
         });
-        if (user.isAuthenticated) {
+        if (user.isAuthenticated && user.role === "user") {
           const { data } = await axios.get(USER_API + `/users/${user.id}`);
           setBookmarks(data.user.bookmarks);
         }
