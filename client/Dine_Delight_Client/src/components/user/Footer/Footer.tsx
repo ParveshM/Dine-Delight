@@ -41,9 +41,9 @@ const Footer = () => {
         <hr className="my-6  sm:mx-auto border-gray-700 lg:my-8" />
         <span className="block text-sm sm:text-center text-gray-400">
           © 2024
-          <a href="https://flowbite.com/" className="pl-1 hover:underline">
+          <Link to="#" className="pl-1 hover:underline">
             Dine Delight™
-          </a>
+          </Link>
           . All Rights Reserved.
         </span>
       </div>

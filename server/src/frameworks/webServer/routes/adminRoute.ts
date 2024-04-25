@@ -9,6 +9,8 @@ import { restaurantDbRepository } from "../../../app/interfaces/restaurantDbRepo
 import { restaurantRepositoryMongodb } from "../../database/mongodb/repositories/restaurantRepositoryMongodb";
 import { bookingDbRepository } from "../../../app/interfaces/bookingDbRepository";
 import { bookingRepositoryMongodb } from "../../database/mongodb/repositories/BookingRepositoryMongodb";
+import adminDbRepository from "../../../app/interfaces/AdminDbRepository";
+import { adminRepositoryMongodb } from "../../database/mongodb/repositories/AdminRepositoryMongodb";
 
 export default () => {
   const router = Router();
@@ -21,7 +23,9 @@ export default () => {
     restaurantDbRepository,
     restaurantRepositoryMongodb,
     bookingDbRepository,
-    bookingRepositoryMongodb
+    bookingRepositoryMongodb,
+    adminDbRepository,
+    adminRepositoryMongodb
   );
 
   router.post("/login", controller.adminLogin);
@@ -40,6 +44,19 @@ export default () => {
   );
   router.get("/dashboard", authenticateAdmin, controller.dashboardDetails);
   router.get("/reports", authenticateAdmin, controller.generateReport);
+
+  router.get("/banners", authenticateAdmin, controller.getBanners);
+  router.post("/banners/add", authenticateAdmin, controller.addNewBanner);
+  router.patch(
+    "/banners/edit/:bannerId",
+    authenticateAdmin,
+    controller.updateBanner
+  );
+  router.delete(
+    "/banners/remove/:bannerId",
+    authenticateAdmin,
+    controller.removBanner
+  );
 
   return router;
 };

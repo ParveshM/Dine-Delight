@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { UserDbInterface } from "../app/interfaces/userDbRepository";
-import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/userRepositoryMongodb";
 import { AuthService } from "../frameworks/services/authService";
 import { AuthServiceInterfaceType } from "../app/services-Interface/authServiceInterface";
 import {
@@ -35,6 +34,11 @@ import {
   updateUser,
 } from "../app/use-cases/user/read & update/profile";
 import { addNewRating } from "../app/use-cases/restaurant/ratings";
+import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/userRepositoryMongodb";
+import { AdminDbRepositoryInterface } from "../app/interfaces/AdminDbRepository";
+import { AdminRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/AdminRepositoryMongodb";
+import { getAllBanners } from "../app/use-cases/Admin/banner-usecase";
+
 // Controller will be passing all the necessaary parameers to the repositories
 
 const userController = (
@@ -47,7 +51,9 @@ const userController = (
   tableSlotDbRepository: TableSlotDbInterface,
   tableSlotDbRepositoryImpl: TableSlotRepositoryMongodbType,
   tableDbRepository: TableDbInterface,
-  tableDbRepositoryImpl: TableRepositoryMongodbType
+  tableDbRepositoryImpl: TableRepositoryMongodbType,
+  adminDbRepository: AdminDbRepositoryInterface,
+  adminDbRepositoryImpl: AdminRepositoryMongodbType
 ) => {
   const dbRepositoryUser = userDbRepository(userRepositoryImpl());
   const restaurantRepository = restaurantDbRepository(
@@ -57,6 +63,7 @@ const userController = (
     tableSlotDbRepositoryImpl()
   );
   const tableRepository = tableDbRepository(tableDbRepositoryImpl());
+  const adminRepository = adminDbRepository(adminDbRepositoryImpl());
   const authService = authServiceInterface(authServiceImpl());
 
   /**
@@ -489,6 +496,28 @@ const userController = (
     }
   };
 
+  /**
+   * * METHOD:GET
+   * * Get banners for home page
+   */
+  const getBanners = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const banners = await getAllBanners(adminRepository);
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Banners fetched successfully",
+        banners,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     registerUser,
     verifyOtp,
@@ -507,6 +536,7 @@ const userController = (
     createNewRating,
     updateBookmarks,
     updateEmailPreference,
+    getBanners,
   };
 };
 export default userController;

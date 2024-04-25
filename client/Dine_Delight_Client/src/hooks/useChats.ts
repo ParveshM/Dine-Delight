@@ -36,8 +36,8 @@ export default function useChats() {
   const topRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const socket = useSocket();
-
   const observer = useRef<IntersectionObserver>();
+
   const firstChat = useCallback(
     (node: HTMLDivElement | null) => {
       if (isLoading || isLoadingMore) return;

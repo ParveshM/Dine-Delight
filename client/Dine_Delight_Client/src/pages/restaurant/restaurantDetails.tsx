@@ -154,11 +154,13 @@ const ViewRestaurant = () => {
                   </div>
                 </div>
                 <div className="col-span-6 sm:col-span-3  ">
-                  <CustomMap
-                    longitude={formData.location.coordinates[0]}
-                    latitude={formData.location.coordinates[1]}
-                    updateCoordinates={updateCoordinates}
-                  />
+                  <div className="rounded-md overflow-hidden">
+                    <CustomMap
+                      longitude={formData.location.coordinates[0]}
+                      latitude={formData.location.coordinates[1]}
+                      updateCoordinates={updateCoordinates}
+                    />
+                  </div>
                 </div>
                 <div className="col-span-6 sm:col-span-2 mt-(-10)">
                   <label
@@ -286,17 +288,19 @@ const ViewRestaurant = () => {
                   htmlFor="additional_images"
                   className="block mt-6 mb-2 text-sm font-medium text-gray-700"
                 >
-                  Additional images
+                  Secondary images
                 </label>
                 {formData.secondaryImages.length > 0 && (
                   <div className="mt-6 mb-2">
                     <div className="flex flex-wrap gap-2 ">
                       {formData.secondaryImages.map((image, index) => (
-                        <div className="relative h-24 w-auto rounded-md">
+                        <div
+                          className="relative h-24 w-auto rounded-md"
+                          key={index}
+                        >
                           <img
-                            key={index}
                             src={image}
-                            alt={`Additional Image ${index}`}
+                            alt={`Secondary Image ${index}`}
                             className="h-full rounded-md"
                           />
                           <RxCrossCircled

@@ -1,7 +1,6 @@
 import express from "express";
 import { userDbRepository } from "../../../app/interfaces/userDbRepository";
 import { authService } from "../../services/authService";
-import { userRepositoryMongodb } from "../../database/mongodb/repositories/userRepositoryMongodb";
 import { authServiceInterface } from "../../../app/services-Interface/authServiceInterface";
 import userController from "../../../adapters/userController";
 import authenticateUser from "../middlewares/authMiddleware";
@@ -19,6 +18,9 @@ import { tableRepositoryMongodb } from "../../database/mongodb/repositories/tabl
 import menuController from "../../../adapters/menuController";
 import { menuDbRepository } from "../../../app/interfaces/menuDbRepository";
 import { MenuRepositoryMongodb } from "../../database/mongodb/repositories/MenuRepositoryMongodb";
+import { userRepositoryMongodb } from "../../database/mongodb/repositories/userRepositoryMongodb";
+import adminDbRepository from "../../../app/interfaces/AdminDbRepository";
+import { adminRepositoryMongodb } from "../../database/mongodb/repositories/AdminRepositoryMongodb";
 
 const userRoute = () => {
   const router = express.Router();
@@ -33,7 +35,9 @@ const userRoute = () => {
     TableSlotDbRepository,
     TableSlotRepositoryMongodb,
     tableDbRepository,
-    tableRepositoryMongodb
+    tableRepositoryMongodb,
+    adminDbRepository,
+    adminRepositoryMongodb
   );
 
   const _bookingController = bookingController(
@@ -104,9 +108,17 @@ const userRoute = () => {
     authenticateUser,
     _bookingController.cancelBooking
   );
-  router.post("/booking/preOrder", _bookingController.updatePreOrderedFood);
-  router.delete("/booking/preOrder", _bookingController.deletePreOrderedFood);
-
+  router.post(
+    "/booking/preOrder",
+    authenticateUser,
+    _bookingController.updatePreOrderedFood
+  );
+  router.delete(
+    "/booking/preOrder",
+    authenticateUser,
+    _bookingController.deletePreOrderedFood
+  );
+  router.get("/banners", controller.getBanners);
   router.get("/menu", authenticateUser, _menuController.getMenu);
 
   return router;

@@ -103,3 +103,13 @@ export interface RestaurantReportInterface {
   tableSlot: TableSlotInterface;
   user: UserInterface;
 }
+
+export interface BannerInterface {
+  _id: string;
+  title: string;
+  image: string;
+  description: string;
+  isActive: boolean;
+  restaurantUrl: string;
+  createdAt: Date;
+}

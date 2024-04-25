@@ -8,6 +8,7 @@ import { BookingInterface } from "../types/BookingInterface";
 import { useAppDispatch } from "../redux/store/Store";
 import { addToCart, clearCart } from "../redux/slices/CartSlice";
 import { calculateDiscountedPrice } from "../utils/util";
+
 export default function useCart() {
   const { id } = useParams();
   const [searchQuery, setSearchQuery] = useState<string>("");

@@ -43,7 +43,7 @@ const UserData: React.FC<UserInterface> = ({ _id, name, email, isBlocked }) => {
             />
             <div
               className={`box block h-6 w-10 rounded-full ${
-                isChecked ? "bg-red-500" : "bg-primary"
+                isChecked ? "bg-red-500" : "bg-green-500"
               }`}
             ></div>
             <div

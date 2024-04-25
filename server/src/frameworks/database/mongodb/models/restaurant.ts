@@ -44,6 +44,7 @@ const restaurantSchema = new mongoose.Schema(
     },
     openingTime: String,
     closingTime: String,
+    qrCode: String,
     isListed: {
       type: Boolean,
       default: false,
