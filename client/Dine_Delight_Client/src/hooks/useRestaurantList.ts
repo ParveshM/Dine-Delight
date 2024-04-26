@@ -3,10 +3,7 @@ import axios from "axios";
 import { USER_API } from "../constants";
 import { useAppSelector } from "../redux/store/Store";
 import showToast from "../utils/toaster";
-import {
-  BannerInterface,
-  RestaurantInterface,
-} from "../types/RestaurantInterface";
+import { RestaurantInterface } from "../types/RestaurantInterface";
 
 export type FilterType = {
   costPerPerson?: string | null;
@@ -23,7 +20,7 @@ export default function useRestaurantList() {
     costPerPerson: "",
     sortType: "",
   });
-  const [banners, setBanners] = useState<BannerInterface[]>([]);
+
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [bookmarks, setBookmarks] = useState<RestaurantInterface[]>([]);
   const user = useAppSelector((state) => state.UserSlice);
@@ -58,13 +55,6 @@ export default function useRestaurantList() {
   }, [searchQuery, pageNumber, location.coordinates, filter]);
 
   useEffect(() => {
-    axios
-      .get(USER_API + "/banners")
-      .then(({ data }) => setBanners(data.banners))
-      .catch(() => showToast("Oops! Something went wrong", "error"));
-  }, []);
-
-  useEffect(() => {
     setData([]);
     setPage(1);
   }, [location.coordinates, searchQuery, filter]);
@@ -93,6 +83,5 @@ export default function useRestaurantList() {
     handleFilter,
     handleRemoveFilter,
     handleSearchQuery,
-    banners,
   };
 }

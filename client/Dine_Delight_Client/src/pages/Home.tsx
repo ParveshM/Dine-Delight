@@ -14,7 +14,7 @@ const Home: React.FC = () => {
     data,
     filter,
     hasMore,
-    banners,
+
     setPage,
     isLoading,
     bookmarks,
@@ -43,7 +43,7 @@ const Home: React.FC = () => {
   return (
     <>
       <Navbar />
-      <Banner banners={banners} />
+      <Banner />
       <SearchBar
         handleSearch={handleSearchQuery}
         appliedFilters={filter}

@@ -2,8 +2,9 @@ import { BannerInterface } from "../../../types/adminInterfaces";
 import { AdminDbRepositoryInterface } from "../../interfaces/AdminDbRepository";
 
 export const getAllBanners = async (
+  filter: Record<string, any>,
   adminRepository: ReturnType<AdminDbRepositoryInterface>
-) => await adminRepository.banners();
+) => await adminRepository.banners(filter);
 
 export const addBanner = async (
   bannerData: BannerInterface,
