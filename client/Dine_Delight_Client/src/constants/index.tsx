@@ -13,8 +13,19 @@ export const TOKEN_API = BASE_URL + "token";
 export const CHAT_API = BASE_URL + "chat";
 export const CLOUDINARY_UPLOAD_API =
   "https://api.cloudinary.com/v1_1/dcoveyjze/upload";
-export const CLOUDNAME = "dcoveyjze";
-export const cloudinaryUploadPreset = "restaurant";
+export const CLOUDNAME = import.meta.env.VITE_CLOUDNAME;
+export const cloudinaryUploadPreset = import.meta.env.VITE_UPLOADPRESET;
+export const IMAGEUPLOADCONFIG = {
+  cloudName: CLOUDNAME,
+  uploadPreset: cloudinaryUploadPreset,
+  resourceType: "image",
+  cropping: true,
+  croppingCoordinatesMode: "custom",
+  croppingAspectRatio: 1.5,
+  croppingDefaultSelectionRatio: 100 / 100,
+  showSkipCropButton: false,
+  clientAllowedFormats: ["jpg", "jpeg", "png", "webp"],
+};
 export const randomImg = "https://picsum.photos/200/";
 
 import { Hourglass, LayoutDashboard, LogOut, Utensils } from "lucide-react";

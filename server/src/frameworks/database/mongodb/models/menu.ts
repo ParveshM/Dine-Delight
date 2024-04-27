@@ -9,6 +9,7 @@ const menuSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  image: String,
   category: {
     type: String,
     enum: ["starters", "main course", "drinks", "dessert"],

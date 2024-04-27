@@ -7,7 +7,12 @@ import {
   RestaurantInterface,
 } from "../../types/RestaurantInterface";
 import axiosJWT from "../../utils/axiosService";
-import { ADMIN_API, CLOUDNAME, cloudinaryUploadPreset } from "../../constants";
+import {
+  ADMIN_API,
+  CLOUDNAME,
+  IMAGEUPLOADCONFIG,
+  cloudinaryUploadPreset,
+} from "../../constants";
 import CloudinaryUploadWidget, {
   CloudinaryScriptContext,
 } from "../../redux/Context/UploadwidgetContext";
@@ -146,17 +151,7 @@ const BannerModal: React.FC<BannerModalProps> = ({
             <div className="col-span-2 flex items-center gap-2">
               <p className="font-medium"> Upload images</p>
               <CloudinaryUploadWidget
-                uwConfig={{
-                  cloudName: CLOUDNAME,
-                  uploadPreset: cloudinaryUploadPreset,
-                  resourceType: "image",
-                  cropping: true,
-                  croppingCoordinatesMode: "custom",
-                  croppingAspectRatio: 1.5,
-                  croppingDefaultSelectionRatio: 100 / 100,
-                  showSkipCropButton: false,
-                  clientAllowedFormats: ["jpg", "jpeg", "png", "webp"],
-                }}
+                uwConfig={IMAGEUPLOADCONFIG}
                 setImageUrl={setImageUrl}
               />
               {imageUrl && (

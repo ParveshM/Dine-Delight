@@ -3,20 +3,10 @@ import { motion } from "framer-motion";
 import { BannerInterface } from "../../types/RestaurantInterface";
 import { dineinVector } from "../../assets/images";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { USER_API } from "../../constants";
-import showToast from "../../utils/toaster";
+import DefaultBanner from "./DefaultBanner";
 
-const Banner: React.FC = () => {
+const Banner: React.FC<{ banners: BannerInterface[] }> = ({ banners }) => {
   const [currentIndex, setcurrentIndex] = useState(0);
-  const [banners, setBanners] = useState<BannerInterface[]>([]);
-
-  useEffect(() => {
-    axios
-      .get(USER_API + "/banners")
-      .then(({ data }) => setBanners(data.banners))
-      .catch(() => showToast("Oops! Something went wrong", "error"));
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -26,7 +16,7 @@ const Banner: React.FC = () => {
     return () => clearInterval(interval);
   }, [currentIndex, banners.length]);
 
-  return banners.length ? (
+  return (
     <section className="home py-6 mt-20  bg-gray-50 overflow-hidden ">
       <motion.div
         className="container flex flex-col md:flex-row items-center justify-center mx-auto px-4 md:px-12"
@@ -62,34 +52,7 @@ const Banner: React.FC = () => {
         </div>
       </motion.div>
     </section>
-  ) : (
-    <DefaultBanner />
   );
 };
 
 export default Banner;
-
-const DefaultBanner = () => {
-  return (
-    <div className="container py-6 mt-20  flex flex-col md:flex-row items-center justify-center mx-auto px-4 md:px-12">
-      <div className="lg:w-1/2">
-        <h1 className="max-w-xl text-4xl md:text-5xl text-gray-800 font-bold lg:max-w-md mb-6 md:mb-8 leading-tight">
-          Welcome to{" "}
-          <span className="text-red-500 font-bold">Dine Delight</span>
-        </h1>
-        <p className="max-w-xl text-lg text-gray-600 font-medium mb-8 leading-relaxed md:text-xl lg:max-w-md">
-          Discover the easiest way to make reservations at your favorite
-          restaurants. Whether it's for a special occasion or a casual meal,
-          we've got you covered.
-        </p>
-      </div>
-      <div className="lg:w-1/2 mt-8 md:mt-0 md:ml-8">
-        <img
-          className="w-full md:w-auto rounded-lg"
-          src={dineinVector}
-          alt="Illustration of people dining in"
-        />
-      </div>
-    </div>
-  );
-};

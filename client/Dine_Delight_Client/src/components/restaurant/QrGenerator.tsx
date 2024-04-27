@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { QRCodeCanvas } from "qrcode.react";
 import uploadImagesToCloudinary from "../../Api/uploadImages";
@@ -12,10 +12,8 @@ const QrGenerator: React.FC<{ setIsModalOpen: (isOpen: boolean) => void }> = ({
   setIsModalOpen,
 }) => {
   const { id } = useAppSelector((state) => state.UserSlice);
-  const [inputText, setInputText] = useState(
-    `${import.meta.env.VITE_CLIENT_URL}/menu/${id}`
-  );
-  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [inputText] = useState(`${import.meta.env.VITE_CLIENT_URL}/menu/${id}`);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const downloadQRCode = async () => {
     const qrCodeCanvas = document.getElementById(
@@ -48,18 +46,27 @@ const QrGenerator: React.FC<{ setIsModalOpen: (isOpen: boolean) => void }> = ({
     }
   };
   useEffect(() => {
-    axiosJWT
-      .get(RESTAURANT_API + "/info")
-      .then(({ data }) => {
-        const qr = data.restaurant.qrCode;
-        qr && setQrCode(qr);
-      })
-      .catch((error) => console.log(error));
-  }, []);
-
+    const listener = (event: MouseEvent) => {
+      if (
+        !modalRef.current ||
+        modalRef.current.contains(event.target as Node | null)
+      ) {
+        return;
+      }
+      setIsModalOpen(false);
+    };
+    document.addEventListener("mousedown", listener);
+    return () => {
+      document.removeEventListener("mousedown", listener);
+    };
+  }, [modalRef]);
   return (
     <div className="fixed inset-0 z-50  overflow-y-auto bg-gray-500 bg-opacity-50 flex justify-center items-center ">
-      <div className="relative bg-white rounded-lg shadow-lg max-w-md w-full mx-3 sm:top-7">
+      <div
+        className="relative bg-white rounded-lg shadow-lg max-w-md w-full mx-3 sm:top-7"
+        ref={modalRef}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="text-lg font-semibold text-gray-900 inline-flex items-center gap-2">
             Qrcode for Menu
@@ -74,52 +81,24 @@ const QrGenerator: React.FC<{ setIsModalOpen: (isOpen: boolean) => void }> = ({
         </div>
         <div className="p-4 md:p-5">
           <div className="grid grid-cols-4 space-y-2 mb-2">
-            {qrCode && qrCode.length ? (
+            {inputText.length ? (
               <div className="col-span-4 flex justify-center">
-                <img src={qrCode} alt="" width={"200px"} height={"200px"} />
+                <QRCodeCanvas
+                  id="qrCodeEl"
+                  size={150}
+                  value={inputText.trim()}
+                />
               </div>
-            ) : (
-              <>
-                <div className="col-span-4">
-                  <input
-                    type="text"
-                    value={inputText}
-                    placeholder="eg: https://example.com/"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white "
-                    onChange={(e) => setInputText(e.target.value)}
-                  />
-                </div>
-                {inputText.length ? (
-                  <div className="col-span-4 flex justify-center">
-                    <QRCodeCanvas
-                      id="qrCodeEl"
-                      size={150}
-                      value={inputText.trim()}
-                    />
-                  </div>
-                ) : null}
-              </>
-            )}
+            ) : null}
           </div>
-          {qrCode && qrCode.length ? (
-            <Button
-              className=" w-full bg-green-500 hover:bg-green-600
-              focus:ring-green-400 focus:ring-2 focus:outline-none  font-medium rounded-lg
-     "
-              buttontype="button"
-              label="Change Qr"
-              handleButtonclick={() => setQrCode(null)}
-            />
-          ) : (
-            <Button
-              className="w-full   bg-green-500 hover:bg-green-600
+          <Button
+            className="w-full   bg-green-500 hover:bg-green-600
           focus:ring-green-400 focus:ring-2 focus:outline-none  font-medium rounded-lg
           "
-              buttontype="button"
-              label="Download & Save "
-              handleButtonclick={downloadQRCode}
-            />
-          )}
+            buttontype="button"
+            label="Download & Save "
+            handleButtonclick={downloadQRCode}
+          />
         </div>
       </div>
     </div>

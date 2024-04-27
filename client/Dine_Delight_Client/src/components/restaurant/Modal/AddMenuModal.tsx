@@ -2,13 +2,14 @@ import { useFormik } from "formik";
 import { CookingPot } from "lucide-react";
 import * as Yup from "yup";
 import axiosJWT from "../../../utils/axiosService";
-import { RESTAURANT_API } from "../../../constants";
+import { IMAGEUPLOADCONFIG, RESTAURANT_API } from "../../../constants";
 import showToast from "../../../utils/toaster";
 import { MenuItemInterface } from "../../../types/RestaurantInterface";
 import useTagInput from "../../../hooks/useTagInput";
 import { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import TagField from "../tagInputField";
+import CloudinaryUploadWidget from "../../../redux/Context/UploadwidgetContext";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -47,6 +48,7 @@ const AddMenuModal: React.FC<MenuModalProps> = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { tags, setTags, handleAddTag, handleRemoveTag } = useTagInput();
+  const [imageUrl, setImageUrl] = useState<string>(menuItem?.image || "");
 
   useEffect(() => {
     if (menuItem?.tags) setTags(menuItem?.tags);
@@ -56,6 +58,7 @@ const AddMenuModal: React.FC<MenuModalProps> = ({
     initialValues: {
       name: menuItem?.name || "",
       price: menuItem?.price || "",
+      image: menuItem?.image || "",
       isVegetarian: menuItem?.isVegetarian || false,
       category: menuItem?.category || "starters",
       tags: menuItem?.tags || [],
@@ -89,6 +92,9 @@ const AddMenuModal: React.FC<MenuModalProps> = ({
       }
     },
   });
+  useEffect(() => {
+    formik.values.image = imageUrl;
+  }, [imageUrl]);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-500 bg-opacity-50 flex justify-center items-center ">
@@ -175,6 +181,21 @@ const AddMenuModal: React.FC<MenuModalProps> = ({
                 </label>
               </div>
             ) : null}
+            <div className="col-span-4 flex justify-between items-center gap-1 p-4  bg-gray-100 rounded-md ">
+              <p className="text-base font-medium">Add Image</p>
+              {imageUrl && (
+                <img
+                  src={imageUrl}
+                  alt="image preview"
+                  className="rounded-md"
+                  style={{ maxHeight: "100px", maxWidth: "100px" }}
+                />
+              )}
+              <CloudinaryUploadWidget
+                uwConfig={IMAGEUPLOADCONFIG}
+                setImageUrl={setImageUrl}
+              />
+            </div>
 
             <div className="col-span-2 mt-2">
               <label
