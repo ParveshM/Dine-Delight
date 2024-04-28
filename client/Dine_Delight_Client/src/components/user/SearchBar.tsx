@@ -42,6 +42,7 @@ const SearchBar: React.FC<SearchProps> = ({
               value={searchText}
               onChange={handleInputChange}
               placeholder="your keyword here"
+              type="search"
               name="search"
               className="px-6 py-2 w-full rounded-xl flex-1 outline-none bg-white"
             />

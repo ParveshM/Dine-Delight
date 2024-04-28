@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { MenuCategory, MenuItemInterface } from "../types/RestaurantInterface";
 import axiosJWT from "../utils/axiosService";
 import showToast from "../utils/toaster";
@@ -24,7 +24,9 @@ export default function useCart() {
   const [hasMore, setHasMore] = useState<boolean>(false);
   const observer = useRef<IntersectionObserver>();
   const hasPageBeenRendered = useRef(false);
+  const { pathname } = useLocation();
   const dispatch = useAppDispatch();
+  const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   const lastMenuItem = useCallback(
     (node: HTMLDivElement | null) => {
@@ -63,9 +65,11 @@ export default function useCart() {
           params: {
             q: searchQuery,
             page,
-            bookingId: id,
+            ...(pathname.startsWith("/cart")
+              ? { bookingId: id }
+              : { restaurantId: id }),
             category: selectedCategory,
-            isVegetarian: isVegFilterActive,
+            ...(isVegFilterActive && { isVegetarian: isVegFilterActive }),
           },
         })
         .then(({ data }) => {
@@ -110,8 +114,10 @@ export default function useCart() {
     menuItems,
     isLoading,
     searchQuery,
-    isSidebarOpen,
+    isDrawerOpen,
     lastMenuItem,
+    setDrawerOpen,
+    isSidebarOpen,
     isLoadingMore,
     setSearchQuery,
     handleAddToCart,

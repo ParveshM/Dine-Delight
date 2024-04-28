@@ -91,6 +91,8 @@ export const MainRouter = () => {
             element={<UnsubscribePage />}
           />
 
+          <Route path="/menu/:id" element={<MenuOrder />} />
+
           {/* User Protected Route  */}
           <Route path="" element={<ProtectedRoute />}>
             <Route
@@ -112,7 +114,6 @@ export const MainRouter = () => {
               element={<AccountPage children={<Bookmarks />} />}
             />
             <Route path="/cart/:id" element={<Cart />} />
-            <Route path="/menu/:id" element={<MenuOrder />} />
             <Route
               path="/transaction_history"
               element={<AccountPage children={<TransactionHistory />} />}

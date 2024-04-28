@@ -28,6 +28,7 @@ import ReviewSlider from "../../components/user/Review/ReviewSlider";
 import { MessageCircleMore } from "lucide-react";
 import { useAppSelector } from "../../redux/store/Store";
 import CustomMap from "../../components/restaurant/Map";
+import { foodCover } from "../../assets/images";
 
 const SingleRestaurant = () => {
   const { id } = useParams();
@@ -122,13 +123,25 @@ const SingleRestaurant = () => {
                         {starRating}
                       </p>
                       <p className="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">
-                        out of 5{" "}
+                        out of 5
                       </p>
                     </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={foodCover}
+                      alt="Menu icon"
+                      height={25}
+                      width={25}
+                    />
+                    <Link to={`/menu/${id}`} className="hover:underline">
+                      Show menu
+                    </Link>
                   </div>
 
                   {user.isAuthenticated && (
                     <div className="flex justify-end items-center">
+                      {/* Share option */}
                       <div
                         className=" relative p-2 bg-blue-100 rounded-full"
                         onClick={handleChatClick}
@@ -234,7 +247,8 @@ const SingleRestaurant = () => {
                   <div className="flex items-center gap-2 hover:text-blue-600 ">
                     <MdEmail />
                     <Link
-                      to=""
+                      to={`https://mail.google.com/mail/u/0/?to=${restaurant.email}&body=Hi ${restaurant.restaurantName}, I need some assistance&bcc=%7Bemail_address%7D&cc=%7Bemail_address%7D&fs=1&tf=cm
+                      `}
                       className="font-medium hover:underline font-mono"
                     >
                       {restaurant.email}

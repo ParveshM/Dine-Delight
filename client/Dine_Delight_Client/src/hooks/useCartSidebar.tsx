@@ -1,11 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/store/Store";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axiosJWT from "../utils/axiosService";
 import { USER_API } from "../constants";
 import {
@@ -22,7 +17,6 @@ export default function useCartSidebar() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [params] = useSearchParams();
 
   useEffect(() => {
     axiosJWT
