@@ -27,6 +27,14 @@ export default function useCart() {
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [showTableInputModal, setTableInputModal] = useState<boolean>(false);
+  const [formData, setFormData] = useState<{
+    tableNumber: string;
+    mobile: string;
+  }>({
+    tableNumber: "",
+    mobile: "",
+  });
 
   const lastMenuItem = useCallback(
     (node: HTMLDivElement | null) => {
@@ -43,10 +51,15 @@ export default function useCart() {
   );
 
   useEffect(() => {
-    axiosJWT
-      .get(USER_API + `/bookings/${id}`)
-      .then(({ data }) => setBooking(data.bookingDetails))
-      .catch(() => showToast("Oops! Something went wrong", "error"));
+    const isOrderSection = pathname.startsWith("/menu");
+    if (isOrderSection) {
+      setTableInputModal(true);
+    } else {
+      axiosJWT
+        .get(USER_API + `/bookings/${id}`)
+        .then(({ data }) => setBooking(data.bookingDetails))
+        .catch(() => showToast("Oops! Something went wrong", "error"));
+    }
   }, []);
 
   useEffect(() => {
@@ -113,17 +126,21 @@ export default function useCart() {
     booking,
     menuItems,
     isLoading,
+    formData,
     searchQuery,
     isDrawerOpen,
     lastMenuItem,
     setDrawerOpen,
     isSidebarOpen,
+    setFormData,
     isLoadingMore,
     setSearchQuery,
     handleAddToCart,
     setIsSidebarOpen,
-    isVegFilterActive,
     selectedCategory,
+    setTableInputModal,
+    isVegFilterActive,
+    showTableInputModal,
     setIsVegFilterActive,
     setSelectedCategory,
   };

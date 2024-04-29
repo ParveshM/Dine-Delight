@@ -1,11 +1,13 @@
 import { IoClose } from "react-icons/io5";
-import { menuCategories } from "../../constants";
-import { MenuCategory } from "../../types/RestaurantInterface";
+import { menuCategories } from "../../../constants";
+import { MenuCategory } from "../../../types/RestaurantInterface";
+import { motion } from "framer-motion";
 
 const MenuDrawer: React.FC<{
+  drawerOpen: boolean;
   setDrawerOpen: (isOpen: boolean) => void;
   setSelectedCategory: (category: MenuCategory) => void;
-}> = ({ setDrawerOpen, setSelectedCategory }) => {
+}> = ({ drawerOpen, setDrawerOpen, setSelectedCategory }) => {
   const handleCategoryClick = (
     event: React.MouseEvent<HTMLUListElement, MouseEvent>
   ) => {
@@ -17,9 +19,11 @@ const MenuDrawer: React.FC<{
     }
   };
   return (
-    <div
-      id="drawer-bottom-example"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 w-full border p-4 overflow-y-auto transition-transform bg-white dark:bg-gray-800 transform-none"
+    <motion.div
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 w-full border p-4 overflow-y-auto bg-white dark:bg-gray-800"
+      initial={{ y: "100%" }}
+      animate={{ y: drawerOpen ? "0%" : "100%" }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
     >
       <button
         type="button"
@@ -35,14 +39,13 @@ const MenuDrawer: React.FC<{
           Categories
         </h5>
         <ul
-          className="h-40  bg-white rounded-md mx-2"
+          className="h-40 bg-white rounded-md mx-2"
           onClick={handleCategoryClick}
         >
           {menuCategories.map((category, index) => (
             <li
               key={index}
-              className="border-b last:border-b-0 text-sm block w-full py-2 px-4 text-left text-gray-800 hover:bg-gray-100 
-              focus:outline-none focus:bg-gray-100"
+              className="border-b last:border-b-0 text-sm block w-full py-2 px-4 text-left text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
               data-category={category}
             >
               {category.toUpperCase()}
@@ -50,7 +53,7 @@ const MenuDrawer: React.FC<{
           ))}
         </ul>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

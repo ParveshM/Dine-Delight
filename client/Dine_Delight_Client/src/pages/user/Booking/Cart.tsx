@@ -10,10 +10,10 @@ import { IoIosCart } from "react-icons/io";
 import { useAppSelector } from "../../../redux/store/Store";
 import { IoBagCheck } from "react-icons/io5";
 import { FaArrowRightLong } from "react-icons/fa6";
-import { useMemo, useState } from "react";
-import { Dropdown } from "flowbite-react";
+import { useMemo } from "react";
 import { MdOutlineRestaurantMenu } from "react-icons/md";
-import MenuDrawer from "../../../components/user/MenuDrawer";
+import MenuDrawer from "../../../components/user/Order/MenuDrawer";
+import TableConfirmation from "../../../components/user/Order/TableConfirmation";
 
 const Cart: React.FC = () => {
   const {
@@ -21,16 +21,20 @@ const Cart: React.FC = () => {
     menuItems,
     isLoading,
     searchQuery,
+    formData,
     lastMenuItem,
-    setSearchQuery,
-    isLoadingMore,
-    isSidebarOpen,
     isDrawerOpen,
+    isLoadingMore,
+    setFormData,
+    isSidebarOpen,
     setDrawerOpen,
+    setSearchQuery,
     setIsSidebarOpen,
     handleAddToCart,
     selectedCategory,
     isVegFilterActive,
+    setTableInputModal,
+    showTableInputModal,
     setIsVegFilterActive,
     setSelectedCategory,
   } = useCart();
@@ -161,7 +165,7 @@ const Cart: React.FC = () => {
           <CartSidebar
             isSidebarOpen={isSidebarOpen}
             setIsSidebarOpen={setIsSidebarOpen}
-            cartItems={cart}
+            tableData={formData}
           />
         </div>
         <div className="fixed bottom-20 right-5 md:hidden">
@@ -175,6 +179,7 @@ const Cart: React.FC = () => {
 
         {isDrawerOpen && (
           <MenuDrawer
+            drawerOpen={isDrawerOpen}
             setDrawerOpen={setDrawerOpen}
             setSelectedCategory={setSelectedCategory}
           />
@@ -218,6 +223,12 @@ const Cart: React.FC = () => {
             VIEW CART <FaArrowRightLong />
           </button>
         </div>
+        {showTableInputModal && (
+          <TableConfirmation
+            setTable={setFormData}
+            setTableInputModal={setTableInputModal}
+          />
+        )}
       </div>
     </>
   );

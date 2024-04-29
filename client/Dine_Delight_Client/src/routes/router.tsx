@@ -62,8 +62,10 @@ const Cart = lazy(() => import("../pages/user/Booking/Cart"));
 const Bookmarks = lazy(() => import("../pages/user/Bookmarks"));
 const Dashboard = lazy(() => import("../pages/restaurant/Dashboard"));
 const UnsubscribePage = lazy(() => import("../pages/user/UnsubscribePage"));
-const MenuOrder = lazy(() => import("../pages/user/MenuOrder"));
+const MenuOrder = lazy(() => import("../pages/user/Orders/MenuOrder"));
 const Banners = lazy(() => import("../pages/admin/Banners"));
+const RecentOrders = lazy(() => import("../pages/user/Orders/RecentOrders"));
+const RestaurantOrders = lazy(() => import("../pages/restaurant/Orders"));
 
 export const MainRouter = () => {
   return (
@@ -113,6 +115,11 @@ export const MainRouter = () => {
               path="/bookmarks"
               element={<AccountPage children={<Bookmarks />} />}
             />
+            <Route
+              path="/orders"
+              element={<AccountPage children={<RecentOrders />} />}
+            />
+
             <Route path="/cart/:id" element={<Cart />} />
             <Route
               path="/transaction_history"
@@ -158,6 +165,11 @@ export const MainRouter = () => {
               element={<SellerPage children={<TimeSlots />} />}
             />
             <Route path="menu" element={<SellerPage children={<Menu />} />} />
+
+            <Route
+              path="orders"
+              element={<SellerPage children={<RestaurantOrders />} />}
+            />
             <Route
               path="view"
               element={<SellerPage children={<ViewRestaurant />} />}

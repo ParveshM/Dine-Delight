@@ -35,6 +35,7 @@ import { MdOutlineRestaurantMenu } from "react-icons/md";
 import { FaUser } from "react-icons/fa6";
 import { FaHistory } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
+import { FiPackage } from "react-icons/fi";
 
 export const sidebarItem = [
   {
@@ -61,6 +62,11 @@ export const sidebarItem = [
     to: "/restaurant/menu",
     Icon: MdOutlineRestaurantMenu,
     text: "Menu",
+  },
+  {
+    to: "/restaurant/orders",
+    Icon: FiPackage,
+    text: "Orders",
   },
   {
     to: "/restaurant/view",
@@ -98,6 +104,11 @@ export const userSidebarItem = [
     to: "/bookmarks",
     Icon: FaBookmark,
     text: "Bookmarks",
+  },
+  {
+    to: "/orders",
+    Icon: FiPackage,
+    text: "Orders",
   },
 ];
 

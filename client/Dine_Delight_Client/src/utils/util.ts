@@ -17,7 +17,7 @@ export const statusTextColor = (status: string): string => {
 
   switch (status) {
     case "Pending":
-      textColor = "text-yellow-500";
+      textColor = "text-yellow-400";
       break;
     case "Confirmed":
       textColor = "text-green-500";

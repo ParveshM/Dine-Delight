@@ -10,12 +10,15 @@ import {
 } from "../redux/slices/CartSlice";
 import showToast from "../utils/toaster";
 
-export default function useCartSidebar() {
+export default function useCartSidebar(tableData?: {
+  tableNumber: string;
+  mobile: string;
+}) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { cart: cartItems } = useAppSelector((state) => state.CartSlice);
   const dispatch = useAppDispatch();
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { id } = useParams();
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -65,19 +68,41 @@ export default function useCartSidebar() {
   ) => {
     dispatch(updateQuantity({ itemId, quantity, type }));
   };
-  const handleCheckout = () => {
+
+  const handleCheckout = (tableNumber?: string) => {
     setIsSubmitting(true);
-    axiosJWT
-      .post(USER_API + "/booking/preOrder", {
-        bookingId: id,
-        cartItems,
-      })
-      .then(() => {
-        showToast("Pre order placed successfully");
-        navigate(`/booking/view/${id}`);
-      })
-      .catch(() => showToast("Oops! Something went wrong"))
-      .finally(() => setIsSubmitting(false));
+    if (isMenuSection) {
+      const items = cartItems.map(({ _id, ...rest }) => ({
+        ...rest,
+        item: _id,
+      }));
+      axiosJWT
+        .post(USER_API + "/order", {
+          restaurantId: id,
+          tableNumber,
+          orderItems: items,
+          total: totalAmount,
+          ...tableData,
+        })
+        .then(({ data }) => {
+          showToast(data.message);
+          navigate(`/booking_history`);
+        })
+        .catch(() => showToast("Oops! Something went wrong"))
+        .finally(() => setIsSubmitting(false));
+    } else {
+      axiosJWT
+        .post(USER_API + "/booking/preOrder", {
+          bookingId: id,
+          cartItems,
+        })
+        .then(() => {
+          showToast("Pre order placed successfully");
+          navigate(`/booking/view/${id}`);
+        })
+        .catch(() => showToast("Oops! Something went wrong"))
+        .finally(() => setIsSubmitting(false));
+    }
   };
 
   return {
