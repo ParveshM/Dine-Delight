@@ -22,7 +22,7 @@ const OrderList: React.FC<OrderInterface> = ({
       </p>
       <p className="text-gray-600 mb-4">Total: ₹{total}</p>
       <ul className="flex flex-col">
-        {(toggleShowMore ? orderItems : orderItems.slice(0, 2)).map(
+        {(toggleShowMore ? orderItems : orderItems.slice(0, 4)).map(
           (orderItem, index) => (
             <li
               key={index}

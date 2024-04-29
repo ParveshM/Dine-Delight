@@ -556,7 +556,7 @@ const userController = (
   const orders = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user;
-      const orders = await getAllOrders(OrderRepository, userId);
+      const orders = await getAllOrders({ user: userId }, OrderRepository);
 
       res.status(HttpStatus.OK).json({
         success: true,

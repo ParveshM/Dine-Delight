@@ -33,11 +33,12 @@ interface OrderItem {
 export interface OrderInterface {
   _id: string;
   orderId: string;
-  user: string;
+  user: UserInterface;
   restaurant: string;
   tableNumber: string;
   mobile: string;
   orderItems: OrderItem[];
   total: number;
-  status: "Pending" | "Completed" | "Cancelled";
+  status: "Pending" | "Confirmed" | "InProgress" | "Completed" | "Cancelled";
+  createdAt: Date;
 }

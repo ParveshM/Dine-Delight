@@ -78,7 +78,7 @@ export default function useCartSidebar(tableData?: {
       }));
       axiosJWT
         .post(USER_API + "/order", {
-          restaurantId: id,
+          restaurant: id,
           tableNumber,
           orderItems: items,
           total: totalAmount,

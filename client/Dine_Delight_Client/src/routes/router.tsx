@@ -65,7 +65,9 @@ const UnsubscribePage = lazy(() => import("../pages/user/UnsubscribePage"));
 const MenuOrder = lazy(() => import("../pages/user/Orders/MenuOrder"));
 const Banners = lazy(() => import("../pages/admin/Banners"));
 const RecentOrders = lazy(() => import("../pages/user/Orders/RecentOrders"));
-const RestaurantOrders = lazy(() => import("../pages/restaurant/Orders"));
+const RestaurantOrders = lazy(
+  () => import("../pages/restaurant/RestaurantOrders")
+);
 
 export const MainRouter = () => {
   return (

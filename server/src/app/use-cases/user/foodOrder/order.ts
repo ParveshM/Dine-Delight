@@ -4,14 +4,20 @@ import { OrderDbRepositoryInterface } from "../../../interfaces/OrderDbRepositor
 export const createNewOrder = async (
   userId: string,
   orderData: OrderInterface,
-  OrderRepository: ReturnType<OrderDbRepositoryInterface>
+  orderRepository: ReturnType<OrderDbRepositoryInterface>
 ) => {
   orderData.user = userId;
 
-  return await OrderRepository.createOrder(orderData);
+  return await orderRepository.createOrder(orderData);
 };
 
 export const getAllOrders = async (
-  OrderRepository: ReturnType<OrderDbRepositoryInterface>,
-  user?: string
-) => await OrderRepository.allOrders({ user });
+  filter: Record<string, any>,
+  orderRepository: ReturnType<OrderDbRepositoryInterface>
+) => await orderRepository.allOrders(filter);
+
+export const updateOrderItem = async (
+  orderId: string,
+  updateData: Record<string, any>,
+  orderRepository: ReturnType<OrderDbRepositoryInterface>
+) => await orderRepository.updateOrder(orderId, updateData);
