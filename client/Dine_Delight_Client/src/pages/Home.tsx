@@ -8,6 +8,7 @@ import ShimmerCard from "../components/shimmers/ShimmerCard";
 import NoRestaurantFound from "../components/NoItemFound";
 import useRestaurantList from "../hooks/useRestaurantList";
 import { useCallback, useRef } from "react";
+import DefaultBanner from "../components/user/DefaultBanner";
 
 const Home: React.FC = () => {
   const {
@@ -43,7 +44,7 @@ const Home: React.FC = () => {
   return (
     <>
       <Navbar />
-      <Banner banners={banners} />
+      {banners.length ? <Banner banners={banners} /> : <DefaultBanner />}
       <SearchBar
         handleSearch={handleSearchQuery}
         appliedFilters={filter}

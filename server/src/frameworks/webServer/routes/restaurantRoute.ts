@@ -19,6 +19,8 @@ import { userRepositoryMongodb } from "../../database/mongodb/repositories/userR
 import menuController from "../../../adapters/menuController";
 import { MenuRepositoryMongodb } from "../../database/mongodb/repositories/MenuRepositoryMongodb";
 import { menuDbRepository } from "../../../app/interfaces/menuDbRepository";
+import OrderDbRepository from "../../../app/interfaces/OrderDbRepository";
+import OrderRepositoryMongodb from "../../database/mongodb/repositories/OrderRepositoryMongodb";
 
 const restaurantRoute = () => {
   const router = express.Router();
@@ -32,7 +34,9 @@ const restaurantRoute = () => {
     bookingDbRepository,
     bookingRepositoryMongodb,
     userDbRepository,
-    userRepositoryMongodb
+    userRepositoryMongodb,
+    OrderDbRepository,
+    OrderRepositoryMongodb
   );
   // Table management and controller
   const _tableController = tableController(
@@ -117,6 +121,10 @@ const restaurantRoute = () => {
     authenticateSeller,
     _menuController.deleteMenuItem
   );
+
+  /*********** Orders  ************/
+  router.get("/orders", authenticateSeller, controller.getOrders);
+  router.patch("/orders/:orderId", authenticateSeller, controller.updateOrder);
 
   return router;
 };

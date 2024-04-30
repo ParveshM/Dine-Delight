@@ -69,6 +69,7 @@ export interface MenuItemInterface {
   _id: string;
   name: string;
   price: number;
+  image: string;
   category: "starters" | "main course" | "drinks" | "dessert";
   isVegetarian: boolean;
   tags?: string[];

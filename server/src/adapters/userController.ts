@@ -38,6 +38,13 @@ import { UserRepositoryMongodbType } from "../frameworks/database/mongodb/reposi
 import { AdminDbRepositoryInterface } from "../app/interfaces/AdminDbRepository";
 import { AdminRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/AdminRepositoryMongodb";
 import { getAllBanners } from "../app/use-cases/Admin/banner-usecase";
+import { OrderDbRepositoryInterface } from "../app/interfaces/OrderDbRepository";
+import { OrderRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/OrderRepositoryMongodb";
+import {
+  addMoreItemToOrder,
+  createNewOrder,
+  getAllOrders,
+} from "../app/use-cases/user/foodOrder/order";
 
 // Controller will be passing all the necessaary parameers to the repositories
 
@@ -53,7 +60,9 @@ const userController = (
   tableDbRepository: TableDbInterface,
   tableDbRepositoryImpl: TableRepositoryMongodbType,
   adminDbRepository: AdminDbRepositoryInterface,
-  adminDbRepositoryImpl: AdminRepositoryMongodbType
+  adminDbRepositoryImpl: AdminRepositoryMongodbType,
+  orderDbRepository: OrderDbRepositoryInterface,
+  orderDbRepositoryImpl: OrderRepositoryMongodbType
 ) => {
   const dbRepositoryUser = userDbRepository(userRepositoryImpl());
   const restaurantRepository = restaurantDbRepository(
@@ -64,6 +73,8 @@ const userController = (
   );
   const tableRepository = tableDbRepository(tableDbRepositoryImpl());
   const adminRepository = adminDbRepository(adminDbRepositoryImpl());
+  const OrderRepository = orderDbRepository(orderDbRepositoryImpl());
+
   const authService = authServiceInterface(authServiceImpl());
 
   /**
@@ -506,12 +517,84 @@ const userController = (
     next: NextFunction
   ) => {
     try {
-      const banners = await getAllBanners(adminRepository);
+      const banners = await getAllBanners({ isActive: true }, adminRepository);
 
       res.status(HttpStatus.OK).json({
         success: true,
         message: "Banners fetched successfully",
         banners,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * * METHOD:POST
+   * * create new food order
+   */
+  const newFoodOrder = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const order = await createNewOrder(req.user, req.body, OrderRepository);
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "order placed successfully",
+        order,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  /**
+   * * METHOD:GET
+   * * get all the orders done by user
+   */
+  const orders = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user;
+      const skip = 0;
+      const limit = 0;
+      const { orders } = await getAllOrders(
+        { user: userId },
+        { skip, limit },
+        OrderRepository
+      );
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "orders fetched successfully",
+        orders,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  /**
+   * * METHOD:PUT
+   * * update orders done by user
+   */
+  const updateOrder = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { orderId } = req.query as { orderId: string };
+      const order = await addMoreItemToOrder(
+        orderId,
+        req.body,
+        OrderRepository
+      );
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "order updated successfully",
+        order,
       });
     } catch (error) {
       next(error);
@@ -537,6 +620,9 @@ const userController = (
     updateBookmarks,
     updateEmailPreference,
     getBanners,
+    newFoodOrder,
+    orders,
+    updateOrder,
   };
 };
 export default userController;

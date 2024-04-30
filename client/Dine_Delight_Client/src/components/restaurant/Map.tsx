@@ -37,7 +37,7 @@ const CustomMap: React.FC<CustomMapProps> = ({
   };
 
   return (
-    <div className="h-44 ">
+    <div className="h-44">
       <ReactMapGl
         {...viewport}
         mapboxAccessToken={TOKEN}

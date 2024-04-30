@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { MenuCategory, MenuItemInterface } from "../types/RestaurantInterface";
 import axiosJWT from "../utils/axiosService";
 import showToast from "../utils/toaster";
@@ -11,6 +11,7 @@ import { calculateDiscountedPrice } from "../utils/util";
 
 export default function useCart() {
   const { id } = useParams();
+  const [params] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isVegFilterActive, setIsVegFilterActive] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] =
@@ -22,9 +23,19 @@ export default function useCart() {
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(false);
+  const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
   const observer = useRef<IntersectionObserver>();
   const hasPageBeenRendered = useRef(false);
+  const { pathname } = useLocation();
   const dispatch = useAppDispatch();
+  const [showTableInputModal, setTableInputModal] = useState<boolean>(false);
+  const [formData, setFormData] = useState<{
+    tableNumber: string;
+    mobile: string;
+  }>({
+    tableNumber: "",
+    mobile: "",
+  });
 
   const lastMenuItem = useCallback(
     (node: HTMLDivElement | null) => {
@@ -41,10 +52,16 @@ export default function useCart() {
   );
 
   useEffect(() => {
-    axiosJWT
-      .get(USER_API + `/bookings/${id}`)
-      .then(({ data }) => setBooking(data.bookingDetails))
-      .catch(() => showToast("Oops! Something went wrong", "error"));
+    const isOrderSection = pathname.startsWith("/menu");
+
+    if (isOrderSection && !params.get("orderId")) {
+      setTableInputModal(true);
+    } else {
+      axiosJWT
+        .get(USER_API + `/bookings/${id}`)
+        .then(({ data }) => setBooking(data.bookingDetails))
+        .catch(() => showToast("Oops! Something went wrong", "error"));
+    }
   }, []);
 
   useEffect(() => {
@@ -63,9 +80,11 @@ export default function useCart() {
           params: {
             q: searchQuery,
             page,
-            bookingId: id,
+            ...(pathname.startsWith("/cart")
+              ? { bookingId: id }
+              : { restaurantId: id }),
             category: selectedCategory,
-            isVegetarian: isVegFilterActive,
+            ...(isVegFilterActive && { isVegetarian: isVegFilterActive }),
           },
         })
         .then(({ data }) => {
@@ -109,15 +128,21 @@ export default function useCart() {
     booking,
     menuItems,
     isLoading,
+    formData,
     searchQuery,
-    isSidebarOpen,
+    isDrawerOpen,
     lastMenuItem,
+    setDrawerOpen,
+    isSidebarOpen,
+    setFormData,
     isLoadingMore,
     setSearchQuery,
     handleAddToCart,
     setIsSidebarOpen,
-    isVegFilterActive,
     selectedCategory,
+    setTableInputModal,
+    isVegFilterActive,
+    showTableInputModal,
     setIsVegFilterActive,
     setSelectedCategory,
   };

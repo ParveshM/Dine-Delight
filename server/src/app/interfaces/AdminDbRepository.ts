@@ -4,7 +4,8 @@ import { BannerInterface } from "../../types/adminInterfaces";
 export default function adminDbRepository(
   repository: ReturnType<AdminRepositoryMongodbType>
 ) {
-  const banners = async () => await repository.banners();
+  const banners = async (filter: Record<string, any> = {}) =>
+    await repository.banners(filter);
 
   const newBanner = async (bannerData: BannerInterface) =>
     await repository.newBanner(bannerData);

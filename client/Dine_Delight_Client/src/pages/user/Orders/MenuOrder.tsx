@@ -1,4 +1,4 @@
-import Cart from "./Booking/Cart";
+import Cart from "../Booking/Cart";
 
 const MenuOrder = () => {
   return <Cart />;

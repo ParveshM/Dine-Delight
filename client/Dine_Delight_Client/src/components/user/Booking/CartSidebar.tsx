@@ -1,18 +1,24 @@
 import { PanelRightClose } from "lucide-react";
 import { BsPlus, BsDash } from "react-icons/bs";
-import { CartItemInterface, clearCart } from "../../../redux/slices/CartSlice";
-import { useAppDispatch } from "../../../redux/store/Store";
+import { clearCart } from "../../../redux/slices/CartSlice";
+import { useAppDispatch, useAppSelector } from "../../../redux/store/Store";
 import { TbCircleX } from "react-icons/tb";
 import Button from "../../restaurant/Button";
 import useCartSidebar from "../../../hooks/useCartSidebar";
+import { useNavigate } from "react-router-dom";
 interface CartSidbarProps {
   isSidebarOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
-  cartItems: CartItemInterface[];
+  tableData?: {
+    tableNumber: string;
+    mobile: string;
+  };
 }
+
 const CartSidebar: React.FC<CartSidbarProps> = ({
   isSidebarOpen,
   setIsSidebarOpen,
+  tableData,
 }) => {
   const dispatch = useAppDispatch();
   const {
@@ -22,8 +28,9 @@ const CartSidebar: React.FC<CartSidbarProps> = ({
     handleUpdateQuantity,
     totalAmount,
     isSubmitting,
-  } = useCartSidebar();
-
+  } = useCartSidebar(tableData);
+  const { isAuthenticated } = useAppSelector((state) => state.UserSlice);
+  const navigate = useNavigate();
   return (
     <>
       <aside
@@ -144,14 +151,23 @@ const CartSidebar: React.FC<CartSidbarProps> = ({
                 <span>₹{(totalAmount && totalAmount) ?? 0}</span>
               </div>
             </div>
-            <button
-              className="w-full mt-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600
+            {isAuthenticated ? (
+              <button
+                className="w-full mt-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600
                 disabled:bg-blue-300 disabled:cursor-auto"
-              onClick={handleCheckout}
-              disabled={isSubmitting || !cartItems.length ? true : false}
-            >
-              Checkout
-            </button>
+                onClick={() => handleCheckout()}
+                disabled={isSubmitting || !cartItems.length ? true : false}
+              >
+                Checkout
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate("/user/auth/login")}
+                className="w-full mt-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Login
+              </button>
+            )}
           </div>
         </div>
       </aside>

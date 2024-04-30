@@ -7,6 +7,7 @@ import dineinVector from "./10085382.png";
 import paymentFailedImg from "./credit-card.png";
 import chatBackground from "./Gemini_Generated_Image_kbdbmkbdbmkbdbmk.jpg";
 import dummyUserImg from "./dummyUserImg.png";
+import foodCover from "./food-cover.png";
 export {
   vector,
   logo,
@@ -17,4 +18,5 @@ export {
   paymentFailedImg,
   chatBackground,
   dummyUserImg,
+  foodCover,
 };

@@ -11,7 +11,7 @@ const ChatIcon = () => {
   );
   const socket = useSocket();
   const navigate = useNavigate();
-  const location = useLocation();
+  const { pathname } = useLocation();
   const [notificationCount, setNotificationCount] = useState<number>(0);
 
   useEffect(() => {
@@ -34,10 +34,12 @@ const ChatIcon = () => {
   //     });
   // }, []);
 
-  const path =
-    location.pathname === "/chat" || location.pathname === "/restaurant/chat";
-  const isCartRoute = location.pathname.startsWith("/cart");
-  if (!isAuthenticated || path || isCartRoute) return null;
+  const isExcludedRoute =
+    pathname === "/chat" ||
+    pathname === "/restaurant/chat" ||
+    pathname.startsWith("/menu") ||
+    pathname.startsWith("/cart");
+  if (!isAuthenticated || isExcludedRoute) return null;
 
   return (
     <button

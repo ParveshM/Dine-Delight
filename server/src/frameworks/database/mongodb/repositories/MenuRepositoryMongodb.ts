@@ -7,6 +7,7 @@ export const MenuRepositoryMongodb = () => {
     await Menu.create({
       name: menuData.getName(),
       category: menuData.getCategory(),
+      image: menuData.getImage(),
       price: menuData.getPrice(),
       isVegetarian: menuData.isVegetarian(),
       restaurantId: menuData.getRestaurantId(),

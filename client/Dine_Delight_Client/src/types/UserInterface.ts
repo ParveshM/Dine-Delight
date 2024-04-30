@@ -22,3 +22,23 @@ export interface TransactionsInterface {
   amount: number;
   createdAt: Date;
 }
+interface OrderItem {
+  item: {
+    _id: string;
+    name: string;
+  };
+  price: number;
+  quantity: number;
+}
+export interface OrderInterface {
+  _id: string;
+  orderId: string;
+  user: UserInterface;
+  restaurant: string;
+  tableNumber: string;
+  mobile: string;
+  orderItems: OrderItem[];
+  total: number;
+  status: "Pending" | "Confirmed" | "InProgress" | "Completed" | "Cancelled";
+  createdAt: Date;
+}

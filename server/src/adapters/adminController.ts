@@ -298,7 +298,7 @@ export default (
     next: NextFunction
   ) => {
     try {
-      const banners = await getAllBanners(adminRepository);
+      const banners = await getAllBanners({}, adminRepository);
       res.status(HttpStatus.OK).json({
         success: true,
         message: "Banners fetched successfully",

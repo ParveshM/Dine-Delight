@@ -93,7 +93,7 @@ const Menu: React.FC = () => {
           q: searchQuery,
           page,
           category: selectedCategory,
-          isVegetarian: isVegFilterActive,
+          ...(isVegFilterActive && { isVegetarian: isVegFilterActive }),
         },
       })
       .then(({ data }) => {
@@ -110,11 +110,11 @@ const Menu: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-2  mb-3">
           <h1 className="text-3xl font-semibold ">Menu</h1>
           <div className="flex item-center gap-2">
-            {/* <Button
+            <Button
               label="Qr Code"
               className="px-4 py-2 bg-green-400"
               handleButtonclick={() => setQrModalOpen(true)}
-            /> */}
+            />
             <Button
               label="Add Item"
               className="px-4 py-2 bg-yellow-400 "

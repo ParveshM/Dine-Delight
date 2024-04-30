@@ -3,6 +3,7 @@ import { PreorderInterface } from "../../types/RestaurantInterface";
 
 export interface CartItemInterface {
   _id: string;
+  item?: string;
   name: string;
   price: number;
   quantity: number;

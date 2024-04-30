@@ -59,6 +59,19 @@ const socketConfig = (io: Server) => {
       io.to(user?.socketId ?? "").emit("senderTyping", isTyping);
     });
 
+    // new Food order
+    socket.on("newOrder", ({ recieverId, order }) => {
+      const user = getUser(recieverId);
+      console.log(recieverId, order, "user", users);
+
+      io.to(user?.socketId ?? "").emit("get_newOrder", order);
+    });
+    // update order
+    socket.on("update_order", ({ recieverId, order }) => {
+      const user = getUser(recieverId);
+      io.to(user?.socketId ?? "").emit("notify_updatedOrder", order);
+    });
+
     // when disconnection
     socket.on("disconnect", () => {
       removeUser(socket.id);

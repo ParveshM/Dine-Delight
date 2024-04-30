@@ -17,3 +17,16 @@ export interface UserInterface {
   bookmarks?: Array<string>;
   createdAt?: Date;
 }
+interface OrderItem {
+  item: string;
+  price: number;
+  quantity: number;
+}
+export interface OrderInterface {
+  user: string;
+  restaurant: string;
+  tableNumber: string;
+  mobile: string;
+  orderItems: OrderItem[];
+  total: number;
+}

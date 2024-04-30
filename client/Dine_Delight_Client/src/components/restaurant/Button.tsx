@@ -1,4 +1,6 @@
-interface ButtonPropsInterface {
+import { ButtonHTMLAttributes, ReactElement } from "react";
+
+interface ButtonPropsInterface extends ButtonHTMLAttributes<HTMLButtonElement> {
   handleButtonclick?: () => void;
   label: string;
   className?: string;

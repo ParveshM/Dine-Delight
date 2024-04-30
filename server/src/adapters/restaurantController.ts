@@ -26,6 +26,12 @@ import {
   dashBoardData,
   generateRestaurantReport,
 } from "../app/use-cases/restaurant/dashboard";
+import { OrderDbRepositoryInterface } from "../app/interfaces/OrderDbRepository";
+import { OrderRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/OrderRepositoryMongodb";
+import {
+  getAllOrders,
+  updateOrderItem,
+} from "../app/use-cases/user/foodOrder/order";
 
 const restaurantController = (
   authServiceInterface: AuthServiceInterfaceType,
@@ -35,7 +41,9 @@ const restaurantController = (
   bookingDbRepository: BookingDbRepositoryInterface,
   bookingDbRepositoryImpl: BookingRepositoryMongodbType,
   userDbRepository: UserDbInterface,
-  userDbRepositoryImpl: UserRepositoryMongodbType
+  userDbRepositoryImpl: UserRepositoryMongodbType,
+  orderDbRepository: OrderDbRepositoryInterface,
+  orderDbRepositoryImpl: OrderRepositoryMongodbType
 ) => {
   const authService = authServiceInterface(authServiceImpl());
   const dbRepositoryRestaurants = restaurantDbRepository(
@@ -43,6 +51,7 @@ const restaurantController = (
   );
   const bookingRepository = bookingDbRepository(bookingDbRepositoryImpl());
   const userRepository = userDbRepository(userDbRepositoryImpl());
+  const orderRepository = orderDbRepository(orderDbRepositoryImpl());
 
   /*
    * METHOD: POST
@@ -310,6 +319,55 @@ const restaurantController = (
     }
   };
 
+  /**
+   * * METHOD:GET
+   * * Get orders for the  restaurant
+   */
+  const getOrders = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const restaurantID = req.seller;
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = 2;
+      const skip = (page - 1) * limit;
+      const { orders, count } = await getAllOrders(
+        { restaurant: restaurantID },
+        { skip, limit },
+        orderRepository
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "orders fetched successfully",
+        orders,
+        limit,
+        count,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  /**
+   * * METHOD:PATCH
+   * * Update order status
+   */
+  const updateOrder = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { orderId } = req.params;
+      const { status } = req.body;
+      const order = await updateOrderItem(orderId, { status }, orderRepository);
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "order updated successfully",
+        order,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     signup,
     verifyToken,
@@ -321,6 +379,8 @@ const restaurantController = (
     getReservationbybookingId,
     generateReports,
     restaurantDashboard,
+    getOrders,
+    updateOrder,
   };
 };
 export default restaurantController;

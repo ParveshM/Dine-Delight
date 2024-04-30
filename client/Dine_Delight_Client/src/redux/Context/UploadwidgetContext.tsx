@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 interface CloudinaryWidgetConfig {
   cloudName: string;
@@ -35,7 +35,13 @@ declare global {
   }
 }
 
-export const CloudinaryScriptContext = createContext<any>(null);
+export const CloudinaryScriptContext = createContext<{
+  loaded: boolean;
+} | null>(null);
+
+export const useCloudinaryScript = () => {
+  return useContext(CloudinaryScriptContext);
+};
 
 interface UploadWidgetProps {
   uwConfig: CloudinaryWidgetConfig;
@@ -48,6 +54,7 @@ const CloudinaryUploadWidget: React.FC<UploadWidgetProps> = ({
 }) => {
   const [loaded, setLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     if (!loaded) {
       const uwScript = document.getElementById("uw");
@@ -64,18 +71,19 @@ const CloudinaryUploadWidget: React.FC<UploadWidgetProps> = ({
     }
   }, [loaded]);
 
-  const initializeCloudinaryWidget = () => {
-    if (loaded) {
-      const myWidget = window.cloudinary.createUploadWidget(
-        uwConfig,
-        (error, result) => {
-          if (!error && result && result.event === "success") {
-            setImageUrl(result.info.secure_url);
-          }
+  const initializeCloudinaryWidget = async () => {
+    setIsLoading(true);
+    const myWidget = window.cloudinary.createUploadWidget(
+      uwConfig,
+      (error, result) => {
+        if (!error && result && result.event === "success") {
+          setImageUrl(result.info.secure_url);
         }
-      );
-
-      myWidget.open();
+      }
+    );
+    if (loaded) {
+      await myWidget.open();
+      setIsLoading(false);
     }
   };
 
@@ -83,7 +91,7 @@ const CloudinaryUploadWidget: React.FC<UploadWidgetProps> = ({
     <CloudinaryScriptContext.Provider value={{ loaded }}>
       <button
         id="upload_widget"
-        className="bg-blue-500 py-2 px-4 disabled:cursor-wait rounded-md text-white font-semibold shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="bg-blue-500 py-1 px-4 disabled:cursor-not-allowed rounded-md text-white font-semibold shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
         type="button"
         onClick={initializeCloudinaryWidget}
         disabled={isLoading}
