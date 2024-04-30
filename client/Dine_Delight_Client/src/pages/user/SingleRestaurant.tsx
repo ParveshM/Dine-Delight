@@ -45,7 +45,7 @@ const SingleRestaurant = () => {
     axios
       .get(USER_API + `/restaurants/${id}`)
       .then(({ data }) => {
-        const { restaurant, tableSlots, ratings, dateSlots } = data;
+        const { restaurant, tableSlots, ratings } = data;
         setRatings(ratings);
         setResturant(restaurant);
         setTableSlot(tableSlots);
