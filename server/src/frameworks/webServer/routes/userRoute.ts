@@ -127,6 +127,7 @@ const userRoute = () => {
 
   router.post("/order", authenticateUser, controller.newFoodOrder);
   router.get("/orders", authenticateUser, controller.orders);
+  router.put("/orders/update", authenticateUser, controller.updateOrder);
 
   return router;
 };

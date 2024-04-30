@@ -11,9 +11,9 @@ export default function OrderDbRepository(
   const allOrders = async (filter: Record<string, any>) =>
     repository.allOrders(filter);
   const updateOrder = async (
-    orderId: string,
+    filter: Record<string, any>,
     updateData: Record<string, any>
-  ) => repository.updateOrder(orderId, updateData);
+  ) => repository.updateOrder(filter, updateData);
 
   return { createOrder, getOrderById, allOrders, updateOrder };
 }

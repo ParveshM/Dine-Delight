@@ -19,9 +19,9 @@ export default function OrderRepositoryMongodb() {
   const allOrders = async (filter: Record<string, any>) =>
     await Order.find(filter).populate(["user", "orderItems.item"]);
   const updateOrder = async (
-    orderId: string,
+    filter: Record<string, any>,
     updateData: Record<string, any>
-  ) => await Order.findOneAndUpdate({ orderId }, updateData, { new: true });
+  ) => await Order.findOneAndUpdate(filter, updateData, { new: true });
 
   return { createOrder, getOrderById, allOrders, updateOrder };
 }

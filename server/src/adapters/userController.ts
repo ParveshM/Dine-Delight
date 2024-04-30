@@ -41,6 +41,7 @@ import { getAllBanners } from "../app/use-cases/Admin/banner-usecase";
 import { OrderDbRepositoryInterface } from "../app/interfaces/OrderDbRepository";
 import { OrderRepositoryMongodbType } from "../frameworks/database/mongodb/repositories/OrderRepositoryMongodb";
 import {
+  addMoreItemToOrder,
   createNewOrder,
   getAllOrders,
 } from "../app/use-cases/user/foodOrder/order";
@@ -567,6 +568,27 @@ const userController = (
       next(error);
     }
   };
+  /**
+   * * METHOD:PUT
+   * * update orders done by user
+   */
+  const updateOrder = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { orderId } = req.query as { orderId: string };
+      await addMoreItemToOrder(orderId, req.body, OrderRepository);
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "order updated successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 
   return {
     registerUser,
@@ -589,6 +611,7 @@ const userController = (
     getBanners,
     newFoodOrder,
     orders,
+    updateOrder,
   };
 };
 export default userController;

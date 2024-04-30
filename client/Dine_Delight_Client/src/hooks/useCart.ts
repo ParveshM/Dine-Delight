@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { MenuCategory, MenuItemInterface } from "../types/RestaurantInterface";
 import axiosJWT from "../utils/axiosService";
 import showToast from "../utils/toaster";
@@ -11,6 +11,7 @@ import { calculateDiscountedPrice } from "../utils/util";
 
 export default function useCart() {
   const { id } = useParams();
+  const [params] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isVegFilterActive, setIsVegFilterActive] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] =
@@ -22,11 +23,11 @@ export default function useCart() {
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(false);
+  const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
   const observer = useRef<IntersectionObserver>();
   const hasPageBeenRendered = useRef(false);
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
-  const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [showTableInputModal, setTableInputModal] = useState<boolean>(false);
   const [formData, setFormData] = useState<{
     tableNumber: string;
@@ -52,7 +53,8 @@ export default function useCart() {
 
   useEffect(() => {
     const isOrderSection = pathname.startsWith("/menu");
-    if (isOrderSection) {
+
+    if (isOrderSection && !params.get("orderId")) {
       setTableInputModal(true);
     } else {
       axiosJWT

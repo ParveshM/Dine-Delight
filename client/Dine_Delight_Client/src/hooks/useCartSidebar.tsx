@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/store/Store";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import axiosJWT from "../utils/axiosService";
 import { USER_API } from "../constants";
 import {
@@ -20,6 +25,7 @@ export default function useCartSidebar(tableData?: {
   const navigate = useNavigate();
   const { id } = useParams();
   const { pathname } = useLocation();
+  const [params] = useSearchParams();
 
   useEffect(() => {
     axiosJWT
@@ -69,27 +75,39 @@ export default function useCartSidebar(tableData?: {
     dispatch(updateQuantity({ itemId, quantity, type }));
   };
 
-  const handleCheckout = (tableNumber?: string) => {
+  const handleCheckout = async (tableNumber?: string) => {
     setIsSubmitting(true);
     if (isMenuSection) {
       const items = cartItems.map(({ _id, ...rest }) => ({
         ...rest,
         item: _id,
       }));
-      axiosJWT
-        .post(USER_API + "/order", {
-          restaurant: id,
-          tableNumber,
-          orderItems: items,
-          total: totalAmount,
-          ...tableData,
-        })
-        .then(({ data }) => {
-          showToast(data.message);
-          navigate(`/booking_history`);
-        })
-        .catch(() => showToast("Oops! Something went wrong"))
-        .finally(() => setIsSubmitting(false));
+      const orderId = params.get("orderId");
+      try {
+        const requestBody = orderId
+          ? { orderItems: items }
+          : {
+              restaurant: id,
+              tableNumber,
+              orderItems: items,
+              total: totalAmount,
+              ...tableData,
+            };
+
+        const apiEndpoint = orderId
+          ? `${USER_API}/orders/update?orderId=${orderId}`
+          : `${USER_API}/order`;
+        const response = orderId
+          ? await axiosJWT.put(apiEndpoint, requestBody)
+          : await axiosJWT.post(apiEndpoint, requestBody);
+
+        showToast(response.data.message);
+        navigate(`/orders`);
+      } catch (error) {
+        showToast("Oops! Something went wrong", "error");
+      } finally {
+        setIsSubmitting(false);
+      }
     } else {
       axiosJWT
         .post(USER_API + "/booking/preOrder", {

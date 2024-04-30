@@ -1,7 +1,7 @@
 import { IoClose } from "react-icons/io5";
 import { OrderInterface } from "../../types/UserInterface";
 import { ChevronDown } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import axiosJWT from "../../utils/axiosService";
 import { RESTAURANT_API } from "../../constants";
 import showToast from "../../utils/toaster";
@@ -29,6 +29,12 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
       })
       .catch(() => showToast("Oops! Something went wrong", "error"));
   };
+  const orderTotal = useMemo(() => {
+    return order.orderItems.reduce((acc, curr) => {
+      return (acc += curr.price * curr.quantity);
+    }, 0);
+  }, []);
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto  bg-gray-500 bg-opacity-50 flex justify-center items-center ">
       <div className="relative bg-white rounded-lg shadow-lg max-w-md w-full mx-3">
@@ -54,10 +60,15 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                   <p className="text-sm font-semibold">Order ID:</p>
                   <p className="text-sm">{order.orderId}</p>
                 </div>
-                <p className="text-sm font-semibold">Table Number :</p>
-                <div className="text-sm flex items-center gap-2">
-                  <p>{order.tableNumber}</p>
+                <div className="flex gap-2 items-center">
+                  <p className="text-sm font-semibold ">Table Number :</p>
+                  <p className="text-sm">{order.tableNumber}</p>
                 </div>
+                <div className="flex gap-2 items-center">
+                  <p className="text-sm font-semibold ">Total :</p>
+                  <p className="text-sm"> ₹{orderTotal}</p>
+                </div>
+
                 <div className="flex items-center">
                   <p className="text-sm font-semibold mr-2">Order Status:</p>
                   <div className="relative">
@@ -84,10 +95,10 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                   </div>
                 </div>
 
-                <p className="text-sm font-semibold">name:</p>
-                <p className="text-sm">{order.user.name}</p>
-                <p className="text-sm font-semibold">Mobile</p>
-                <p className="text-sm">{order.mobile}</p>
+                <p className="text-sm font-semibold">Cutomer Details:</p>
+                <p className="text-sm inline-flex gap-2 ">
+                  {order.user.name} , {order.mobile}
+                </p>
               </div>
             </div>
             <div className="col-span-4  md:col-span-2 ">
@@ -104,20 +115,18 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                   </li>
                 ))}
               </ul>
-              <p className="mt-2 font-medium text-base">
-                Total : ₹{order.total}
-              </p>
             </div>
           </div>
-
-          <button
-            className="text-white   bg-green-500 hover:bg-green-600
-         focus:ring-green-400 focus:ring-2 focus:outline-none  font-medium rounded-lg
-         text-sm px-5 py-2.5 text-center"
-            type="submit"
-          >
-            Save
-          </button>
+          <div className="flex justify-end">
+            <button
+              className="text-white    bg-indigo-500 hover:bg-indigo-600
+            focus:ring-indigo-400 focus:ring-2 focus:outline-none  font-medium rounded-lg
+            text-sm px-5 py-2.5 text-center"
+              type="submit"
+            >
+              Save
+            </button>
+          </div>
         </form>
       </div>
     </div>
