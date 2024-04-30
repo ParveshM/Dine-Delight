@@ -7,8 +7,6 @@ const RestaurantData: React.FC<RestaurantInterface> = ({
   _id,
   restaurantName,
   email,
-  openingTime,
-  closingTime,
   address,
   isListed,
 }) => {

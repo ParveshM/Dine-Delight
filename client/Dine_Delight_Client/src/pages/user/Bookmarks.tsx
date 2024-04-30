@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ShimmerCard from "../../components/shimmers/ShimmerCard";
-import CardsList from "../../components/user/Cards/CardsList";
 import { RestaurantInterface } from "../../types/RestaurantInterface";
 import axios from "axios";
 import { USER_API } from "../../constants";

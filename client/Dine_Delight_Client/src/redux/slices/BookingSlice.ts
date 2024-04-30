@@ -15,7 +15,7 @@ const BookingSlice = createSlice({
   initialState,
   reducers: {
     setTableSlot: (state, action: PayloadAction<TableSlotInterface>) => {
-      return { ...action.payload };
+      return { ...state, ...action.payload };
     },
     clearTableSlot: () => initialState,
   },

@@ -19,7 +19,7 @@ const LocationSlice = createSlice({
   initialState,
   reducers: {
     setLocation: (state, action: PayloadAction<LocationState>) => {
-      return { ...action.payload };
+      return { ...state, ...action.payload };
     },
     clearLocation: () => initialState,
   },

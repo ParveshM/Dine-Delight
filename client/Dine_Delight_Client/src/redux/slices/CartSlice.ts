@@ -8,11 +8,7 @@ export interface CartItemInterface {
   price: number;
   quantity: number;
 }
-interface PrOrderedItems {
-  itemId: CartItemInterface[];
-  price: number;
-  quantity: number;
-}
+
 interface CartInterface {
   cart: CartItemInterface[];
 }

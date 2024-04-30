@@ -1,4 +1,4 @@
-import { Edit, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { TableSlotInterface } from "../../../types/RestaurantInterface";
 
 interface TableSlotDataaPropsType extends TableSlotInterface {

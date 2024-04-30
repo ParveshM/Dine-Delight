@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axiosJWT from "../../../utils/axiosService";
 import { RESTAURANT_API } from "../../../constants";
 import showToast from "../../../utils/toaster";

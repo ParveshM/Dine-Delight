@@ -8,8 +8,6 @@ import {
   validateRestaurantDetails,
 } from "../utils/validation";
 import { getAddressByReversedGeocode } from "../Api/reverseGeocode";
-import { extractPublicId } from "../utils/util";
-import axios from "axios";
 
 export interface FormInitalState {
   restaurantName: string;

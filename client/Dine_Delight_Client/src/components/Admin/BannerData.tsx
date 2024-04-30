@@ -11,7 +11,6 @@ interface BannerProps extends BannerInterface {
 const BannerData: React.FC<BannerProps> = ({
   _id,
   image,
-  description,
   title,
   isActive,
   index,

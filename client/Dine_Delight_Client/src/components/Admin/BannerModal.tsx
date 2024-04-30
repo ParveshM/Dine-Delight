@@ -1,21 +1,14 @@
 import { useFormik } from "formik";
 import { ChevronDown } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import {
   BannerInterface,
   RestaurantInterface,
 } from "../../types/RestaurantInterface";
 import axiosJWT from "../../utils/axiosService";
-import {
-  ADMIN_API,
-  CLOUDNAME,
-  IMAGEUPLOADCONFIG,
-  cloudinaryUploadPreset,
-} from "../../constants";
-import CloudinaryUploadWidget, {
-  CloudinaryScriptContext,
-} from "../../redux/Context/UploadwidgetContext";
+import { ADMIN_API, IMAGEUPLOADCONFIG } from "../../constants";
+import CloudinaryUploadWidget from "../../redux/Context/UploadwidgetContext";
 import showToast from "../../utils/toaster";
 import * as Yup from "yup";
 

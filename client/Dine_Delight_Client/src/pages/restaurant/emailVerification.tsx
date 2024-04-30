@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { RESTAURANT_API } from "../../constants";
 import showToast from "../../utils/toaster";

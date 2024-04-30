@@ -34,7 +34,7 @@ const SingleRestaurant = () => {
   const { id } = useParams();
   const [restaurant, setResturant] = useState<RestaurantInterface>();
   const [tableSlot, setTableSlot] = useState<TableSlotInterface[]>([]);
-  const [dateSlots, setDateSlots] = useState<TableSlotInterface[]>([]);
+  // const [dateSlots, setDateSlots] = useState<TableSlotInterface[]>([]);
   const [error, setError] = useState<boolean>(false);
   const [ratings, setRatings] = useState<ReviewInterface[]>([]);
   const [showTooltip, setTooltip] = useState<boolean>(false);
@@ -49,7 +49,7 @@ const SingleRestaurant = () => {
         setRatings(ratings);
         setResturant(restaurant);
         setTableSlot(tableSlots);
-        setDateSlots(dateSlots);
+        // setDateSlots(dateSlots);
       })
       .catch(() => {
         console.error("Page not found");

@@ -2,7 +2,7 @@ import { menuCategories } from "../../../constants";
 import MenuItemsShimmer from "../../../components/shimmers/MenuItemsShimmer";
 import { DebounceInput } from "react-debounce-input";
 import useCart from "../../../hooks/useCart";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../../components/user/Header/Navbar";
 import MenuItemList from "../../../components/user/Booking/MenuItemList";
 import CartSidebar from "../../../components/user/Booking/CartSidebar";

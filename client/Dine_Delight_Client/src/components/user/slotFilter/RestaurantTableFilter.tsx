@@ -10,7 +10,6 @@ import { USER_API } from "../../../constants";
 import axios from "axios";
 import LoadingAnimation from "../LoadingAnimation";
 import ReservationModal from "../Modals/ReservationModal";
-import { convert24HourTime } from "../../../utils/timeConverter";
 interface TableSlotFilterProps {
   restaurantInfo: RestaurantInterface;
   tableSlots: TableSlotInterface[];

@@ -16,7 +16,7 @@ const Banner: React.FC<{ banners: BannerInterface[] }> = ({ banners }) => {
     return () => clearInterval(interval);
   }, [currentIndex, banners.length]);
 
-  return (
+  return banners.length ? (
     <section className="home py-6 mt-20  bg-gray-50 overflow-hidden ">
       <motion.div
         className="container flex flex-col md:flex-row items-center justify-center mx-auto px-4 md:px-12"
@@ -52,6 +52,8 @@ const Banner: React.FC<{ banners: BannerInterface[] }> = ({ banners }) => {
         </div>
       </motion.div>
     </section>
+  ) : (
+    <DefaultBanner />
   );
 };
 

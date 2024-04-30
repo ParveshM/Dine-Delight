@@ -1,18 +1,14 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../redux/store/Store";
 import { useSocket } from "../../redux/Context/SocketContext";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { CHAT_API } from "../../constants";
+import { useEffect } from "react";
 
 const ChatIcon = () => {
-  const { role, isAuthenticated, id } = useAppSelector(
-    (state) => state.UserSlice
-  );
+  const { role, isAuthenticated } = useAppSelector((state) => state.UserSlice);
   const socket = useSocket();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [notificationCount, setNotificationCount] = useState<number>(0);
+  // const [notificationCount, setNotificationCount] = useState<number>(0);
 
   useEffect(() => {
     socket?.on("notification", () => {});
