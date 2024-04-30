@@ -557,7 +557,13 @@ const userController = (
   const orders = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user;
-      const orders = await getAllOrders({ user: userId }, OrderRepository);
+      const skip = 0;
+      const limit = 0;
+      const { orders } = await getAllOrders(
+        { user: userId },
+        { skip, limit },
+        OrderRepository
+      );
 
       res.status(HttpStatus.OK).json({
         success: true,
@@ -579,11 +585,16 @@ const userController = (
   ) => {
     try {
       const { orderId } = req.query as { orderId: string };
-      await addMoreItemToOrder(orderId, req.body, OrderRepository);
+      const order = await addMoreItemToOrder(
+        orderId,
+        req.body,
+        OrderRepository
+      );
 
       res.status(HttpStatus.OK).json({
         success: true,
         message: "order updated successfully",
+        order,
       });
     } catch (error) {
       next(error);

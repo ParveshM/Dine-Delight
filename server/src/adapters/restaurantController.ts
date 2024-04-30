@@ -326,14 +326,20 @@ const restaurantController = (
   const getOrders = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const restaurantID = req.seller;
-      const orders = await getAllOrders(
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = 2;
+      const skip = (page - 1) * limit;
+      const { orders, count } = await getAllOrders(
         { restaurant: restaurantID },
+        { skip, limit },
         orderRepository
       );
       res.status(HttpStatus.OK).json({
         success: true,
         message: "orders fetched successfully",
         orders,
+        limit,
+        count,
       });
     } catch (error) {
       next(error);

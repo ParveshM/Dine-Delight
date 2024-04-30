@@ -14,6 +14,8 @@ import {
   updateQuantity,
 } from "../redux/slices/CartSlice";
 import showToast from "../utils/toaster";
+import { useSocket } from "../redux/Context/SocketContext";
+import { OrderInterface } from "../types/UserInterface";
 
 export default function useCartSidebar(tableData?: {
   tableNumber: string;
@@ -21,11 +23,13 @@ export default function useCartSidebar(tableData?: {
 }) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { cart: cartItems } = useAppSelector((state) => state.CartSlice);
+  const user = useAppSelector((state) => state.UserSlice);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
   const { pathname } = useLocation();
   const [params] = useSearchParams();
+  const socket = useSocket();
 
   useEffect(() => {
     axiosJWT
@@ -75,6 +79,19 @@ export default function useCartSidebar(tableData?: {
     dispatch(updateQuantity({ itemId, quantity, type }));
   };
 
+  const emitOrderDetails = (
+    recieverId: string,
+    order: OrderInterface,
+    action: "newOrder" | "update_order"
+  ) => {
+    if (action === "newOrder") {
+      const newOrder = { ...order, user: { name: user.name } };
+      socket?.emit(action, { recieverId, order: newOrder });
+    } else {
+      socket?.emit(action, { recieverId, order });
+    }
+  };
+
   const handleCheckout = async (tableNumber?: string) => {
     setIsSubmitting(true);
     if (isMenuSection) {
@@ -100,8 +117,13 @@ export default function useCartSidebar(tableData?: {
         const response = orderId
           ? await axiosJWT.put(apiEndpoint, requestBody)
           : await axiosJWT.post(apiEndpoint, requestBody);
+        const { data } = response;
 
-        showToast(response.data.message);
+        orderId
+          ? emitOrderDetails(id || "", data.order, "update_order")
+          : emitOrderDetails(id || "", data.order, "newOrder");
+
+        showToast(data.message);
         navigate(`/orders`);
       } catch (error) {
         showToast("Oops! Something went wrong", "error");

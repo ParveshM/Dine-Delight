@@ -59,16 +59,23 @@ const TimeSlots = () => {
     <div className=" p-4">
       <h1 className="text-2xl font-semibold ">Time Slots</h1>
       <div className="grid grid-cols-6 gap-4 ">
-        <div className="col-span-6 sm:col-span-2 md:col-span-3 lg:col-span-2  rounded-lg mt-10">
+        <div className="col-span-6 sm:col-span-2 md:col-span-3 lg:col-span-2  rounded-lg mt-10 h-64 md:h-[400px] overflow-y-auto">
           {!slots?.length ? (
             <p className="text-lg font-medium">No time slot added</p>
           ) : (
             slots?.map((slot) => (
-              <SlotItem
-                {...slot}
-                handleDeleteSlot={handleDeleteSlot}
-                key={slot._id}
-              />
+              <>
+                <SlotItem
+                  {...slot}
+                  handleDeleteSlot={handleDeleteSlot}
+                  key={slot._id}
+                />
+                <SlotItem
+                  {...slot}
+                  handleDeleteSlot={handleDeleteSlot}
+                  key={slot._id}
+                />
+              </>
             ))
           )}
         </div>

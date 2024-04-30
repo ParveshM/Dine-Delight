@@ -1,4 +1,5 @@
 import { OrderRepositoryMongodbType } from "../../frameworks/database/mongodb/repositories/OrderRepositoryMongodb";
+import { PaginateInterface } from "../../types/restaurantInterface";
 import { OrderInterface } from "../../types/userInterface";
 
 export default function OrderDbRepository(
@@ -8,8 +9,10 @@ export default function OrderDbRepository(
     repository.createOrder(orderData);
   const getOrderById = async (orderId: string) =>
     repository.getOrderById(orderId);
-  const allOrders = async (filter: Record<string, any>) =>
-    repository.allOrders(filter);
+  const allOrders = async (
+    filter: Record<string, any>,
+    paginate: PaginateInterface
+  ) => repository.allOrders(filter, paginate);
   const updateOrder = async (
     filter: Record<string, any>,
     updateData: Record<string, any>

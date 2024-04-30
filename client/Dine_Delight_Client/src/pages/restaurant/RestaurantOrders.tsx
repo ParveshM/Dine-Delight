@@ -5,21 +5,40 @@ import showToast from "../../utils/toaster";
 import { OrderInterface } from "../../types/UserInterface";
 import OrderData from "../../components/restaurant/OrderData";
 import ViewOrder from "../../components/restaurant/ViewOrder";
+import { useSocket } from "../../redux/Context/SocketContext";
+import { useAppSelector } from "../../redux/store/Store";
+import usePaginateState from "../../hooks/usePaginateState";
+import Pagination from "../../components/Pagination";
 
 const RestaurantOrders = () => {
   const [orders, setOrders] = useState<OrderInterface[]>([]);
   const [viewOrder, setViewOrder] = useState<OrderInterface | null>(null);
   const [viewOrderModal, setViewOrderModal] = useState<boolean>(false);
+  const socket = useSocket();
+  const user = useAppSelector((state) => state.UserSlice);
+
+  const {
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    itemsPerPage,
+    setItemsPerPage,
+  } = usePaginateState();
 
   useEffect(() => {
     axiosJWT
-      .get(RESTAURANT_API + "/orders")
-      .then(({ data }) => setOrders(data.orders))
+      .get(RESTAURANT_API + "/orders", { params: { page: currentPage } })
+      .then(({ data }) => {
+        const { orders, count, limit } = data;
+        setOrders(orders);
+        setPageSize(count);
+        setItemsPerPage(limit);
+      })
       .catch(() => showToast("Oops! Something went wrong", "error"));
-  }, []);
+  }, [currentPage]);
 
   const handleUpdatedOrder = (orderData: OrderInterface) => {
-    console.log(orderData);
     setOrders((prevOrders) =>
       prevOrders.map((order) =>
         order._id === orderData._id
@@ -29,6 +48,15 @@ const RestaurantOrders = () => {
     );
     setViewOrderModal(false);
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket?.emit("addUser", user.id);
+      socket?.on("get_newOrder", (order) => {
+        setOrders((prev) => [order, ...prev]);
+      });
+    }
+  }, []);
 
   return (
     <>
@@ -81,6 +109,12 @@ const RestaurantOrders = () => {
             handleUpdateOrder={handleUpdatedOrder}
           />
         )}
+        <Pagination
+          currentPage={currentPage}
+          totalCount={pageSize}
+          itemsPerPage={itemsPerPage} //items per page
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
     </>
   );
