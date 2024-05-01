@@ -25,7 +25,7 @@ const OrderData: React.FC<OrderDataProps> = ({
 
   useEffect(() => {
     if (socket) {
-      socket.on("notify_updatedOrder", (order) => {
+      socket.on("notify_updatedOrder", (order: OrderInterface) => {
         setOrderAfterUpdate(order);
       });
     }

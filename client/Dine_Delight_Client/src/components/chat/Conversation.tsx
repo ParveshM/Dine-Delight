@@ -33,23 +33,36 @@ const Conversation: React.FC<ConversationProps> = ({
   useEffect(() => {
     const isChatOpen = currentChat && currentChat._id === conversationId;
 
-    socket?.on("notification", async ({ count, senderId, chatId, text }) => {
-      if (!isChatOpen || chatId !== conversationId) {
-        if (members.includes(senderId)) {
-          setNewMessageCount((prev) => prev + count);
+    socket?.on(
+      "notification",
+      async ({
+        count,
+        senderId,
+        chatId,
+        text,
+      }: {
+        count: number;
+        senderId: string;
+        chatId: string;
+        text: string;
+      }) => {
+        if (!isChatOpen || chatId !== conversationId) {
+          if (members.includes(senderId)) {
+            setNewMessageCount((prev) => prev + count);
+          }
+        } else {
+          setMessages((prev) => [
+            ...prev,
+            {
+              senderId: senderId,
+              text: text,
+              createdAt: new Date(),
+            },
+          ]);
         }
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          {
-            senderId: senderId,
-            text: text,
-            createdAt: new Date(),
-          },
-        ]);
+        await getConversations(chatId, senderId);
       }
-      await getConversations(chatId, senderId);
-    });
+    );
     return () => {
       socket?.off("notification");
     };

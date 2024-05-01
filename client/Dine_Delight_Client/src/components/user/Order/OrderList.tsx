@@ -47,7 +47,7 @@ const OrderList: React.FC<OrderInterface> = ({
           )
         )}
       </ul>
-      {orderItems.length > 2 && (
+      {orderItems.length > 4 && (
         <button
           className="text-blue-500 mt-2 hover:underline focus:outline-none"
           onClick={() => setToggleShowMore(!toggleShowMore)}
