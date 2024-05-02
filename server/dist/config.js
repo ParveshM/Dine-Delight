@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const configKeys = {
-    PORT: process.env.PORT || 5000,
+    PORT: process.env.PORT || 3000,
     CLIENT_PORT: process.env.CLIENT_PORT,
     MONGO_URL: process.env.MONGO_URL,
     APP_EMAIL: process.env.APP_EMAIL,

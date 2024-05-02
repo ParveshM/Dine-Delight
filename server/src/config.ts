@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const configKeys = {
-  PORT: process.env.PORT || (5000 as number),
+  PORT: process.env.PORT || (3000 as number),
   CLIENT_PORT: process.env.CLIENT_PORT as string,
   MONGO_URL: process.env.MONGO_URL as string,
   APP_EMAIL: process.env.APP_EMAIL as string,

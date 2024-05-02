@@ -15,7 +15,7 @@ const Login: React.FC = () => {
   const formik = useFormik({
     initialValues: {
       email: "",
-      password: "Admin@123",
+      password: "",
     },
     validate: validateLogin,
     onSubmit: ({ email, password }) => {
