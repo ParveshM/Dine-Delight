@@ -27,6 +27,10 @@ export default function useRestaurantList() {
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [bookmarks, setBookmarks] = useState<RestaurantInterface[]>([]);
   const user = useAppSelector((state) => state.UserSlice);
+  useEffect(() => {
+    setPage(1);
+    setData([]);
+  }, [searchQuery, location.coordinates, filter]);
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -39,7 +43,6 @@ export default function useRestaurantList() {
             page: pageNumber,
             cost: filter.costPerPerson,
             sort: filter.sortType,
-            // sortOrder: "desc",
           },
         });
         if (user.isAuthenticated && user.role === "user") {
@@ -47,7 +50,17 @@ export default function useRestaurantList() {
           setBookmarks(data.user.bookmarks);
         }
 
-        setData((prev) => [...prev, ...data?.restaurants]);
+        setData((prev) => {
+          // filtering out the unique res objects only
+          const uniqueRestaurantIds = new Set(
+            prev.map((restaurant) => restaurant._id)
+          );
+          const newData = (data?.restaurants || []).filter(
+            (restaurant: RestaurantInterface) =>
+              !uniqueRestaurantIds.has(restaurant._id)
+          );
+          return [...prev, ...newData];
+        });
         setHasMore(data.restaurants?.length > 0);
         pageNumber > 1 ? setIsLoadingMore(false) : setIsLoading(false);
       } catch (error) {
@@ -63,11 +76,6 @@ export default function useRestaurantList() {
       .then(({ data }) => setBanners(data.banners))
       .catch(() => showToast("Oops! Something went wrong", "error"));
   }, []);
-
-  useEffect(() => {
-    setData([]);
-    setPage(1);
-  }, [location.coordinates, searchQuery, filter]);
 
   const handleSearchQuery = (query: string) => {
     setSearchQuery(query);

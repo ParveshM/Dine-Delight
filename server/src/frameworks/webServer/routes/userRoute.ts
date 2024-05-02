@@ -123,7 +123,7 @@ const userRoute = () => {
     _bookingController.deletePreOrderedFood
   );
   router.get("/banners", controller.getBanners);
-  router.get("/menu", authenticateUser, _menuController.getMenu);
+  router.get("/menu", _menuController.getMenu);
 
   router.post("/order", authenticateUser, controller.newFoodOrder);
   router.get("/orders", authenticateUser, controller.orders);

@@ -5,9 +5,10 @@ import axiosJWT from "../utils/axiosService";
 import showToast from "../utils/toaster";
 import { USER_API } from "../constants";
 import { BookingInterface } from "../types/BookingInterface";
-import { useAppDispatch } from "../redux/store/Store";
+import { useAppDispatch, useAppSelector } from "../redux/store/Store";
 import { addToCart, clearCart } from "../redux/slices/CartSlice";
 import { calculateDiscountedPrice } from "../utils/util";
+import axios from "axios";
 
 export default function useCart() {
   const { id } = useParams();
@@ -28,6 +29,7 @@ export default function useCart() {
   const hasPageBeenRendered = useRef(false);
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.UserSlice);
   const [showTableInputModal, setTableInputModal] = useState<boolean>(false);
   const [formData, setFormData] = useState<{
     tableNumber: string;
@@ -53,9 +55,8 @@ export default function useCart() {
 
   useEffect(() => {
     const isOrderSection = pathname.startsWith("/menu");
-
     if (isOrderSection && !params.get("orderId")) {
-      setTableInputModal(true);
+      if (user.isAuthenticated) setTableInputModal(true);
     } else {
       axiosJWT
         .get(USER_API + `/bookings/${id}`)
@@ -75,7 +76,7 @@ export default function useCart() {
   useEffect(() => {
     async function fetchMenu() {
       page > 1 ? setIsLoadingMore(true) : setIsLoading(true);
-      axiosJWT
+      axios
         .get(USER_API + `/menu`, {
           params: {
             q: searchQuery,

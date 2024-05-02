@@ -32,14 +32,16 @@ export default function useCartSidebar(tableData?: {
   const socket = useSocket();
 
   useEffect(() => {
-    axiosJWT
-      .get(USER_API + `/bookings/${id}`)
-      .then(({ data }) => {
-        if (data?.preOrder) {
-          dispatch(loadCartItems(data?.preOrder));
-        }
-      })
-      .catch(() => showToast("Oops! Something went wrong", "error"));
+    const isOrderSection = pathname.startsWith("/menu");
+    if (!isOrderSection)
+      axiosJWT
+        .get(USER_API + `/bookings/${id}`)
+        .then(({ data }) => {
+          if (data?.preOrder) {
+            dispatch(loadCartItems(data?.preOrder));
+          }
+        })
+        .catch(() => showToast("Oops! Something went wrong", "error"));
   }, []);
 
   const isMenuSection = useMemo(() => {

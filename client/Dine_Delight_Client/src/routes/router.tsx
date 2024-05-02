@@ -68,6 +68,8 @@ const RecentOrders = lazy(() => import("../pages/user/Orders/RecentOrders"));
 const RestaurantOrders = lazy(
   () => import("../pages/restaurant/RestaurantOrders")
 );
+const ContactUs = lazy(() => import("../pages/ContactUs"));
+const AboutPage = lazy(() => import("../pages/AboutPage"));
 
 export const MainRouter = () => {
   return (
@@ -76,6 +78,8 @@ export const MainRouter = () => {
         <Routes>
           {/******************* User routes *****************/}
           <Route path="/" element={<Home />} />
+          <Route path="/contactUs" element={<ContactUs />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/view_restaurant/:id" element={<SingleRestaurant />} />
           <Route path="" element={<PublicRoute />}>
             <Route path="/user/auth/signup" element={<SignUp />} />
