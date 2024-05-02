@@ -3,7 +3,7 @@ import { IoClose } from "react-icons/io5";
 import { QRCodeCanvas } from "qrcode.react";
 import uploadImagesToCloudinary from "../../Api/uploadImages";
 import axiosJWT from "../../utils/axiosService";
-import { RESTAURANT_API } from "../../constants";
+import { RESTAURANT_API, SERVER_URL } from "../../constants";
 import showToast from "../../utils/toaster";
 import { useAppSelector } from "../../redux/store/Store";
 import Button from "./Button";
@@ -12,7 +12,7 @@ const QrGenerator: React.FC<{ setIsModalOpen: (isOpen: boolean) => void }> = ({
   setIsModalOpen,
 }) => {
   const { id } = useAppSelector((state) => state.UserSlice);
-  const [inputText] = useState(`${import.meta.env.VITE_CLIENT_URL}/menu/${id}`);
+  const [inputText] = useState(`${SERVER_URL}/menu/${id}`);
   const modalRef = useRef<HTMLDivElement>(null);
 
   const downloadQRCode = async () => {
