@@ -60,7 +60,7 @@ const userRoute = () => {
     router.post("/booking/preOrder", authMiddleware_1.default, _bookingController.updatePreOrderedFood);
     router.delete("/booking/preOrder", authMiddleware_1.default, _bookingController.deletePreOrderedFood);
     router.get("/banners", controller.getBanners);
-    router.get("/menu", authMiddleware_1.default, _menuController.getMenu);
+    router.get("/menu", _menuController.getMenu);
     router.post("/order", authMiddleware_1.default, controller.newFoodOrder);
     router.get("/orders", authMiddleware_1.default, controller.orders);
     router.put("/orders/update", authMiddleware_1.default, controller.updateOrder);
