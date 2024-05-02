@@ -1,0 +1,35 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const adminController_1 = __importDefault(require("../../../adapters/adminController"));
+const authServiceInterface_1 = require("../../../app/services-Interface/authServiceInterface");
+const authService_1 = require("../../services/authService");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const userDbRepository_1 = require("../../../app/interfaces/userDbRepository");
+const userRepositoryMongodb_1 = require("../../database/mongodb/repositories/userRepositoryMongodb");
+const restaurantDbRepository_1 = require("../../../app/interfaces/restaurantDbRepository");
+const restaurantRepositoryMongodb_1 = require("../../database/mongodb/repositories/restaurantRepositoryMongodb");
+const bookingDbRepository_1 = require("../../../app/interfaces/bookingDbRepository");
+const BookingRepositoryMongodb_1 = require("../../database/mongodb/repositories/BookingRepositoryMongodb");
+const AdminDbRepository_1 = __importDefault(require("../../../app/interfaces/AdminDbRepository"));
+const AdminRepositoryMongodb_1 = require("../../database/mongodb/repositories/AdminRepositoryMongodb");
+exports.default = () => {
+    const router = (0, express_1.Router)();
+    const controller = (0, adminController_1.default)(authServiceInterface_1.authServiceInterface, authService_1.authService, userDbRepository_1.userDbRepository, userRepositoryMongodb_1.userRepositoryMongodb, restaurantDbRepository_1.restaurantDbRepository, restaurantRepositoryMongodb_1.restaurantRepositoryMongodb, bookingDbRepository_1.bookingDbRepository, BookingRepositoryMongodb_1.bookingRepositoryMongodb, AdminDbRepository_1.default, AdminRepositoryMongodb_1.adminRepositoryMongodb);
+    router.post("/login", controller.adminLogin);
+    router.get("/users", authMiddleware_1.authenticateAdmin, controller.getAllUser);
+    router.get("/restaurants", authMiddleware_1.authenticateAdmin, controller.getAllRestaurants);
+    router.patch("/block_user/:id", authMiddleware_1.authenticateAdmin, controller.userBlock);
+    router.patch("/validate_restaurant/:id", authMiddleware_1.authenticateAdmin, controller.validateRestaurant);
+    router.patch("/list_restaurant/:id", authMiddleware_1.authenticateAdmin, controller.listRestaurant);
+    router.get("/dashboard", authMiddleware_1.authenticateAdmin, controller.dashboardDetails);
+    router.get("/reports", authMiddleware_1.authenticateAdmin, controller.generateReport);
+    router.get("/banners", authMiddleware_1.authenticateAdmin, controller.getBanners);
+    router.post("/banners/add", authMiddleware_1.authenticateAdmin, controller.addNewBanner);
+    router.patch("/banners/edit/:bannerId", authMiddleware_1.authenticateAdmin, controller.updateBanner);
+    router.delete("/banners/remove/:bannerId", authMiddleware_1.authenticateAdmin, controller.removBanner);
+    return router;
+};

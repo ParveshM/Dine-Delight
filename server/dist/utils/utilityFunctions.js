@@ -1,0 +1,27 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.calculateDiscountedPrice = exports.parseTimeSlot = void 0;
+function parseTimeSlot(timeString) {
+    if (!timeString) {
+        return "";
+    }
+    var timeArray = timeString.split(":");
+    var hour = parseInt(timeArray[0], 10);
+    var min = parseInt(timeArray[1], 10);
+    if (timeString.includes("PM") && hour < 12) {
+        hour += 12;
+    }
+    else if (timeString.includes("AM") && hour === 12) {
+        hour = 0;
+    }
+    var paddedHour = hour.toString().padStart(2, "0");
+    var paddedMin = min.toString().padStart(2, "0");
+    return paddedHour + ":" + paddedMin;
+}
+exports.parseTimeSlot = parseTimeSlot;
+function calculateDiscountedPrice(originalPrice, discountPercentage) {
+    const discountDecimal = discountPercentage / 100;
+    const discountedPrice = originalPrice - originalPrice * discountDecimal;
+    return Number(discountedPrice.toFixed(2));
+}
+exports.calculateDiscountedPrice = calculateDiscountedPrice;
