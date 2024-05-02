@@ -8,7 +8,7 @@ import routes from "./frameworks/webServer/routes";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import socketConfig from "./frameworks/webSocket/socket";
-
+import path from "path";
 const app: Application = express();
 
 const httpServer = createServer(app);
@@ -19,10 +19,22 @@ const io = new Server(httpServer, {
     credentials: true,
   },
 });
+
+app.use(
+  express.static(path.join(__dirname, "../../client/Dine_Delight_Client/dist"))
+);
+
 socketConfig(io);
 expressConfig(app);
 connectDB();
 routes(app);
+
+app.get("*", (req: Request, res: Response) => {
+  res.sendFile(
+    path.join(__dirname, "../../client/Dine_Delight_Client/dist/index.html")
+  );
+});
+
 startServer(httpServer);
 
 app.use(errorHandlingMidleware);
