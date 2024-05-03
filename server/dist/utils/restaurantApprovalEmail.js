@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.restaurantRejectionMail = void 0;
+const config_1 = __importDefault(require("../config"));
 exports.default = (name) => {
     return `<!DOCTYPE html>
     <html lang="en">
@@ -80,7 +84,7 @@ exports.default = (name) => {
         <p>We're excited to inform you that your restaurant account has been approved by our admin team. You're now part of the Dine Delight family, where diners can discover and reserve tables with ease.</p>
         <p>You can now login to your account and start accepting reservations from eager diners.</p>
         <p>Simply click the button below to confirm your email address and get started:</p>
-        <a href="http://localhost:3000/login" class="button" target="_blank">Login to Dine Delight</a>
+        <a href="${config_1.default.CLIENT_PORT}/restaurant/auth/login" class="button" target="_blank">Login to Dine Delight</a>
         <p>If you have any questions or need assistance, feel free to contact our support team.</p>
         <div class="footer">
           <p>Best regards,<br>Dine Delight Team</p>

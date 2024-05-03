@@ -1,3 +1,5 @@
+import configKeys from "../config";
+
 export const sellerVerifyEmailPage = (name: string, token: string) => {
   return `<!DOCTYPE html>
     <html lang="en">
@@ -76,7 +78,7 @@ export const sellerVerifyEmailPage = (name: string, token: string) => {
         <p>Dear ${name},</p>
         <p>We are thrilled to have you join our platform. Your restaurant is now part of the Dine Delight family, where diners can discover and reserve tables with ease.</p>
         <p>To get started, please confirm your email address by clicking the button below:</p>
-        <a href=http://localhost:5173/restaurant/auth/verify_token/${token} class="button" target="_blank">Confirm Email</a>
+        <a href="${configKeys.CLIENT_PORT}/restaurant/auth/verify_token/${token}" class="button" target="_blank">Confirm Email</a>
         <p>If you didn't sign up for an account on Dine Delight, you can disregard this email.</p>
         <div class="footer">
           <p>Best regards,<br>Dine Delight Team</p>

@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sellerVerifyEmailPage = void 0;
+const config_1 = __importDefault(require("../config"));
 const sellerVerifyEmailPage = (name, token) => {
     return `<!DOCTYPE html>
     <html lang="en">
@@ -79,7 +83,7 @@ const sellerVerifyEmailPage = (name, token) => {
         <p>Dear ${name},</p>
         <p>We are thrilled to have you join our platform. Your restaurant is now part of the Dine Delight family, where diners can discover and reserve tables with ease.</p>
         <p>To get started, please confirm your email address by clicking the button below:</p>
-        <a href=http://localhost:5173/restaurant/auth/verify_token/${token} class="button" target="_blank">Confirm Email</a>
+        <a href="${config_1.default.CLIENT_PORT}/restaurant/auth/verify_token/${token}" class="button" target="_blank">Confirm Email</a>
         <p>If you didn't sign up for an account on Dine Delight, you can disregard this email.</p>
         <div class="footer">
           <p>Best regards,<br>Dine Delight Team</p>
