@@ -20,7 +20,8 @@ export const TableSlotRepositoryMongodb = () => {
     const tableSlot = await TableSlot.find(filter)
       .sort({ slotDate: 1 })
       .skip(paginate.skip)
-      .limit(paginate.limit);
+      .limit(paginate.limit)
+      .sort({ slotDate: -1 });
     const count = await TableSlot.countDocuments(filter);
     return { tableSlot, count };
   };
@@ -35,8 +36,8 @@ export const TableSlotRepositoryMongodb = () => {
   const updateSlot = async (id: string, updatingData: Record<string, any>) =>
     await TableSlot.findByIdAndUpdate(id, updatingData);
 
-  const removeTableSlotById = async (tableId: string) =>
-    await TableSlot.findByIdAndDelete(tableId);
+  const removeTableSlotById = async (id: string) =>
+    await TableSlot.findOneAndDelete({ _id: id, isAvailable: true });
 
   const getAvailableTableSlotsByFilter = async (
     restaurantID: string,

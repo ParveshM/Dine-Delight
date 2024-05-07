@@ -75,7 +75,7 @@ export const reserveATable = async (
   }
   const booking = await bookingDbRepository.createBooking(newReservation);
 
-  const updateSlot = await tablSlotDbRepository.updateSlot(tableId, {
+  const updateSlot = await tablSlotDbRepository.updateSlot(tableSlotId, {
     isAvailable: false,
   });
 
