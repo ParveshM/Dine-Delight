@@ -53,7 +53,7 @@ const reserveATable = (reservationData, userId, reservationService, bookingDbRep
         }
     }
     const booking = yield bookingDbRepository.createBooking(newReservation);
-    const updateSlot = yield tablSlotDbRepository.updateSlot(tableId, {
+    const updateSlot = yield tablSlotDbRepository.updateSlot(tableSlotId, {
         isAvailable: false,
     });
     return booking;

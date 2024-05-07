@@ -28,13 +28,14 @@ const TableSlotRepositoryMongodb = () => {
         const tableSlot = yield Tableslots_1.default.find(filter)
             .sort({ slotDate: 1 })
             .skip(paginate.skip)
-            .limit(paginate.limit);
+            .limit(paginate.limit)
+            .sort({ slotDate: -1 });
         const count = yield Tableslots_1.default.countDocuments(filter);
         return { tableSlot, count };
     });
     const isSlotAvailable = (tableId, slotDate, startTime, endTime) => __awaiter(void 0, void 0, void 0, function* () { return yield Tableslots_1.default.findOne({ tableId, slotDate, startTime, endTime }); });
     const updateSlot = (id, updatingData) => __awaiter(void 0, void 0, void 0, function* () { return yield Tableslots_1.default.findByIdAndUpdate(id, updatingData); });
-    const removeTableSlotById = (tableId) => __awaiter(void 0, void 0, void 0, function* () { return yield Tableslots_1.default.findByIdAndDelete(tableId); });
+    const removeTableSlotById = (id) => __awaiter(void 0, void 0, void 0, function* () { return yield Tableslots_1.default.findOneAndDelete({ _id: id, isAvailable: true }); });
     const getAvailableTableSlotsByFilter = (restaurantID, capacity, startTime, //type '$startTime' that is matched by whole dataset startTime else the given time
     currentDate, endDate) => __awaiter(void 0, void 0, void 0, function* () {
         const startOfDay = new Date(currentDate);

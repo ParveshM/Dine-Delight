@@ -247,6 +247,7 @@ const SingleRestaurant = () => {
                   <div className="flex items-center gap-2 hover:text-blue-600 ">
                     <MdEmail />
                     <Link
+                      target="_blank"
                       to={`https://mail.google.com/mail/u/0/?to=${restaurant.email}&body=Hi ${restaurant.restaurantName}, I need some assistance&bcc=%7Bemail_address%7D&cc=%7Bemail_address%7D&fs=1&tf=cm
                       `}
                       className="font-medium hover:underline font-mono"
