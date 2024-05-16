@@ -30,7 +30,8 @@ const tokenContoller = (
    */
   // refresh access token
   const getNewAccessToken = (req: Request, res: Response) => {
-    const { refresh_token } = req.cookies;
+    const { refresh_token } = req.body;
+
     if (!refresh_token) {
       return res
         .status(HttpStatus.UNAUTHORIZED)
@@ -46,12 +47,14 @@ const tokenContoller = (
             .status(HttpStatus.UNAUTHORIZED)
             .json({ message: "Refresh token is expired" });
         } else {
+          console.log(user, "sjdflkjsa");
           const { id, name, role } = user;
           const { accessToken } = authService.createTokens(id, name, role);
-          res.cookie("access_token", accessToken);
-          res
-            .status(HttpStatus.OK)
-            .json({ success: true, message: "Token refreshed successfully" });
+          res.status(HttpStatus.OK).json({
+            success: true,
+            message: "Token refreshed successfully",
+            access_token: accessToken,
+          });
         }
       }
     );
@@ -63,7 +66,7 @@ const tokenContoller = (
    */
 
   const returnAccessToClient = async (req: Request, res: Response) => {
-    const { access_token } = req.cookies;
+    const { access_token } = req.query as { access_token: string };
     if (!access_token)
       return res
         .status(HttpStatus.BAD_REQUEST)

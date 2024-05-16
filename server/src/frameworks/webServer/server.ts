@@ -1,4 +1,3 @@
-import { Application } from "express";
 import { Server } from "http";
 import configKeys from "../../config";
 

@@ -104,32 +104,19 @@ const restaurantController = (
   const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { email, password } = req.body;
-      const { access_token: access, refresh_token: refresh } = req.cookies;
-      if (access || refresh) {
-        res.clearCookie("access_token");
-        res.clearCookie("refresh_token");
-      }
-
       const { accessToken, refreshToken, isEmailExist } = await restaurantLogin(
         email,
         password,
         dbRepositoryRestaurants,
         authService
       );
-      res.cookie("access_token", accessToken, {
-        httpOnly: true,
-        secure: true,
-        expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-      });
-      res.cookie("refresh_token", refreshToken, {
-        httpOnly: true,
-        secure: true,
-        expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-      });
+
       return res.status(HttpStatus.OK).json({
         success: true,
         message: "Login successful",
         restaurant: isEmailExist,
+        access_token: accessToken,
+        refresh_token: refreshToken,
       });
     } catch (error) {
       next(error);
@@ -186,6 +173,7 @@ const restaurantController = (
   ) => {
     try {
       const restaurantID = req.seller;
+      console.log("rest id", req.seller);
       const page = parseInt(req.query.page as string) ?? 1;
       const status = req.query.status as string;
       const limit = 10;

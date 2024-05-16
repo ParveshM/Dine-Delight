@@ -18,10 +18,11 @@ export default function authenticateUser(
   res: Response,
   next: NextFunction
 ) {
-  const { access_token } = req.cookies;
-  if (!access_token) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
     return res.status(HttpStatus.FORBIDDEN).json("Your are not authenticated");
   }
+  const access_token = authHeader.split(" ")[1];
   jwt.verify(access_token, configKeys.ACCESS_SECRET, (err: any, user: any) => {
     if (err) {
       res
@@ -40,12 +41,13 @@ export async function authenticateSeller(
   next: NextFunction
 ) {
   try {
-    const { access_token } = req.cookies;
-    if (!access_token) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
       return res
         .status(HttpStatus.FORBIDDEN)
         .json("Your are not authenticated");
     }
+    const access_token = authHeader.split(" ")[1];
     const user = jwt.verify(
       access_token,
       configKeys.ACCESS_SECRET
@@ -72,10 +74,11 @@ export function authenticateAdmin(
   res: Response,
   next: NextFunction
 ) {
-  const { access_token } = req.cookies;
-  if (!access_token)
+  const authHeader = req.headers.authorization;
+  if (!authHeader)
     return res.status(HttpStatus.FORBIDDEN).json("You are not authenticated");
 
+  const access_token = authHeader.split(" ")[1];
   jwt.verify(access_token, configKeys.ACCESS_SECRET, (err: any, user: any) => {
     if (err) {
       res

@@ -16,8 +16,8 @@ exports.updateReservationData = exports.getRestaurantReservations = void 0;
 const customError_1 = __importDefault(require("../../../utils/customError"));
 const httpStatus_1 = require("../../../types/httpStatus");
 const updateWallet_1 = require("../user/Booking/updateWallet");
-const getRestaurantReservations = (restaurantID, status, skip, limit, bookingRepository) => __awaiter(void 0, void 0, void 0, function* () {
-    const filter = {};
+const getRestaurantReservations = (restaurantId, status, skip, limit, bookingRepository) => __awaiter(void 0, void 0, void 0, function* () {
+    const filter = { restaurantId };
     if (status) {
         filter.bookingStatus = status;
     }

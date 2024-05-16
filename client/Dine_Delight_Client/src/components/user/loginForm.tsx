@@ -2,18 +2,19 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import axios from "axios";
 import showToast from "../../utils/toaster";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { validateLogin } from "../../utils/validation";
 import { USER_API } from "../../constants";
 import { logo, vectorLogin } from "../../assets/images";
 import { useAppDispatch } from "../../redux/store/Store";
-import { setUser } from "../../redux/slices/UserSlice";
+import { setTokens, setUser } from "../../redux/slices/UserSlice";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
 axios.defaults.withCredentials = true;
 const LoginForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<Boolean>(false);
+  const [params] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const formik = useFormik({
@@ -28,9 +29,20 @@ const LoginForm: React.FC = () => {
         .post(USER_API + "/login", { email, password })
         .then(({ data }) => {
           const { name, role, _id } = data.user;
-          showToast(data.message, "success");
-          dispatch(setUser({ isAuthenticated: true, name, role, id: _id }));
-          navigate("/");
+          const { message, access_token, refresh_token } = data;
+          showToast(message, "success");
+          dispatch(
+            setUser({
+              isAuthenticated: true,
+              name,
+              role,
+              id: _id,
+            })
+          );
+          dispatch(setTokens({ access_token, refresh_token }));
+          const redirection = params.get("redirectPath");
+          if (redirection) navigate(-1);
+          else navigate("/");
         })
         .catch(({ response }) => {
           console.log(response);
@@ -49,7 +61,7 @@ const LoginForm: React.FC = () => {
     axios
       .post(USER_API + "/google_signIn", { user })
       .then(({ data }) => {
-        const { message, user } = data;
+        const { message, user, access_token, refresh_token } = data;
         showToast(message, "success");
         dispatch(
           setUser({
@@ -59,7 +71,10 @@ const LoginForm: React.FC = () => {
             id: user._id,
           })
         );
-        navigate("/");
+        dispatch(setTokens({ access_token, refresh_token }));
+        const redirection = params.get("redirectPath");
+        if (redirection) navigate(-1);
+        else navigate("/");
       })
       .catch(({ response }) => showToast(response.data.message, "error"));
   };

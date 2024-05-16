@@ -60,31 +60,18 @@ export default (
     next: NextFunction
   ) => {
     try {
-      const { access_token: access, refresh_token: refresh } = req.cookies;
-      if (access || refresh) {
-        res.clearCookie("access_token");
-        res.clearCookie("refresh_token");
-      }
       const { email, password } = req.body;
       const { accessToken, refreshToken } = await loginAdmin(
         email,
         password,
         authService
       );
-      res.cookie("access_token", accessToken, {
-        httpOnly: true,
-        secure: true,
-        expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-      });
-      res.cookie("refresh_token", refreshToken, {
-        httpOnly: true,
-        secure: true,
-        expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-      });
       return res.status(HttpStatus.OK).json({
         success: true,
         message: "Admin login success",
         admin: { name: "Admin User", role: "admin" },
+        access_token: accessToken,
+        refresh_token: refreshToken,
       });
     } catch (error) {
       next(error);

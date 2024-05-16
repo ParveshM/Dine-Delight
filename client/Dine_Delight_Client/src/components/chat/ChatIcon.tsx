@@ -34,7 +34,8 @@ const ChatIcon = () => {
     pathname === "/chat" ||
     pathname === "/restaurant/chat" ||
     pathname.startsWith("/menu") ||
-    pathname.startsWith("/cart");
+    pathname.startsWith("/cart") ||
+    pathname.startsWith("/admin");
   if (!isAuthenticated || isExcludedRoute) return null;
 
   return (

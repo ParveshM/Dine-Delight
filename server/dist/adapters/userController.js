@@ -86,26 +86,13 @@ authServiceImpl, userDbRepository, userRepositoryImpl, restaurantDbRepository, r
     // User login with credentials and create access and refresh token for authorization
     const userLogin = (0, express_async_handler_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const { access_token: access, refresh_token: refresh } = req.cookies;
-            if (access || refresh) {
-                res.clearCookie("access_token");
-                res.clearCookie("refresh_token");
-            }
             const { accessToken, refreshToken, isEmailExist } = yield (0, userAuth_1.login)(req.body, dbRepositoryUser, authService);
-            // setting access token in the cookie
-            res.cookie("access_token", accessToken, {
-                httpOnly: true,
-                secure: true,
-                expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+            res.status(httpStatus_1.HttpStatus.OK).json({
+                message: "login success",
+                user: isEmailExist,
+                access_token: accessToken,
+                refresh_token: refreshToken,
             });
-            res.cookie("refresh_token", refreshToken, {
-                httpOnly: true,
-                secure: true,
-                expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-            });
-            res
-                .status(httpStatus_1.HttpStatus.OK)
-                .json({ message: "login success", user: isEmailExist });
         }
         catch (error) {
             next(error);
@@ -117,25 +104,15 @@ authServiceImpl, userDbRepository, userRepositoryImpl, restaurantDbRepository, r
      */
     const googleSignIn = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const { access_token: access, refresh_token: refresh } = req.cookies;
-            if (access || refresh) {
-                res.clearCookie("access_token");
-                res.clearCookie("refresh_token");
-            }
             const userData = req.body.user;
             const { accessToken, refreshToken, isEmailExist, createdUser } = yield (0, userAuth_1.authenticateGoogleSignInUser)(userData, dbRepositoryUser, authService);
-            res.cookie("access_token", accessToken, {
-                httpOnly: true,
-                secure: true,
-                expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-            });
-            res.cookie("refresh_token", refreshToken, {
-                httpOnly: true,
-                secure: true,
-                expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-            });
             const user = isEmailExist ? isEmailExist : createdUser;
-            res.status(httpStatus_1.HttpStatus.OK).json({ message: "login success", user });
+            res.status(httpStatus_1.HttpStatus.OK).json({
+                message: "login success",
+                user,
+                access_token: accessToken,
+                refresh_token: refreshToken,
+            });
         }
         catch (error) {
             next(error);

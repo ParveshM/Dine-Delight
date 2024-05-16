@@ -110,24 +110,27 @@ const Profile: React.FC = () => {
             ) : (
               <h3>No recent transactions</h3>
             )}
-            {transactons.length &&
-              transactons.slice(0, 5).map((item) => (
-                <div
-                  className="flex justify-between items-center bg-gray-100 rounded-md p-2"
-                  key={item._id}
-                >
-                  <div className="text-sm text-gray-700">{item.type}</div>
+            {transactons.length
+              ? transactons.slice(0, 5).map((item) => (
                   <div
-                    className={`text-sm font-semibold ${
-                      item.type === "Credit" ? "text-green-600" : "text-red-600"
-                    } `}
+                    className="flex justify-between items-center bg-gray-100 rounded-md p-2"
+                    key={item._id}
                   >
-                    {item.type === "Credit"
-                      ? `+${item.amount}`
-                      : `-${item.amount}`}
+                    <div className="text-sm text-gray-700">{item.type}</div>
+                    <div
+                      className={`text-sm font-semibold ${
+                        item.type === "Credit"
+                          ? "text-green-600"
+                          : "text-red-600"
+                      } `}
+                    >
+                      {item.type === "Credit"
+                        ? `+${item.amount}`
+                        : `-${item.amount}`}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              : null}
           </div>
         </div>
       </div>

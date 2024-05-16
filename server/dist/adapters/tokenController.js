@@ -26,7 +26,7 @@ const tokenContoller = (authServiceInterface, authServiceImpl, userDbRepository,
      */
     // refresh access token
     const getNewAccessToken = (req, res) => {
-        const { refresh_token } = req.cookies;
+        const { refresh_token } = req.body;
         if (!refresh_token) {
             return res
                 .status(httpStatus_1.HttpStatus.UNAUTHORIZED)
@@ -40,12 +40,14 @@ const tokenContoller = (authServiceInterface, authServiceImpl, userDbRepository,
                     .json({ message: "Refresh token is expired" });
             }
             else {
+                console.log(user, "sjdflkjsa");
                 const { id, name, role } = user;
                 const { accessToken } = authService.createTokens(id, name, role);
-                res.cookie("access_token", accessToken);
-                res
-                    .status(httpStatus_1.HttpStatus.OK)
-                    .json({ success: true, message: "Token refreshed successfully" });
+                res.status(httpStatus_1.HttpStatus.OK).json({
+                    success: true,
+                    message: "Token refreshed successfully",
+                    access_token: accessToken,
+                });
             }
         });
     };
@@ -54,7 +56,7 @@ const tokenContoller = (authServiceInterface, authServiceImpl, userDbRepository,
      * Return acces token to client
      */
     const returnAccessToClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { access_token } = req.cookies;
+        const { access_token } = req.query;
         if (!access_token)
             return res
                 .status(httpStatus_1.HttpStatus.BAD_REQUEST)

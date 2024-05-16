@@ -162,7 +162,7 @@ const CartSidebar: React.FC<CartSidbarProps> = ({
               </button>
             ) : (
               <button
-                onClick={() => navigate("/user/auth/login")}
+                onClick={() => navigate("/user/auth/login?redirectPath=menu")}
                 className="w-full mt-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
               >
                 Login

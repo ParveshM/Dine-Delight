@@ -86,7 +86,7 @@ const CardsList: React.ForwardRefRenderFunction<
       <figure>
         <Link to={`view_restaurant/${_id}`}>
           <img
-            src={primaryImage ?? defaultImageCardImage}
+            src={primaryImage || defaultImageCardImage}
             alt={"Image of " + restaurantName}
             className="rounded-t h-52 w-full object-cover"
           />

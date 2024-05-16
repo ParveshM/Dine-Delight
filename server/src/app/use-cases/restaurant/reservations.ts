@@ -7,13 +7,13 @@ import { updateWallet } from "../user/Booking/updateWallet";
 import { TransactionDataType } from "../../../types/BookingInterface";
 
 export const getRestaurantReservations = async (
-  restaurantID: string,
+  restaurantId: string,
   status: string,
   skip: number,
   limit: number,
   bookingRepository: ReturnType<BookingDbRepositoryInterface>
 ) => {
-  const filter: Record<string, any> = {};
+  const filter: Record<string, any> = { restaurantId };
   if (status) {
     filter.bookingStatus = status;
   }

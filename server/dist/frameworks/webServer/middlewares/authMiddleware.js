@@ -18,10 +18,11 @@ const httpStatus_1 = require("../../../types/httpStatus");
 const config_1 = __importDefault(require("../../../config"));
 // verify the token and validate user
 function authenticateUser(req, res, next) {
-    const { access_token } = req.cookies;
-    if (!access_token) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
         return res.status(httpStatus_1.HttpStatus.FORBIDDEN).json("Your are not authenticated");
     }
+    const access_token = authHeader.split(" ")[1];
     jsonwebtoken_1.default.verify(access_token, config_1.default.ACCESS_SECRET, (err, user) => {
         if (err) {
             res
@@ -38,12 +39,13 @@ exports.default = authenticateUser;
 function authenticateSeller(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const { access_token } = req.cookies;
-            if (!access_token) {
+            const authHeader = req.headers.authorization;
+            if (!authHeader) {
                 return res
                     .status(httpStatus_1.HttpStatus.FORBIDDEN)
                     .json("Your are not authenticated");
             }
+            const access_token = authHeader.split(" ")[1];
             const user = jsonwebtoken_1.default.verify(access_token, config_1.default.ACCESS_SECRET);
             if (user.role === "seller") {
                 req.seller = user.id;
@@ -65,9 +67,10 @@ function authenticateSeller(req, res, next) {
 exports.authenticateSeller = authenticateSeller;
 // Admin authorization to get the access to routes in admin
 function authenticateAdmin(req, res, next) {
-    const { access_token } = req.cookies;
-    if (!access_token)
+    const authHeader = req.headers.authorization;
+    if (!authHeader)
         return res.status(httpStatus_1.HttpStatus.FORBIDDEN).json("You are not authenticated");
+    const access_token = authHeader.split(" ")[1];
     jsonwebtoken_1.default.verify(access_token, config_1.default.ACCESS_SECRET, (err, user) => {
         if (err) {
             res
