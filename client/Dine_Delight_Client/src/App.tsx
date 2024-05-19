@@ -8,8 +8,10 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import "tw-elements-react/dist/css/tw-elements-react.min.css";
 import ChatIcon from "./components/chat/ChatIcon";
 import SocketProvider from "./redux/Context/SocketContext";
+import { disableReactDevTools } from "./utils/disableReactDevTool";
 
 const App = () => {
+  if (process.env.NODE_ENV === "production") disableReactDevTools();
   return (
     <SocketProvider>
       <Provider store={store}>
