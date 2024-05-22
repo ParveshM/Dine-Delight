@@ -105,7 +105,7 @@ const LoginForm: React.FC = () => {
         <div className="w-full bg-white rounded-2xl shadow-2xl md:max-w-md xl:p-0">
           <div className="p-6 space-y-4 md:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-headerText md:text-2xl">
-              Welcom Back!
+              Welcome Back!
             </h1>
             <form className="space-y-4" onSubmit={formik.handleSubmit}>
               <div>

@@ -6,11 +6,10 @@ import { Payload } from "../types/PropsType";
 import { getItemFromLocalStorage } from "./Set&GetLs";
 
 const axiosJWT = axios.create();
-let access_token = getItemFromLocalStorage("access_token");
-let refresh_token = getItemFromLocalStorage("refresh_token");
 
 const getNewAccessToken = async () => {
   try {
+    let refresh_token = getItemFromLocalStorage("refresh_token");
     const { data } = await axios.post(TOKEN_API + "/refresh_token", {
       refresh_token,
     });
@@ -24,6 +23,7 @@ const getAccessToken = async () => {
   try {
     let token;
     let user;
+    let access_token = getItemFromLocalStorage("access_token");
     const { data } = await axios.get(TOKEN_API + "/accessToken", {
       params: { access_token },
     });
