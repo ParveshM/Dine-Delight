@@ -6,15 +6,17 @@ import { dummyUserImg } from "../../assets/images";
 
 const Profile: React.FC = () => {
   const {
+    error,
     profile,
     wallet,
-    transactons,
     formData,
-    error,
+    transactons,
+    isEditing,
     imagePreview,
     isSubmitting,
-    handleInputChange,
+    setIsEditing,
     handleSubmit,
+    handleInputChange,
   } = useProfile();
   return (
     <div className="grid grid-cols-6 gap-4">
@@ -66,7 +68,8 @@ const Profile: React.FC = () => {
               name="name"
               value={formData?.name}
               onChange={handleInputChange}
-              className="border-b-2  border-gray-200 focus:border-primary-600 focus:ring-primary-600 outline-none sm:text-sm p-2.5 mb-2"
+              className="border-b-2  border-gray-200  read-only:focus:border-gray-200 focus:border-primary-600 focus:ring-primary-600 outline-none sm:text-sm p-2.5 mb-2"
+              readOnly={!isEditing ? true : false}
             />
             {error && <p className="text-red-500">{error}</p>}
             <input
@@ -78,15 +81,26 @@ const Profile: React.FC = () => {
             />
           </div>
           <div className="flex justify-center">
-            <button
-              className={`inline-block ${
-                isSubmitting && "opacity-100 cursor-wait"
-              } px-4 mt-2 py-2 text-lg font-medium text-white bg-gradient-to-r from-pink-500 to-orange-400 rounded-3xl   transition duration-300 ease-in-out hover:from-pink-600 hover:to-orange-500 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2`}
-              disabled={isSubmitting}
-              onClick={handleSubmit}
-            >
-              {isSubmitting ? "Submitting..." : " Save changes"}
-            </button>
+            {isEditing ? (
+              <button
+                className={`inline-block ${
+                  isSubmitting && "opacity-100 cursor-wait"
+                } px-4 mt-2 py-2 text-lg font-medium text-white bg-gradient-to-r from-pink-500 to-orange-400 rounded-3xl   transition duration-300 ease-in-out hover:from-pink-600 hover:to-orange-500 focus:outline-none  focus:ring-offset-2`}
+                disabled={isSubmitting}
+                onClick={handleSubmit}
+              >
+                {isSubmitting ? "Submitting..." : " Save changes"}
+              </button>
+            ) : (
+              <button
+                className={`inline-block ${
+                  isSubmitting && "opacity-100 cursor-wait"
+                } px-4 mt-2 py-2 text-lg font-medium text-white bg-gradient-to-r from-pink-500 to-orange-400 rounded-3xl   transition duration-300 ease-in-out hover:from-pink-600 hover:to-orange-500 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2`}
+                onClick={() => setIsEditing(true)}
+              >
+                Edit Profile
+              </button>
+            )}
           </div>
         </div>
       </div>

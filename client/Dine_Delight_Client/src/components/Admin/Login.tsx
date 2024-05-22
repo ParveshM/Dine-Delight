@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { validateLogin } from "../../utils/validation";
 import { ADMIN_API } from "../../constants";
 import { useAppDispatch } from "../../redux/store/Store";
-import { setTokens, setUser } from "../../redux/slices/UserSlice";
+import { setUser } from "../../redux/slices/UserSlice";
+import { setItemToLocalStorage } from "../../utils/Set&GetLs";
 axios.defaults.withCredentials = true;
 const Login: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<Boolean>(false);
@@ -33,7 +34,8 @@ const Login: React.FC = () => {
               role,
             })
           );
-          dispatch(setTokens({ access_token, refresh_token }));
+          setItemToLocalStorage("access_token", access_token);
+          setItemToLocalStorage("refresh_token", refresh_token);
           navigate("/admin/dashboard");
         })
         .catch(({ response }) => {

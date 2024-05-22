@@ -7,8 +7,8 @@ import { RESTAURANT_API } from "../../constants";
 import showToast from "../../utils/toaster";
 import axios from "axios";
 import { useAppDispatch } from "../../redux/store/Store";
-import { setTokens, setUser } from "../../redux/slices/UserSlice";
-axios.defaults.withCredentials = true;
+import { setUser } from "../../redux/slices/UserSlice";
+import { setItemToLocalStorage } from "../../utils/Set&GetLs";
 const Login: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -28,7 +28,8 @@ const Login: React.FC = () => {
           const { message, access_token, refresh_token } = data;
           showToast(message, "success");
           dispatch(setUser({ isAuthenticated: true, name, role, id: _id }));
-          dispatch(setTokens({ access_token, refresh_token }));
+          setItemToLocalStorage("access_token", access_token);
+          setItemToLocalStorage("refresh_token", refresh_token);
           setTimeout(() => {
             navigate("/restaurant/dashboard");
           }, 1000);

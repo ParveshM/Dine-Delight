@@ -3,35 +3,17 @@ import { jwtDecode } from "jwt-decode";
 import { TOKEN_API } from "../constants";
 import logout from "./logout";
 import { Payload } from "../types/PropsType";
-import store from "../redux/store/Store";
-import { setTokens } from "../redux/slices/UserSlice";
+import { getItemFromLocalStorage } from "./Set&GetLs";
 
 const axiosJWT = axios.create();
-axiosJWT.defaults.withCredentials = true; // for send back the cookies stored in the browser
-axios.defaults.withCredentials = true;
-let access_token = "";
-let refresh_token = "";
-const handleChange = () => {
-  const token = store.getState().UserSlice as {
-    access_token: string;
-    refresh_token: string;
-  };
-  access_token = token.access_token;
-  refresh_token = token.refresh_token;
-};
-store.subscribe(handleChange);
+let access_token = getItemFromLocalStorage("access_token");
+let refresh_token = getItemFromLocalStorage("refresh_token");
 
 const getNewAccessToken = async () => {
   try {
     const { data } = await axios.post(TOKEN_API + "/refresh_token", {
       refresh_token,
     });
-    store.dispatch(
-      setTokens({
-        access_token: data.access_token,
-        refresh_token,
-      })
-    );
     return data?.access_token;
   } catch (err) {
     logout("Session expired ,please Login");

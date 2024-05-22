@@ -7,9 +7,10 @@ import { validateLogin } from "../../utils/validation";
 import { USER_API } from "../../constants";
 import { logo, vectorLogin } from "../../assets/images";
 import { useAppDispatch } from "../../redux/store/Store";
-import { setTokens, setUser } from "../../redux/slices/UserSlice";
+import { setUser } from "../../redux/slices/UserSlice";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { setItemToLocalStorage } from "../../utils/Set&GetLs";
 
 axios.defaults.withCredentials = true;
 const LoginForm: React.FC = () => {
@@ -39,7 +40,8 @@ const LoginForm: React.FC = () => {
               id: _id,
             })
           );
-          dispatch(setTokens({ access_token, refresh_token }));
+          setItemToLocalStorage("access_token", access_token);
+          setItemToLocalStorage("refresh_token", refresh_token);
           const redirection = params.get("redirectPath");
           if (redirection) navigate(-1);
           else navigate("/");
@@ -71,7 +73,8 @@ const LoginForm: React.FC = () => {
             id: user._id,
           })
         );
-        dispatch(setTokens({ access_token, refresh_token }));
+        setItemToLocalStorage("access_token", access_token);
+        setItemToLocalStorage("refresh_token", refresh_token);
         const redirection = params.get("redirectPath");
         if (redirection) navigate(-1);
         else navigate("/");

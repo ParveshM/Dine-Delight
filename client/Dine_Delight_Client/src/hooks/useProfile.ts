@@ -23,6 +23,7 @@ const useProfile = () => {
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   useEffect(() => {
     axiosJWT
@@ -69,6 +70,7 @@ const useProfile = () => {
         .then(({ data }) => {
           showToast(data.message);
           setIsSubmitting(false);
+          setIsEditing(false);
         })
         .catch(() => {
           setIsSubmitting(false);
@@ -90,6 +92,8 @@ const useProfile = () => {
     isSubmitting,
     handleInputChange,
     handleSubmit,
+    isEditing,
+    setIsEditing,
   };
 };
 

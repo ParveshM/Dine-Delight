@@ -1,1 +1,0 @@
-import{j as a}from"./index-PhVsbpnH.js";const i=({handleButtonclick:t,label:s,isDisabled:e,className:o,buttontype:n})=>a.jsx("button",{className:`py-2 px-5 rounded-md  text-white font-semibold  transition duration-150 ${o}`,onClick:t,disabled:e??!1,type:`${n??"button"}`,children:s});export{i as B};
